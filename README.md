@@ -1,6 +1,12 @@
 BlockBits.io Smart Contracts
 ===================
 
+# Coverage Report Log
+[https://docs.blockbits.io/extra/reports/index.html](https://docs.blockbits.io/extra/reports/index.html)
+
+# Istanbul Coverage Report
+[https://docs.blockbits.io/extra/coverage/index.html](https://docs.blockbits.io/extra/coverage/index.html)
+
 # SETUP INSTRUCTIONS
 Clone repository
 
