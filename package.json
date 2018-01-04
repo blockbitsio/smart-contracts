@@ -1,0 +1,56 @@
+{
+  "name": "blockbits-core",
+  "version": "1.0.0",
+  "description": "BlockBits Core Contracts",
+  "main": "index.js",
+  "scripts": {
+    "test": "scripts/test.sh",
+    "deploy": "scripts/deploy.sh",
+    "deploytest": "scripts/deploytest.sh",
+    "coverage": "scripts/coverage.sh",
+    "js": "./node_modules/.bin/truffle --network rpc exec test/run_tests.js",
+    "html": "npm run testToHtml && npm run coverageToHtml",
+    "testToHtml": "scripts/testOutputToHtml.sh",
+    "coverageToHtml": "scripts/coverageOutputToHtml.sh",
+    "lint": "solium --dir ./contracts",
+    "console": "node_modules/.bin/truffle console"
+  },
+  "files": [
+    "index.js",
+    "build/",
+    "artifacts/"
+  ],
+  "author": "BlockBits",
+  "license": "MIT",
+  "devDependencies": {
+    "@digix/doxity": "^0.5.2",
+    "babel-helpers": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-3": "^6.17.0",
+    "babel-register": "^6.26.0",
+    "coveralls": "^2.13.1",
+    "dateformat": "3.0.2",
+    "eth-ens-namehash": "^2.0.0",
+    "ethereumjs-abi": "^0.6.4",
+    "ethereumjs-testrpc": "^4.1.3",
+    "ethereumjs-util": "^5.1.1",
+    "left-pad": "^1.1.3",
+    "mocha-lcov-reporter": "^1.3.0",
+    "solidity-coverage": "^0.2.7",
+    "solidity-inspector": "^0.2.3",
+    "solidity-sha3": "^0.4.1",
+    "solium": "^0.5.5",
+    "truffle": "git://github.com/mickys/truffle.git#96613a8c0d165de442da4f2df7303a06337eca32",
+    "truffle-config": "^1.0.2",
+    "truffle-expect": "0.0.3",
+    "truffle-hdwallet-provider": "0.0.3",
+    "zeppelin-solidity": "^1.2.0"
+  },
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "solc": "git://github.com/mickys/solc-js.git#edabdf1b85818a323c42af61b60c908e7a34009a",
+    "web3-utils": "^1.0.0-beta.23"
+  }
+}
