@@ -3,6 +3,7 @@ BlockBits.io Smart Contracts
 
 # Branches
 master - Tokens sold at Fixed price, with variable supply, generates bounty / owner supplies
+
 market-decided-token-sale - Fixed Token supply, tokens sold based on market participation
 
 # SETUP INSTRUCTIONS
