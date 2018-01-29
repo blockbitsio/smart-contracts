@@ -8,12 +8,12 @@ if (!process.env.SOLIDITY_COVERAGE) {
 }
 
 let HDWalletProvider = require('truffle-hdwallet-provider');
-const mnemonic = 'set wallet mnemonic for rinkeby here!'; 
+const mnemonic = 'call will neutral van sponsor select present lion pizza dice resist gate';
+const addr = '0x52b333c238Bf73888fDDe266E9D2A39B75752807';
 
 //if (process.env.LIVE_NETWORKS) {
 ropstenProvider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/')
 rinkebyProvider = new HDWalletProvider(mnemonic, 'https://rinkeby.infura.io/c5GRJ5dejitOp13GXgu3')
-// set infura token here
 //}
 
 module.exports = {
@@ -44,6 +44,7 @@ module.exports = {
         },
         rinkeby: {
             provider: rinkebyProvider,
+            // from: addr,
             network_id: 4,
             gas: 6.7e6,
             // gasPrice: 100000000, // 0.1 gwei -> 100 mil wei

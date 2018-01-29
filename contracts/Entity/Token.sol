@@ -19,7 +19,12 @@ contract Token is StandardToken {
     uint256 public totalSupply;
     string public  version = 'v1';
 
-    event TransferAndCall(address indexed from, address indexed to, uint256 value, bytes data);
+    address public owner;
+
+    event Mint(address indexed to, uint256 amount);
+    event MintFinished();
+
+    bool public mintingFinished = false;
 
     function Token(
         uint256 _initialAmount,
@@ -31,24 +36,46 @@ contract Token is StandardToken {
     public
     {
         decimals = _decimalUnits;                               // Amount of decimals for display purposes
-        totalSupply = _initialAmount;                           // Update total supply
-        balances[msg.sender] = totalSupply;                     // Give the creator all initial tokens
+        totalSupply = _initialAmount;                           // Set initial supply.. should be 0 if we're minting
         name = _tokenName;                                      // Set the name for display purposes
         symbol = _tokenSymbol;                                  // Set the symbol for display purposes
         version = _version;                                     // Set token version string
+
+        // set internal owner that can mint tokens.
+        owner = msg.sender;
     }
 
-    /*
-    function transferAndCall(address receiver, uint256 amount) public returns (bool success) {
-        if(transfer(receiver, amount)) {
-            if(receiver.call(bytes4(bytes32(keccak256("tokenCallback(address,uint256)"))), msg.sender, amount)) {
-                return true;
-            } else {
-                revert();
-            }
-        } else {
-            revert();
-        }
+    modifier canMint() {
+        require(!mintingFinished);
+        _;
     }
-    */
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    /**
+     * @dev Function to mint tokens
+     * @param _to The address that will receive the minted tokens.
+     * @param _amount The amount of tokens to mint.
+     * @return A boolean that indicates if the operation was successful.
+     */
+    function mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool) {
+        totalSupply = totalSupply.add(_amount);
+        balances[_to] = balances[_to].add(_amount);
+        Mint(_to, _amount);
+        Transfer(address(0), _to, _amount);
+        return true;
+    }
+
+    /**
+     * @dev Function to stop minting new tokens.
+     * @return True if the operation was successful.
+     */
+    function finishMinting() onlyOwner canMint public returns (bool) {
+        mintingFinished = true;
+        MintFinished();
+        return true;
+    }
 }

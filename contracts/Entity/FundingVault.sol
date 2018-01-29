@@ -20,7 +20,7 @@ import "./Token.sol";
 import "./Funding.sol";
 import "./Milestones.sol";
 import "./TokenManager.sol";
-import "./../Algorithms/TokenSCADAGeneric.sol";
+import "./../Algorithms/TokenSCADAVariable.sol";
 
 import "./../ApplicationEntityABI.sol";
 
@@ -55,7 +55,7 @@ contract FundingVault {
     Milestones MilestonesEntity;
     Proposals ProposalsEntity;
     // TokenManager TokenManagerEntity;
-    TokenSCADAGeneric TokenSCADAEntity;
+    TokenSCADAVariable TokenSCADAEntity;
     // address TokenSCADAAddress;
     Token TokenEntity ;
 
@@ -118,7 +118,7 @@ contract FundingVault {
         TokenEntity = Token(TokenAddress);
 
         address TokenSCADAAddress = TokenManagerEntity.TokenSCADAEntity();
-        TokenSCADAEntity = TokenSCADAGeneric(TokenSCADAAddress);
+        TokenSCADAEntity = TokenSCADAVariable(TokenSCADAAddress);
 
         // set Emergency Fund Percentage if available.
         address ApplicationEntityAddress = TokenManagerEntity.owner();
@@ -189,7 +189,6 @@ contract FundingVault {
         }
     }
 
-
     function getBoughtTokens() public view returns (uint256) {
         return TokenSCADAEntity.getBoughtTokens( address(this), false );
     }
@@ -197,6 +196,7 @@ contract FundingVault {
     function getDirectBoughtTokens() public view returns (uint256) {
         return TokenSCADAEntity.getBoughtTokens( address(this), true );
     }
+
 
     mapping (uint8 => uint256) public etherBalances;
     mapping (uint8 => uint256) public tokenBalances;

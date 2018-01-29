@@ -52,7 +52,7 @@ contract Funding is ApplicationAsset {
         uint256 minimum_entry;
         uint8   methods;                    // FundingMethodIds
         // token settings
-        uint256 start_parity;
+        uint256 fixed_tokens;
         uint8   price_addition_percentage;  //
         uint8   token_share_percentage;
         uint8   index;
@@ -105,10 +105,19 @@ contract Funding is ApplicationAsset {
         EventRunBeforeInit(assetName);
     }
 
+    /*
     function runBeforeApplyingSettings() internal requireInitialised requireSettingsNotApplied {
         AllocateTokens();
         EventRunBeforeApplyingSettings(assetName);
     }
+
+    event EventAllocateTokens(address _addr, uint8 _value);
+
+    function AllocateTokens() internal {
+        EventAllocateTokens(address(FundingManagerEntity), TokenSellPercentage);
+        TokenManagerEntity.AllocateInitialTokenBalances(TokenSellPercentage, address(FundingManagerEntity), getApplicationAssetAddressByName('BountyManager'));
+    }
+    */
 
 
     function setAssetStates() internal {
@@ -140,7 +149,7 @@ contract Funding is ApplicationAsset {
             - tokens left unsold in funding stages get redistributed to all participants
     */
 
-    function addSettings(address _outputAddress, uint256 soft_cap, uint256 hard_cap )
+    function addSettings(address _outputAddress, uint256 soft_cap, uint256 hard_cap, uint8 sale_percentage )
         public
         requireInitialised
         requireSettingsNotApplied
@@ -152,6 +161,12 @@ contract Funding is ApplicationAsset {
         multiSigOutputAddress = _outputAddress;
         GlobalAmountCapSoft = soft_cap;
         GlobalAmountCapHard = hard_cap;
+
+        if(sale_percentage > 90) {
+            revert();
+        }
+
+        TokenSellPercentage =  sale_percentage;
     }
 
     function addFundingStage(
@@ -162,13 +177,14 @@ contract Funding is ApplicationAsset {
         uint256 _amount_cap_hard,   // required > 0
         uint8   _methods,
         uint256 _minimum_entry,
-        uint256 _start_parity,
+        uint256 _fixed_tokens,
         uint8   _price_addition_percentage,
         uint8   _token_share_percentage
     )
         public
-        // requireInitialised
-        // requireSettingsNotApplied
+        onlyDeployer
+        requireInitialised
+        requireSettingsNotApplied
     {
 
         // make sure end time is later than start time
@@ -177,7 +193,7 @@ contract Funding is ApplicationAsset {
         }
 
         // if TokenSCADA requires hard cap, then we require it, otherwise we reject it if provided
-        /*
+
         if(TokenManagerEntity.getTokenSCADARequiresHardCap() == true)
         {
             // make sure hard cap exists!
@@ -190,8 +206,13 @@ contract Funding is ApplicationAsset {
                 revert();
             }
 
+            if(_token_share_percentage > 0) {
+                revert();
+            }
+
+
         } else {
-        */
+
             // make sure record hard cap and soft cap is zero!
             if(_amount_cap_hard != 0) {
                 revert();
@@ -200,29 +221,28 @@ contract Funding is ApplicationAsset {
             if(_amount_cap_soft != 0) {
                 revert();
             }
-        //}
 
-
-        // make sure we're not selling more than 100% of token share... as that's not possible
-        if(_token_share_percentage > 100) {
-            revert();
+            // make sure we're not selling more than 100% of token share... as that's not possible
+            if(_token_share_percentage > 100) {
+                revert();
+            }
         }
 
+        FundingStage storage prevRecord = Collection[FundingStageNum];
         if(FundingStageNum > 0) {
-            FundingStage storage prevRecord = Collection[FundingStageNum];
 
-            // if other funding stages exist we need to make sure that the following things don't happen:
-
-            // 1 - new stage does not start before the previous one ends
+            // new stage does not start before the previous one ends
             if( _time_start <= prevRecord.time_end ) {
                 revert();
             }
 
-            // 2 - make sure previous stage + new stage token percentage does not amount to over 100%
-            if( _token_share_percentage + prevRecord.token_share_percentage > 100 ) {
-                 revert();
+            if(TokenManagerEntity.getTokenSCADARequiresHardCap() == false)
+            {
+                // make sure previous stage + new stage token percentage does not amount to over 90%
+                if( _token_share_percentage + prevRecord.token_share_percentage > 90 ) {
+                    revert();
+                }
             }
-
         }
 
         FundingStage storage record = Collection[++FundingStageNum];
@@ -237,7 +257,7 @@ contract Funding is ApplicationAsset {
         record.minimum_entry    = _minimum_entry;
 
         // token settings
-        record.start_parity              = _start_parity;
+        record.fixed_tokens              = _fixed_tokens;
         record.price_addition_percentage = _price_addition_percentage;
         record.token_share_percentage    = _token_share_percentage;
 
@@ -252,25 +272,20 @@ contract Funding is ApplicationAsset {
 
     function adjustFundingSettingsBasedOnNewFundingStage() internal {
 
-        uint8 local_TokenSellPercentage;
-
-        for(uint8 i = 1; i <= FundingStageNum; i++) {
-            FundingStage storage rec = Collection[i];
-
-            // cumulate sell percentages
-            local_TokenSellPercentage+= rec.token_share_percentage;
-
-            // first stage determines when we start receiving funds
-            if( i == 1 ) {
-                Funding_Setting_funding_time_start = rec.time_start;
+        if(TokenManagerEntity.getTokenSCADARequiresHardCap() == false) {
+            uint8 local_TokenSellPercentage;
+            for(uint8 i = 1; i <= FundingStageNum; i++) {
+                FundingStage storage rec = Collection[i];
+                // cumulate sell percentages
+                local_TokenSellPercentage+= rec.token_share_percentage;
             }
-            // last stage determines when we stop receiving funds
-            if( i == FundingStageNum ) {
-                Funding_Setting_funding_time_end = rec.time_end;
-            }
+            TokenSellPercentage = local_TokenSellPercentage;
         }
 
-        TokenSellPercentage = local_TokenSellPercentage;
+        // set funding start
+        Funding_Setting_funding_time_start = Collection[1].time_start;
+        // set funding end
+        Funding_Setting_funding_time_end = Collection[FundingStageNum].time_end;
 
         // set cashback just in case
         // cashback starts 1 day after funding status is failed
@@ -278,23 +293,8 @@ contract Funding is ApplicationAsset {
         Funding_Setting_cashback_time_end = Funding_Setting_cashback_time_start + Funding_Setting_cashback_duration;
     }
 
-    function getStageTokenSharePercentage(uint8 StageId) public view returns ( uint8 ) {
-        return Collection[StageId].token_share_percentage;
-    }
-
-    function getStagePriceAdd(uint8 StageId) public view returns ( uint8 ) {
-        return Collection[StageId].price_addition_percentage;
-    }
-
-    function getStageAmountRaised(uint8 StageId) public view returns ( uint256 ) {
-        return Collection[StageId].amount_raised;
-    }
-
-    event EventAllocateTokens(address _addr, uint8 _value);
-
-    function AllocateTokens() internal {
-        EventAllocateTokens(address(FundingManagerEntity), TokenSellPercentage);
-        TokenManagerEntity.AllocateInitialTokenBalances(TokenSellPercentage, address(FundingManagerEntity), getApplicationAssetAddressByName('BountyManager'));
+    function getStageAmount(uint8 StageId) public view returns ( uint256 ) {
+        return Collection[StageId].fixed_tokens;
     }
 
     function allowedPaymentMethod(uint8 _payment_method) public pure returns (bool) {
@@ -318,17 +318,39 @@ contract Funding is ApplicationAsset {
         // check that msg.value is higher than 0, don't really want to have to deal with minus in case the network breaks this somehow
         if(allowedPaymentMethod(_payment_method) && canAcceptPayment(msg.value) ) {
 
-            Collection[currentFundingStage].amount_raised+= msg.value;
-            AmountRaised+= msg.value;
+            uint256 contributed_value = msg.value;
 
-            if(_payment_method == uint8(FundingMethodIds.MILESTONE_ONLY)) {
-                MilestoneAmountRaised+=msg.value;
+            uint256 amountOverCap = getValueOverCurrentCap(contributed_value);
+            if ( amountOverCap > 0 ) {
+                // calculate how much we can accept
+
+                // update contributed value
+                contributed_value -= amountOverCap;
             }
 
-            EventFundingReceivedPayment(_sender, _payment_method, msg.value);
+            Collection[currentFundingStage].amount_raised+= contributed_value;
+            AmountRaised+= contributed_value;
 
-            if( FundingManagerEntity.receivePayment.value(msg.value)( _sender, _payment_method, currentFundingStage ) ) {
-                return true;
+            if(_payment_method == uint8(FundingMethodIds.MILESTONE_ONLY)) {
+                MilestoneAmountRaised+=contributed_value;
+            }
+
+            EventFundingReceivedPayment(_sender, _payment_method, contributed_value);
+
+            if( FundingManagerEntity.receivePayment.value(contributed_value)( _sender, _payment_method, currentFundingStage ) ) {
+
+                if(amountOverCap > 0) {
+                    // last step, if we received more than we can accept, send remaining back
+                    // amountOverCap sent back
+                    if( _sender.send(this.balance) ) {
+                        return true;
+                    }
+                    else {
+                        revert();
+                    }
+                } else {
+                    return true;
+                }
             } else {
                 revert();
             }
@@ -347,28 +369,21 @@ contract Funding is ApplicationAsset {
         if( _amount > 0 ) {
             // funding state should be IN_PROGRESS, no state changes should be required
             if( CurrentEntityState == getEntityState("IN_PROGRESS") && hasRequiredStateChanges() == false) {
-
-                FundingStage memory record = Collection[currentFundingStage];
-                /*
-                if(TokenManagerEntity.getTokenSCADARequiresHardCap() == true)
-                {
-                    // case 1
-                    // soft cap is used to determine if funding is successful
-                    // hard cap is used to determine if payment can be accepted,
-                    //     based on SCADA each funding stage has it's own hard cap!
-                    //     so.. globals do nothing here
-                } else {
-                */
-                    // case 2 - SCADA1Market
-                    uint256 remaining = GlobalAmountCapHard - AmountRaised;
-                    if( _amount >= record.minimum_entry && _amount <= remaining ) {
-                        return true;
-                    }
-                // }
+                return true;
             }
         }
         return false;
     }
+
+    function getValueOverCurrentCap(uint256 _amount) public view returns (uint256) {
+        FundingStage memory record = Collection[currentFundingStage];
+        uint256 remaining = record.amount_cap_hard - AmountRaised;
+        if( _amount > remaining ) {
+            return _amount - remaining;
+        }
+        return 0;
+    }
+
 
     /*
     * Update Existing FundingStage
@@ -469,9 +484,7 @@ contract Funding is ApplicationAsset {
             This is where we're accepting payments unless we can change state to FINAL
 
             1. Check if timestamp is after record time_end
-            2. if SCADA requires hard cap
-                2.a Check if AmountRaised equals GlobalAmountCapHard
-                2.b Check if AmountRaised equals Funding Phase HardCap
+            2. Check hard caps
             All lead to state change => FINAL
         */
 
@@ -481,29 +494,19 @@ contract Funding is ApplicationAsset {
             return getRecordState("FINAL");
         }
 
-        // if TokenSCADA requires hard cap, then we require it, otherwise we reject it if provided
-        /*
-        if(TokenManagerEntity.getTokenSCADARequiresHardCap() == true)
-        {
-            // Has Funding Phase HardCap
-            if(record.amount_cap_hard > 0) {
-                // amount raised is Funding Phase HardCap
-                if(AmountRaised == record.amount_cap_hard) {
-                    return getRecordState("FINAL");
-                }
-            }
-        } else {
-        */
-            // Global Hard Cap Check
-            if(AmountRaised == GlobalAmountCapHard) {
-                // hard cap reached
-                return getRecordState("FINAL");
-            }
-        // }
+        // will trigger in pre-ico
+        // Record Hard Cap Check
+        if(AmountRaised >= record.amount_cap_hard) {
+            // record hard cap reached
+            return getRecordState("FINAL");
+        }
 
-        /*
-            - else we need to wait for funding stage to start..
-        */
+        // will trigger in ico
+        // Global Hard Cap Check
+        if(AmountRaised >= GlobalAmountCapHard) {
+            // hard cap reached
+            return getRecordState("FINAL");
+        }
 
         if( record.state == RecordStateRequired ) {
             RecordStateRequired = getRecordState("__IGNORED__");
@@ -534,14 +537,6 @@ contract Funding is ApplicationAsset {
             callAgain = true;
             //}
         }
-
-        /*
-        if(recursive && callAgain) {
-            if(hasRequiredStateChanges()) {
-                doStateChanges(recursive);
-            }
-        }
-        */
     }
 
     function hasRequiredStateChanges() public view returns (bool) {

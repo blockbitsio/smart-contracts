@@ -55,12 +55,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After PRE ICO START", false);
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet1
                 });
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet2
                 });
 
@@ -222,6 +222,8 @@ module.exports = function(setup) {
             // await TestBuildHelper.showApplicationStates();
             // await TestBuildHelperUpgrade.showApplicationStates();
 
+            // await helpers.utils.displayProposal(helpers, ProposalsAsset, 1) ;
+            await TestBuildHelper.doApplicationStateChanges("Voting ended", false);
             await TestBuildHelperUpgrade.doApplicationStateChanges("Voting ended", false);
 
             await TestBuildHelperUpgrade.addSettingsAndLockOnNewAssetsInApplication();
@@ -236,6 +238,8 @@ module.exports = function(setup) {
             assert.isFalse(ApplicationEntityUpgradeLocked, 'ApplicationEntityUpgrade should not be locked');
 
         });
+
+
 
         it("VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones", async () => {
 

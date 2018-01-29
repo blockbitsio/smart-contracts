@@ -23,13 +23,16 @@ module.exports = function(setup) {
             });
 
             it('works if called by deployer address', async () => {
-                await assetContract.addItem("bytes32", 123456);
+                let data = "some random string and some length over 32 bytes";
+
+                await assetContract.addItem(data, 123456);
 
                 let itemNum = await assetContract.itemNum.call();
                 assert.equal(itemNum, 1, "Item number mismatch!");
 
                 let item = await assetContract.items.call(1);
-                assert.equal(helpers.web3util.toUtf8(item[0]), "bytes32", "Item hash mismatch!");
+
+                assert.equal(item[0].toString(), data.toString(), "Item hash mismatch!");
             });
 
         });

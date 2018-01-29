@@ -17,14 +17,14 @@ import "./Proposals.sol";
 import "./Milestones.sol";
 import "./Funding.sol";
 import "./Token.sol";
-import "./../Algorithms/TokenSCADA1Market.sol";
+import "./../Algorithms/TokenSCADAVariable.sol";
 
 contract FundingManager is ApplicationAsset {
 
     Funding FundingEntity;
     TokenManager TokenManagerEntity;
     Token TokenEntity;
-    TokenSCADAGeneric TokenSCADAEntity;
+    TokenSCADAVariable TokenSCADAEntity;
     Proposals ProposalsEntity;
     Milestones MilestonesEntity;
 
@@ -50,6 +50,8 @@ contract FundingManager is ApplicationAsset {
         EntityStates["FUNDING_SUCCESSFUL_START"]    = 20;
         EntityStates["FUNDING_SUCCESSFUL_PROGRESS"] = 21;
         EntityStates["FUNDING_SUCCESSFUL_DONE"]     = 22;
+        EntityStates["FUNDING_SUCCESSFUL_ALLOCATE"] = 25;
+
 
         EntityStates["MILESTONE_PROCESS_START"]     = 30;
         EntityStates["MILESTONE_PROCESS_PROGRESS"]  = 31;
@@ -83,7 +85,7 @@ contract FundingManager is ApplicationAsset {
         TokenEntity = Token(TokenManagerEntity.TokenEntity());
 
         address TokenSCADAAddress = TokenManagerEntity.TokenSCADAEntity();
-        TokenSCADAEntity = TokenSCADAGeneric(TokenSCADAAddress) ;
+        TokenSCADAEntity = TokenSCADAVariable(TokenSCADAAddress) ;
 
         address MilestonesAddress = getApplicationAssetAddressByName('Milestones');
         MilestonesEntity = Milestones(MilestonesAddress) ;
@@ -134,6 +136,10 @@ contract FundingManager is ApplicationAsset {
             EventFundingManagerReceivedPayment(vault, _payment_method, msg.value);
 
             if( vault.addPayment.value(msg.value)( _payment_method, _funding_stage ) ) {
+
+                // if payment is received in the vault then mint tokens based on the received value!
+                TokenManagerEntity.mint( vault, TokenSCADAEntity.getTokensForValueInCurrentStage(msg.value) );
+
                 return true;
             } else {
                 revert();
@@ -254,9 +260,7 @@ contract FundingManager is ApplicationAsset {
 
             if(CurrentEntityState == getEntityState("FUNDING_SUCCESSFUL_PROGRESS")) {
 
-                // step 1 -  transfer bought token share from "manager" to "vault"
-                TokenEntity.transfer( vaultAddress, vault.getBoughtTokens() );
-
+                // tokens are minted and allocated to this vault when it receives payments.
                 // vault should now hold as many tokens as the investor bought using direct and milestone funding,
                 // as well as the ether they sent
                 // "direct funding" release -> funds to owner / tokens to investor
@@ -318,6 +322,40 @@ contract FundingManager is ApplicationAsset {
         }
     }
 
+    bool FundingPoolBalancesAllocated = false;
+
+    function AllocateAfterFundingBalances() internal {
+        // allocate owner, advisor, bounty pools
+        if(FundingPoolBalancesAllocated == false) {
+
+            // mint em!
+            uint256 mintedSupply = TokenEntity.totalSupply();
+            uint256 salePercent = getAppBylawUint256("token_sale_percentage");
+
+            // find one percent
+            uint256 onePercent = (mintedSupply * 1 / salePercent * 100) / 100;
+
+            // bounty tokens
+            uint256 bountyPercent = getAppBylawUint256("token_bounty_percentage");
+            uint256 bountyValue = onePercent * bountyPercent;
+
+            address BountyManagerAddress = getApplicationAssetAddressByName("BountyManager");
+            TokenManagerEntity.mint( BountyManagerAddress, bountyValue );
+
+            // project tokens
+            // should be 40
+            uint256 projectPercent = 100 - salePercent - bountyPercent;
+            uint256 projectValue = onePercent * projectPercent;
+
+            // project tokens get minted to Token Manager's address, and are locked there
+            TokenManagerEntity.mint( TokenManagerEntity, projectValue );
+            TokenManagerEntity.finishMinting();
+
+            FundingPoolBalancesAllocated = true;
+        }
+    }
+
+
     function doStateChanges() public {
 
         var (returnedCurrentEntityState, EntityStateRequired) = getRequiredStateChanges();
@@ -362,16 +400,18 @@ contract FundingManager is ApplicationAsset {
         } else if ( EntityStateRequired == getEntityState("FUNDING_SUCCESSFUL_START") ) {
 
             // init SCADA variable cache.
-            if(TokenSCADAEntity.initCacheForVariables()) {
-                // start processing vaults
-                currentTask = getHash("FUNDING_SUCCESSFUL_START", "");
-                CurrentEntityState = getEntityState("FUNDING_SUCCESSFUL_PROGRESS");
-            } else {
-                // something went really wrong, just bail out for now
-                // CurrentEntityState = getEntityState("FUNDING_FAILED_START");
-            }
+            //if(TokenSCADAEntity.initCacheForVariables()) {
+
+            // start processing vaults
+            currentTask = getHash("FUNDING_SUCCESSFUL_START", "");
+            CurrentEntityState = getEntityState("FUNDING_SUCCESSFUL_PROGRESS");
+
         } else if ( EntityStateRequired == getEntityState("FUNDING_SUCCESSFUL_PROGRESS") ) {
             ProcessVaultList(VaultCountPerProcess);
+
+        } else if ( EntityStateRequired == getEntityState("FUNDING_SUCCESSFUL_ALLOCATE") ) {
+            AllocateAfterFundingBalances();
+
 // Milestones
         } else if ( EntityStateRequired == getEntityState("MILESTONE_PROCESS_START") ) {
             currentTask = getHash("MILESTONE_PROCESS_START", getCurrentMilestoneIdHash() );
@@ -455,9 +495,15 @@ contract FundingManager is ApplicationAsset {
             } else if ( CurrentEntityState == getEntityState("FUNDING_SUCCESSFUL_PROGRESS") ) {
                 // still in progress? check if we should move to done
                 if ( processFundingSuccessfulFinished() ) {
-                    EntityStateRequired = getEntityState("FUNDING_SUCCESSFUL_DONE");
+                    EntityStateRequired = getEntityState("FUNDING_SUCCESSFUL_ALLOCATE");
                 } else {
                     EntityStateRequired = getEntityState("FUNDING_SUCCESSFUL_PROGRESS");
+                }
+
+            } else if ( CurrentEntityState == getEntityState("FUNDING_SUCCESSFUL_ALLOCATE") ) {
+
+                if(FundingPoolBalancesAllocated) {
+                    EntityStateRequired = getEntityState("FUNDING_SUCCESSFUL_DONE");
                 }
 
             } else if ( CurrentEntityState == getEntityState("FUNDING_SUCCESSFUL_DONE") ) {

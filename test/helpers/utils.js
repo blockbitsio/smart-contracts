@@ -87,6 +87,8 @@ let StateArray = {
         {key: 20, name: "FUNDING_SUCCESSFUL_START"},
         {key: 21, name: "FUNDING_SUCCESSFUL_PROGRESS"},
         {key: 22, name: "FUNDING_SUCCESSFUL_DONE"},
+        {key: 25, name: "FUNDING_SUCCESSFUL_ALLOCATE"},
+
         {key: 30, name: "MILESTONE_PROCESS_START"},
         {key: 31, name: "MILESTONE_PROCESS_PROGRESS"},
         {key: 32, name: "MILESTONE_PROCESS_DONE"},
@@ -1201,7 +1203,7 @@ module.exports = {
         helpers.utils.toLog(logPre + "amount_raised:    " + helpers.web3util.fromWei(struct[7], "ether"));  // uint256
         helpers.utils.toLog(logPre + "minimum_entry:    " + helpers.web3util.fromWei(struct[8], "ether"));  // uint256
         helpers.utils.toLog(logPre + "methods:          " + helpers.web3util.toDecimal(struct[9]));         // uint8
-        helpers.utils.toLog(logPre + "start_parity:     " + helpers.web3util.toDecimal(struct[10]));         // uint256
+        helpers.utils.toLog(logPre + "fixed_tokens:     " + helpers.web3util.toDecimal(struct[10]));        // uint256
         helpers.utils.toLog(logPre + "use_parity:       " + struct[11]);                                    // bool
         helpers.utils.toLog(logPre + "token_share_perc: " + helpers.web3util.toDecimal(struct[12]));        // uint8
         helpers.utils.toLog(logPre + "index:            " + helpers.web3util.toDecimal(struct[13]));        // uint8

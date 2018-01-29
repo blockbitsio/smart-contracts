@@ -54,12 +54,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After PRE ICO START", false);
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet1
                 });
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet2
                 });
 
@@ -68,12 +68,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After ICO START", false);
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet3
                 });
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet4
                 });
 
@@ -111,6 +111,7 @@ module.exports = function(setup) {
             let TokenEntityContract = await helpers.getContract("TestToken");
             TokenEntity = await TokenEntityContract.at(TokenEntityAddress);
         });
+
 
         it( "current proposal matches EMERGENCY_FUND_RELEASE settings", async () => {
 
@@ -150,6 +151,7 @@ module.exports = function(setup) {
             // await TestBuildHelper.displayAllVaultDetails();
             // await TestBuildHelper.displayOwnerAddressDetails();
 
+
             it("throws if trying to vote on a non existing proposal", async () => {
                 return helpers.assertInvalidOpcode(async () => {
                     await ProposalsAsset.RegisterVote( 0, true, {from: wallet4} );
@@ -161,6 +163,8 @@ module.exports = function(setup) {
                     await ProposalsAsset.RegisterVote( ProposalId, true, {from: wallet2} );
                 });
             });
+
+
 
             it("Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%", async () => {
 

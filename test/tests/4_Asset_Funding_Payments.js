@@ -1,7 +1,4 @@
 module.exports = function (setup) {
-    // obsolete
-    return;
-
     let helpers = setup.helpers;
     let contracts = setup.contracts;
     let settings = setup.settings;
@@ -29,13 +26,11 @@ module.exports = function (setup) {
         let FundingInputDirect, FundingInputMilestone, myFundingVault, tx;
 
         beforeEach(async () => {
+
             TestBuildHelper = new helpers.TestBuildHelper(setup, assert, accounts, platformWalletAddress);
-            assetContract = await TestBuildHelper.deployAndInitializeAsset( assetName, ["TokenManager", "FundingManager", "Milestones"] );
-            await TestBuildHelper.AddAssetSettingsAndLock("TokenManager");
-            await TestBuildHelper.AddAssetSettingsAndLock("FundingManager");
-            await TestBuildHelper.AddAssetSettingsAndLock("Milestones");
-            // apply and lock settings in funding
-            await TestBuildHelper.AddAssetSettingsAndLock(assetName);
+            await TestBuildHelper.deployAndInitializeApplication();
+            await TestBuildHelper.AddAllAssetSettingsAndLockExcept();
+            assetContract = await TestBuildHelper.getDeployedByName("Funding");
 
             // funding inputs
             let FundingInputDirectAddress = await assetContract.DirectInput.call();
@@ -48,9 +43,110 @@ module.exports = function (setup) {
             FundingInputMilestone = await FundingInputMilestoneContract.at(FundingInputMilestoneAddress);
 
             tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
-            tx = await assetContract.doStateChanges(true);
+            await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
 
         });
+
+        it('payments do not exist yet, accepts payment that is larger than remaining cap, and returns what\'s left back to the investor', async() => {
+
+            // tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
+            // tx = await assetContract.doStateChanges();
+            // await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
+
+            // let DirectPaymentValue = 2000 * helpers.solidity.ether;
+            // tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet3});
+            // await helpers.utils.showGasUsage(helpers, tx, "     ↓ Direct Payment:");
+
+            // tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet4});
+            // await helpers.utils.showGasUsage(helpers, tx, "     ↓ Direct Payment:");
+
+            let investor5amount = new helpers.BigNumber( 5000 * helpers.solidity.ether );
+            let ValueOverCurrentCap = await assetContract.getValueOverCurrentCap.call(investor5amount);
+            let ContributedValue = investor5amount.sub(ValueOverCurrentCap);
+            let EtherBalanceStart = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+
+            // since the investor calls this, we need to take GasUsage into account.
+            tx = await FundingInputDirect.sendTransaction({value: investor5amount, from: investorWallet5});
+            let gasUsed = new helpers.BigNumber( tx.receipt.cumulativeGasUsed );
+            let gasPrice = await helpers.utils.getGasPrice(helpers);
+            let gasDifference = gasUsed.mul(gasPrice);
+
+            await helpers.utils.showGasUsage(helpers, tx, "     ↓ Direct Payment with value over cap:");
+
+            let EtherBalanceAfter = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+            let EtherBalanceInitialMinusContributed = EtherBalanceStart.sub(ContributedValue);
+            EtherBalanceInitialMinusContributed = EtherBalanceInitialMinusContributed.sub(gasDifference);
+
+            assert.equal(EtherBalanceAfter.toString(), EtherBalanceInitialMinusContributed.toString(), "EtherBalanceAfter should match EtherBalanceInitialMinusContributed");
+
+            // tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet2});
+            // await helpers.utils.showGasUsage(helpers, tx, "     ↓ Direct Payment:");
+        });
+
+        it('payments exist, accepts payment that is larger than remaining cap, and returns what\'s left back to the investor', async() => {
+
+            // tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
+            // tx = await assetContract.doStateChanges();
+            // await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
+
+            let DirectPaymentValue = 2000 * helpers.solidity.ether;
+            tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet3});
+            tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet4});
+
+            let investor5amount = new helpers.BigNumber( 10000 * helpers.solidity.ether );
+            let ValueOverCurrentCap = await assetContract.getValueOverCurrentCap.call(investor5amount);
+            let ContributedValue = investor5amount.sub(ValueOverCurrentCap);
+            let EtherBalanceStart = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+
+            // since the investor calls this, we need to take GasUsage into account.
+            tx = await FundingInputDirect.sendTransaction({value: investor5amount, from: investorWallet5});
+            let gasUsed = new helpers.BigNumber( tx.receipt.cumulativeGasUsed );
+            let gasPrice = await helpers.utils.getGasPrice(helpers);
+            let gasDifference = gasUsed.mul(gasPrice);
+
+            await helpers.utils.showGasUsage(helpers, tx, "     ↓ Direct Payment with value over cap:");
+
+            let EtherBalanceAfter = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+            let EtherBalanceInitialMinusContributed = EtherBalanceStart.sub(ContributedValue);
+            EtherBalanceInitialMinusContributed = EtherBalanceInitialMinusContributed.sub(gasDifference);
+
+            assert.equal(EtherBalanceAfter.toString(), EtherBalanceInitialMinusContributed.toString(), "EtherBalanceAfter should match EtherBalanceInitialMinusContributed");
+
+        });
+
+        it('throws if cap is already reached, even if state change is not done yet. ', async() => {
+
+            // tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
+            // tx = await assetContract.doStateChanges();
+            // await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
+
+            let DirectPaymentValue = 2000 * helpers.solidity.ether;
+            tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet3});
+            tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet4});
+
+            let investor5amount = new helpers.BigNumber( 10000 * helpers.solidity.ether );
+            let ValueOverCurrentCap = await assetContract.getValueOverCurrentCap.call(investor5amount);
+            let ContributedValue = investor5amount.sub(ValueOverCurrentCap);
+            let EtherBalanceStart = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+
+            // since the investor calls this, we need to take GasUsage into account.
+            tx = await FundingInputDirect.sendTransaction({value: investor5amount, from: investorWallet5});
+            let gasUsed = new helpers.BigNumber( tx.receipt.cumulativeGasUsed );
+            let gasPrice = await helpers.utils.getGasPrice(helpers);
+            let gasDifference = gasUsed.mul(gasPrice);
+
+            let EtherBalanceAfter = await helpers.utils.getBalance(helpers.artifacts, investorWallet5);
+            let EtherBalanceInitialMinusContributed = EtherBalanceStart.sub(ContributedValue);
+            EtherBalanceInitialMinusContributed = EtherBalanceInitialMinusContributed.sub(gasDifference);
+
+            assert.equal(EtherBalanceAfter.toString(), EtherBalanceInitialMinusContributed.toString(), "EtherBalanceAfter should match EtherBalanceInitialMinusContributed");
+
+            return helpers.assertInvalidOpcode(async () => {
+                tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet2});
+            });
+        });
+
+        /*
 
         it('TokenSCADA provides the correct token stake for current funding phase', async () => {
             // 1 ether payment total from 1 account, results in owning total stage supply
@@ -129,6 +225,8 @@ module.exports = function (setup) {
             assert.equal(TokenStake.toString(), expectedTokens.toString(), "Token stake value mismatch!");
 
         });
+
+        */
     });
 };
 

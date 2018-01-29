@@ -44,12 +44,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After PRE ICO START", false);
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: accounts[10]
                 });
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: accounts[11]
                 });
 

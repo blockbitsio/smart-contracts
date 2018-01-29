@@ -51,6 +51,7 @@ module.exports = function (setup) {
             assetContract = FundingManager;
         });
 
+
         it('receivePayment() throws if caller is not funding asset', async () => {
 
             let FundingAddress = await FundingManager.getApplicationAssetAddressByName.call('Funding');
@@ -129,6 +130,7 @@ module.exports = function (setup) {
 
             let validation;
 
+
             it("starts with state as New and requires a change to WAITING", async() => {
                 validation = await TestBuildHelper.ValidateAssetState(
                     assetName,
@@ -199,6 +201,8 @@ module.exports = function (setup) {
 
             });
 
+
+
             context('Funding ends, has payments, and Soft Cap is reached', async () => {
 
                 it("handles ENTITY state change to FUNDING_SUCCESSFUL_DONE, and processes all vaults", async () => {
@@ -223,6 +227,7 @@ module.exports = function (setup) {
                 });
 
             });
+
 
             it("setVaultCountPerProcess throws if value is not higher than 0", async () => {
                 // let VaultCountPerProcessInitial = await FundingManager.VaultCountPerProcess.call();

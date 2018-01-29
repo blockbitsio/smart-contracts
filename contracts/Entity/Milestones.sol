@@ -123,7 +123,7 @@ contract Milestones is ApplicationAsset {
         bytes32 _name,
         string _description,
         uint256 _duration,
-        uint8   _funding_percentage
+        uint8   _perc
     )
         public
         onlyDeployer
@@ -135,20 +135,13 @@ contract Milestones is ApplicationAsset {
         rec.name                = _name;
         rec.description         = _description;
         rec.duration            = _duration;
+        rec.funding_percentage  = _perc;
         rec.state               = getRecordState("NEW");
-
-        // save some gas
-        // rec.time_start          = 0;
-        // rec.time_end            = 0;
-        // rec.time_ended          = 0;
-        // rec.meeting_time        = 0;
-        rec.funding_percentage  = _funding_percentage;
         rec.index               = RecordNum;
     }
 
     function getMilestoneFundingPercentage(uint8 recordId) public view returns (uint8){
-        Record memory rec = Collection[recordId];
-        return rec.funding_percentage;
+        return Collection[recordId].funding_percentage;
     }
 
     function doStateChanges() public {

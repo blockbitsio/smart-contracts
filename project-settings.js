@@ -15,7 +15,8 @@ let solidity = {
 // Project Token settings
 
 let token_settings = {
-    supply: new BigNumber(500).mul(10 ** 6).mul( 10 ** 18 ),   // 500 mil tokens * decimals
+    // supply: new BigNumber(500).mul(10 ** 6).mul( 10 ** 18 ),   // 500 mil tokens * decimals
+    supply: 0,
     decimals: 18,                           // make sure to update supply decimals if updated
     name: "BlockBitsIO Token",
     symbol: "BBX",
@@ -27,14 +28,15 @@ let token_settings = {
     - TokenSCADA1Market   - requires a global hard cap, individual caps need to be 0
     - TokenSCADA2Fixed    - requires individual hard caps, global is calculated
     - TokenSCADA3Variable - requires individual hard caps, global is calculated
+
 */
 let tokenSCADA = {
-    type:"TokenSCADA1Market",
-    requires_global_hard_cap: false
+    type:"TokenSCADAVariable",
+    requires_global_hard_cap: true
 };
 
-let funding_global_soft_cap = new BigNumber(10000).mul( 10 ** 18 );
-let funding_global_hard_cap = new BigNumber(30000).mul( 10 ** 18 );
+let funding_global_soft_cap = new BigNumber(5000).mul( ether );
+let funding_global_hard_cap = new BigNumber(35000).mul( ether);
 
 let funding_next_phase_price_increase = 20; // percentage increase in next funding phase
 
@@ -43,16 +45,16 @@ let pre_ico_start = now + 10 * days;
 let pre_ico_end = pre_ico_start + pre_ico_duration;
 
 let pre_ico_settings = {
-    name: "PRE ICO",                            //  bytes32 _name,
-    start_time: pre_ico_start,                  //  uint256 _time_start,
-    end_time: pre_ico_end,                      //  uint256 _time_end,
-    amount_cap_soft: 0,                         //  uint256 _amount_cap_soft,
-    amount_cap_hard: 0,                         //  uint256 _amount_cap_hard,
-    methods: 3,                                 //  uint8   _methods, 3 = DIRECT_AND_MILESTONE
-    minimum_entry: new BigNumber(1).mul(ether), //  uint256 _minimum_entry,
-    start_parity: 0,                            //  uint256 _start_parity,
-    price_addition_percentage: 0,               //  uint8   _price_addition_percentage
-    token_share_percentage: 10,                 //  uint8
+    name: "PRE ICO",                                        //  bytes32 _name,
+    start_time: pre_ico_start,                              //  uint256 _time_start,
+    end_time: pre_ico_end,                                  //  uint256 _time_end,
+    amount_cap_soft: 0,                                     //  uint256 _amount_cap_soft,
+    amount_cap_hard: new BigNumber(7000).mul( 10 ** 18 ),   //  uint256 _amount_cap_hard,
+    methods: 3,                                             //  uint8   _methods, 3 = DIRECT_AND_MILESTONE
+    minimum_entry: 0,                                       //  uint256 _minimum_entry,
+    fixed_tokens: 9800,                                     //  uint256 _fixed_tokens
+    price_addition_percentage: 0,                           //  uint8   _price_addition_percentage
+    token_share_percentage: 0,                              //  uint8
 };
 
 let ico_duration = 30 * days;
@@ -64,17 +66,17 @@ let ico_settings = {
     start_time: ico_start,
     end_time: ico_end,
     amount_cap_soft: 0,
-    amount_cap_hard: 0,
+    amount_cap_hard: new BigNumber(35000).mul( 10 ** 18 ),  // includes pre-ico cap
     methods: 3,
     minimum_entry: 0,
-    start_parity: 0,
-    price_addition_percentage: 20,               //  add this many percentages to previous stage parity
-    token_share_percentage: 40,
+    fixed_tokens: 7000,
+    price_addition_percentage: 0,                           //  add this many percentages to previous stage parity
+    token_share_percentage: 0,
 };
 
 let funding_periods = [pre_ico_settings, ico_settings];
 
-/*
+
 if(tokenSCADA.requires_global_hard_cap === false) {
     // remove hard caps if SCADA requires them to not be set
     funding_global_soft_cap = 0;
@@ -86,63 +88,83 @@ if(tokenSCADA.requires_global_hard_cap === false) {
         funding_periods[i].amount_cap_hard = 0;
     }
 }
-*/
+
 
 let project_milestones = [];
 
 project_milestones.push(
     {
-        name: "Milestone 1",            // string _name
-        description: "Description",     // bytes32 _description_hash
-        duration: 90 * days,            // uint256 _duration
-        funding_percentage: 20,         // uint8   _funding_percentage
+        name: "Milestone 1",                    // bytes32 _name
+        description: "Minimalistic Platform",   // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 20,                 // uint8   _funding_percentage
     }
 );
 
 project_milestones.push(
     {
-        name: "Milestone 2",            // string _name
-        description: "2 Description",   // bytes32 _description_hash
-        duration: 90 * days,             // uint256 _duration
-        funding_percentage: 20,         // uint8   _funding_percentage
+        name: "Milestone 2",                    // bytes32 _name
+        description: "3rd Party Launch Functionality",  // string description
+        duration: 180 * days,                   // uint256 _duration
+        funding_percentage: 20,                 // uint8   _funding_percentage
     }
 );
 
 project_milestones.push(
     {
-        name: "Milestone 3",            // string _name
-        description: "3 Description",   // bytes32 _description_hash
-        duration: 120 * days,           // uint256 _duration
-        funding_percentage: 20,         // uint8   _funding_percentage
+        name: "Milestone 3",                    // bytes32 _name
+        description: "Code Upgrade Tools and Token Buyback", // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 10,                 // uint8   _funding_percentage
     }
 );
 
 project_milestones.push(
     {
-        name: "Milestone 4",            // string _name
-        description: "4 Description",   // bytes32 _description_hash
-        duration: 120 * days,           // uint256 _duration
-        funding_percentage: 20,         // uint8   _funding_percentage
+        name: "Milestone 4",                    // bytes32 _name
+        description: "Basic Risk indicators and Collaboration tools",            // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 15,                 // uint8   _funding_percentage
     }
 );
 
 project_milestones.push(
     {
-        name: "Milestone 5",            // string _name
-        description: "5 Description",   // bytes32 _description_hash
-        duration: 120 * days,           // uint256 _duration
-        funding_percentage: 20,         // uint8   _funding_percentage
+        name: "Milestone 5",                    // bytes32 _name
+        description: "Advanced functionality",  // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 15,                 // uint8   _funding_percentage
+    }
+);
+
+project_milestones.push(
+    {
+        name: "Milestone 6",                    // bytes32 _name
+        description: "Token Holder Upgrades",   // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 10,                 // uint8   _funding_percentage
+    }
+);
+
+project_milestones.push(
+    {
+        name: "Milestone 7",                    // bytes32 _name
+        description: "Full Decentralization",   // string description
+        duration: 90 * days,                    // uint256 _duration
+        funding_percentage: 10,                 // uint8   _funding_percentage
     }
 );
 
 let emergency_fund_percentage = 10;
 
 
-let token_sale_percentage = 0;
+let token_sale_percentage = 57;
+
+/*
 for(let i = 0; i < funding_periods.length; i++) {
     token_sale_percentage+=funding_periods[i].token_share_percentage;
 }
-
+*/
 
 let project_bylaws = {
 
@@ -154,7 +176,7 @@ let project_bylaws = {
     // Are the project owner's tokens locked until project state == COMPLETED
     "owner_tokens_locked": true,
     // token sale calculation and distribution algorithm
-    "tokenSCADA": "TokenSCADA1Market",
+    "tokenSCADA": "TokenSCADA3Variable",
 
     // Funding bylaws
     // SCADA requires global soft and hard caps
@@ -162,7 +184,7 @@ let project_bylaws = {
     "funding_global_hard_cap": funding_global_hard_cap,
 
     // Bounty
-    "token_bounty_percentage": 1,
+    "token_bounty_percentage": 3,
 
     // Proposal Bylaws
     // (X days) proposal voting duration
@@ -196,7 +218,7 @@ let application_settings = {
     token:token_settings,
     tokenSCADA:tokenSCADA,
     solidity:solidity,
-    doDeployments: true,
+    doDeployments: false, // true
     platformWalletAddress: "0x93f46df4161f1dd333a99a2ec6f53156c027f83f"
 };
 

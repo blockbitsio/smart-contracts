@@ -72,6 +72,7 @@ module.exports = function(setup) {
 
         // await helpers.utils.displayCashBackStatus(helpers, TestBuildHelper, investor1wallet);
 
+
         context("Platform Funding Failed - Cashback Type 1 - Funding processed", async () => {
 
             let investor1wallet = wallet1;
@@ -148,12 +149,14 @@ module.exports = function(setup) {
 
         });
 
+
+
         context("Platform Funding Failed - Cashback Type 1 - Funding not processed", async () => {
 
             let investor1wallet = wallet1;
-            let investor1amount = 20000 * helpers.solidity.ether;
+            let investor1amount = 5000 * helpers.solidity.ether;
             let investor2wallet = wallet2;
-            let investor2amount = 20000 * helpers.solidity.ether;
+            let investor2amount = 5000 * helpers.solidity.ether;
 
             beforeEach(async () => {
                 await FundingInputMilestone.sendTransaction({
@@ -260,9 +263,9 @@ module.exports = function(setup) {
         context("Platform Funding Successful - Cashback Type 2 - Owner Missing in Action Cashback", async () => {
 
             let investor1wallet = wallet1;
-            let investor1amount = 10000 * helpers.solidity.ether;
+            let investor1amount = 5000 * helpers.solidity.ether;
             let investor2wallet = wallet2;
-            let investor2amount = 10000 * helpers.solidity.ether;
+            let investor2amount = 5000 * helpers.solidity.ether;
             let investor3wallet = wallet3;
             let investor3amount = 10000 * helpers.solidity.ether;
             let investor4wallet = wallet4;
@@ -511,7 +514,7 @@ module.exports = function(setup) {
                 }
 
                 let MilestoneId = await MilestonesAsset.currentRecord.call();
-                assert.equal(MilestoneId.toString(), 5, "MilestoneId should be 5");
+                assert.equal(MilestoneId.toString(), 7, "MilestoneId should be last");
 
                 let MilestoneRecord = await MilestonesAsset.Collection.call( MilestoneId );
 
@@ -557,6 +560,9 @@ module.exports = function(setup) {
                 assert.equal(vaultTokenBalanceAfter.toString(), 0, "vaultTokenBalanceAfter should be 0");
             });
         });
+
+
+
         // cashback at funding failed
         // cashback at mia milestone 1
         // cashback at mia milestone 3
@@ -571,9 +577,9 @@ module.exports = function(setup) {
         context("Platform Funding Successful - Cashback Type 3 - Milestone Release", async () => {
 
             let investor1wallet = wallet1;
-            let investor1amount = 10000 * helpers.solidity.ether;
+            let investor1amount = 5000 * helpers.solidity.ether;
             let investor2wallet = wallet2;
-            let investor2amount = 10000 * helpers.solidity.ether;
+            let investor2amount = 5000 * helpers.solidity.ether;
             let investor3wallet = wallet3;
             let investor3amount = 10000 * helpers.solidity.ether;
             let investor4wallet = wallet4;
@@ -859,6 +865,7 @@ module.exports = function(setup) {
                 let appStateCode = helpers.utils.getEntityStateIdByName("ApplicationEntity", "DEVELOPMENT_COMPLETE");
                 assert.equal(appState.toString(), appStateCode, "ApplicationEntity state should be DEVELOPMENT_COMPLETE");
             });
+
 
 
             it("VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones", async () => {
@@ -1415,7 +1422,9 @@ module.exports = function(setup) {
                 let appStateCode = helpers.utils.getEntityStateIdByName("ApplicationEntity", "DEVELOPMENT_COMPLETE");
                 assert.equal(appState.toString(), appStateCode, "ApplicationEntity state should be DEVELOPMENT_COMPLETE");
             });
+
         });
+
     });
 
 };

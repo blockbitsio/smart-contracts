@@ -46,6 +46,7 @@ module.exports = function (setup) {
         });
 
 
+
         it('starts with state as New and requires a change to WAITING if current time is before any funding stage', async () => {
             validation = await TestBuildHelper.ValidateFundingState(
                 helpers.utils.getFundingEntityStateIdByName("NEW").toString(),
@@ -75,33 +76,34 @@ module.exports = function (setup) {
             assert.isTrue(validation, 'State validation failed..');
         });
 
-        it('starts with state as New and has correct Token Balance once in WAITING state', async () => {
-            tx = await assetContract.doStateChanges();
 
-            validation = await TestBuildHelper.ValidateFundingState(
-                helpers.utils.getFundingEntityStateIdByName("WAITING").toString(),
-                helpers.utils.getFundingEntityStateIdByName("NONE").toString(),
-                helpers.utils.getFundingStageStateIdByName("NEW").toString(),
-                helpers.utils.getFundingStageStateIdByName("NONE").toString()
-            );
-            assert.isTrue(validation, 'State validation failed..');
 
-            let TokenContract = await TestBuildHelper.getTokenContract();
-            let FundingManagerAddress = await assetContract.getApplicationAssetAddressByName.call('FundingManager');
+        //
+        // no longer a requirement
+        //
+        // it('starts with state as New and has correct Token Balance once in WAITING state', async () => {
+        //     tx = await assetContract.doStateChanges();
+        //
+        //     validation = await TestBuildHelper.ValidateFundingState(
+        //         helpers.utils.getFundingEntityStateIdByName("WAITING").toString(),
+        //         helpers.utils.getFundingEntityStateIdByName("NONE").toString(),
+        //         helpers.utils.getFundingStageStateIdByName("NEW").toString(),
+        //         helpers.utils.getFundingStageStateIdByName("NONE").toString()
+        //     );
+        //     assert.isTrue(validation, 'State validation failed..');
+        //
+        //     let TokenContract = await TestBuildHelper.getTokenContract();
+        //     let FundingManagerAddress = await assetContract.getApplicationAssetAddressByName.call('FundingManager');
+        //     let TokenSupply = await TokenContract.totalSupply.call();
+        //     let FundingBountyTokenPercentage = settings.bylaws["token_bounty_percentage"];
+        //     let BountySupply = TokenSupply / 100 * FundingBountyTokenPercentage;
+        //     let FundingSellTokenPercentage = await assetContract.TokenSellPercentage.call();
+        //     let FundingManagerBalance = await TokenContract.balanceOf.call( FundingManagerAddress );
+        //     let SellValue = ( TokenSupply / 100 * FundingSellTokenPercentage ) - ( BountySupply / 2) + ( 1 * helpers.solidity.ether );
+        //     assert.equal(FundingManagerBalance.toNumber(), SellValue, 'Balances do not match..');
+        // });
 
-            let TokenSupply = await TokenContract.totalSupply.call();
 
-            let FundingBountyTokenPercentage = settings.bylaws["token_bounty_percentage"];
-            let BountySupply = TokenSupply / 100 * FundingBountyTokenPercentage;
-
-            let FundingSellTokenPercentage = await assetContract.TokenSellPercentage.call();
-
-            let FundingManagerBalance = await TokenContract.balanceOf.call( FundingManagerAddress );
-
-            let SellValue = ( TokenSupply / 100 * FundingSellTokenPercentage ) - ( BountySupply / 2) + ( 1 * helpers.solidity.ether );
-
-            assert.equal(FundingManagerBalance.toNumber(), SellValue, 'Balances do not match..');
-        });
 
         it('handles ENTITY state change from NEW or WAITING to IN_PROGRESS when funding time start has passed', async () => {
             tx = await TestBuildHelper.timeTravelTo( pre_ico_settings.start_time + 1 );
@@ -301,46 +303,47 @@ module.exports = function (setup) {
 
         });
 
-        context('handles ENTITY state change from IN_PROGRESS when Hard Cap is Reached', async () => {
 
-            it('to SUCCESSFUL when payments reached hard cap in first funding stage (pre-ico)', async () => {
+        context('handles ENTITY state change from IN_PROGRESS when stage Hard Cap is Reached', async () => {
+
+
+            it('to COOLDOWN when payments reached hard cap in first funding stage (pre-ico)', async () => {
                 tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
-                tx = await assetContract.doStateChanges();
+                // tx = await assetContract.doStateChanges();
+                await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
 
-                let DirectPaymentValue = 5000 * helpers.solidity.ether;
+                let DirectPaymentValue = 10000 * helpers.solidity.ether;
                 tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet3});
-                tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet4});
 
-                DirectPaymentValue = 50000 * helpers.solidity.ether;
-                tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet5});
-
-                await TestBuildHelper.doApplicationStateChanges("ICO END", false);
+                await TestBuildHelper.doApplicationStateChanges("PRE END", false);
 
                 validation = await TestBuildHelper.ValidateFundingState(
-                    helpers.utils.getFundingEntityStateIdByName("SUCCESSFUL").toString(),
+                    helpers.utils.getFundingEntityStateIdByName("COOLDOWN").toString(),
                     helpers.utils.getFundingEntityStateIdByName("NONE").toString(),
-                    helpers.utils.getFundingStageStateIdByName("FINAL").toString(),
+                    helpers.utils.getFundingStageStateIdByName("NEW").toString(),
                     helpers.utils.getFundingStageStateIdByName("NONE").toString()
                 );
                 assert.isTrue(validation, 'State validation failed..');
+
             });
+
 
 
             it('to SUCCESSFUL when payments reached hard cap in last funding stage (ico)', async () => {
 
                 tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.start_time + 1);
-                tx = await assetContract.doStateChanges();
+                await TestBuildHelper.doApplicationStateChanges("PRE ICO START", false);
 
-                let DirectPaymentValue = 5000 * helpers.solidity.ether;
+                let DirectPaymentValue = 2000 * helpers.solidity.ether;
                 tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet3});
                 tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet4});
 
                 // not really required since we're going to end up there by using a recursive doStateChanges()
                 tx = await TestBuildHelper.timeTravelTo(pre_ico_settings.end_time + 1);
-                tx = await assetContract.doStateChanges();
+                await TestBuildHelper.doApplicationStateChanges("PRE END", false);
 
                 tx = await TestBuildHelper.timeTravelTo(ico_settings.start_time + 1);
-                tx = await assetContract.doStateChanges();
+                await TestBuildHelper.doApplicationStateChanges("ICO START", false);
 
                 DirectPaymentValue = 50000 * helpers.solidity.ether;
                 tx = await FundingInputDirect.sendTransaction({value: DirectPaymentValue, from: investorWallet6});
@@ -348,7 +351,7 @@ module.exports = function (setup) {
                 await TestBuildHelper.doApplicationStateChanges("ICO END", false);
 
                 validation = await TestBuildHelper.ValidateFundingState(
-                    helpers.utils.getFundingEntityStateIdByName("SUCCESSFUL").toString(),
+                    helpers.utils.getFundingEntityStateIdByName("SUCCESSFUL_FINAL").toString(),
                     helpers.utils.getFundingEntityStateIdByName("NONE").toString(),
                     helpers.utils.getFundingStageStateIdByName("FINAL").toString(),
                     helpers.utils.getFundingStageStateIdByName("NONE").toString()
@@ -356,7 +359,11 @@ module.exports = function (setup) {
                 assert.isTrue(validation, 'State validation failed..');
             });
 
+
+
         });
+
+
 
         context('FundingManager Tasks', async () => {
 
@@ -392,7 +399,6 @@ module.exports = function (setup) {
                 );
 
             });
-
 
             it('handles ENTITY state change from SUCCESSFUL to SUCCESSFUL_FINAL after FundingManager Task Process finished', async () => {
 
@@ -435,7 +441,6 @@ module.exports = function (setup) {
             });
 
         });
-
 
         context('misc for extra coverage', async () => {
             let tx;

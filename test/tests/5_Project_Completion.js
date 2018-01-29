@@ -53,12 +53,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After PRE ICO START", false);
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet1
                 });
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet2
                 });
 
@@ -67,12 +67,12 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("After ICO START", false);
 
                 await FundingInputDirect.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet3
                 });
 
                 await FundingInputMilestone.sendTransaction({
-                    value: 10000 * helpers.solidity.ether,
+                    value: 5000 * helpers.solidity.ether,
                     from: wallet4
                 });
 
@@ -180,6 +180,8 @@ module.exports = function(setup) {
 
                 if(i === MilestoneNum.toNumber()) {
 
+                    // console.log("validating milestone id: ", i);
+
                     // Validate Ending Ether Balances - Owner
                     let MilestoneAmountRaised = await FundingAsset.MilestoneAmountRaised.call();
                     let EmergencyAmount = MilestoneAmountRaised.div(100);
@@ -189,26 +191,17 @@ module.exports = function(setup) {
                     assert.equal(etherBalanceAfter.toString(), initialPlusMilestoneAndEmergency.toString(), "etherBalanceAfter should match initialPlusMilestoneAndEmergency ");
 
 
+                    let project = 100 - settings.bylaws["token_sale_percentage"] - settings.bylaws["token_bounty_percentage"];
 
-                    let FundingBountyTokenPercentage = settings.bylaws["token_bounty_percentage"];
-                    let BountySupply = settings.token.supply.div( 100 );
-                    BountySupply = BountySupply.mul( FundingBountyTokenPercentage );
-                    let actualTokenSupply = settings.token.supply;
-                    actualTokenSupply = actualTokenSupply.sub( BountySupply );
+                    let actualTokenSupply = new helpers.BigNumber( await TokenEntity.totalSupply.call() );
+                    let OnePercent = actualTokenSupply.div(100);
+                    // let BountySupply = OnePercent.mul(settings.bylaws["token_bounty_percentage"]);
+                    // let SaleSupply = OnePercent.mul(settings.bylaws["token_sale_percentage"]);
+                    let ProjectSupply = OnePercent.mul(project);
 
                     // Validate Ending Token Balances - Owner
                     let tokenBalanceAfter = await TestBuildHelper.getTokenBalance(platformWalletAddress);
-                    let perc = settings.bylaws["token_sale_percentage"];
-                    let supply = actualTokenSupply;
-                    let saleTotal = supply.mul( perc );
-                    saleTotal = saleTotal.div( 100 );
-                    let ownerSupply = new helpers.BigNumber(supply);
-                    ownerSupply = ownerSupply.sub( saleTotal );
-
-                    // remove 1 full token from owner supply, as it's in the FundingManager
-                    ownerSupply = ownerSupply.sub( 1 * helpers.solidity.ether );
-
-                    assert.equal(ownerSupply.toString(), tokenBalanceAfter.toString(), "tokenBalances should match");
+                    assert.equal(ProjectSupply.toString(), tokenBalanceAfter.toString(), "ProjectSupply token balances should match");
 
                     // Validate Ending Token Balances - Investor
                     let walletTokenBalanceAfter = await TestBuildHelper.getTokenBalance(wallet1);
@@ -221,6 +214,8 @@ module.exports = function(setup) {
 
                 } else {
 
+                    // console.log("validating milestone id: ", i);
+
                     let initialPlusMilestone = etherBalance.add(MilestoneActualAmount);
                     assert.equal(etherBalanceAfter.toString(), initialPlusMilestone.toString(), "etherBalanceAfter should match initialPlusMilestone ");
 
@@ -230,7 +225,7 @@ module.exports = function(setup) {
 
                     let walletTokenBalanceAfter = await TestBuildHelper.getTokenBalance(wallet1);
                     let vault = await TestBuildHelper.getMyVaultAddress(wallet1);
-                    let vaultReleaseTokenBalance = await vault.tokenBalances.call( currentRecordIdAfter );
+                    let vaultReleaseTokenBalance = await vault.tokenBalances.call( currentRecordId );
                     let walletInitialPlusMilestone = walletTokenBalance.add(vaultReleaseTokenBalance);
                     assert.equal(walletTokenBalanceAfter.toString(), walletInitialPlusMilestone.toString(), "walletTokenBalanceAfter should match walletInitialPlusMilestone ");
 

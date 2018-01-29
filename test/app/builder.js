@@ -214,7 +214,7 @@ TestBuildHelper.prototype.addFundingStage = async function (id, overrides) {
         settings.amount_cap_hard,
         settings.methods,
         settings.minimum_entry,
-        settings.start_parity,
+        settings.fixed_tokens,
         settings.price_addition_percentage,
         settings.token_share_percentage
     );
@@ -239,7 +239,7 @@ TestBuildHelper.prototype.addMilestoneRecord = async function (id, overrides) {
 
     let object = this.getDeployedByName("Milestones");
 
-    return await object.addRecord(
+    await object.addRecord(
         settings.name,
         settings.description,
         settings.duration,
@@ -452,7 +452,7 @@ TestBuildHelper.prototype.displayAllVaultDetails = async function () {
 
     let vaultAddress = await FundingManager.vaultById.call(1);
     let FundingVault = await this.getContract("TestFundingVault");
-    let TokenSCADAContract = await this.getContract("TestTokenSCADA1Market");
+    let TokenSCADAContract = await this.getContract("TestTokenSCADAVariable");
     // get vault contents and display
     let vault = await FundingVault.at(vaultAddress);
 
@@ -460,6 +460,7 @@ TestBuildHelper.prototype.displayAllVaultDetails = async function () {
     let SCADAAddress = await TokenManager.TokenSCADAEntity.call();
     let TokenSCADA = await TokenSCADAContract.at(SCADAAddress);
 
+    /*
     let preIcoParity = await TokenSCADA.getTokenParity.call(1);
     let IcoParity = await TokenSCADA.getTokenParity.call(2);
 
@@ -476,6 +477,7 @@ TestBuildHelper.prototype.displayAllVaultDetails = async function () {
     let unsoldTokenBalance = await TokenSCADA.getUnsoldTokenAmount.call();
     let unsoldTokenBalanceInFull = this.setup.helpers.web3util.fromWei(unsoldTokenBalance, "ether");
     this.setup.helpers.utils.toLog(logPre + "Tokens Unsold:       " + unsoldTokenBalanceInFull);
+    */
 
     this.setup.helpers.utils.toLog("");
     let total = new this.setup.helpers.BigNumber(0);
@@ -540,12 +542,24 @@ TestBuildHelper.prototype.displayAllVaultDetails = async function () {
 
     let vaultBoughtTotalInFull = this.setup.helpers.web3util.fromWei(vaultBoughtTotal, "ether");
     this.setup.helpers.utils.toLog(logPre + "Bought Total Balance:     " + vaultBoughtTotalInFull.toString());
+
+
+    this.setup.helpers.utils.toLog("");
+
+    let Milestones = await this.getDeployedByName("Milestones");
+    let RecordNum = await Milestones.RecordNum.call();
+
+    for(let i = 1; i <= RecordNum; i++) {
+        let perc = await Milestones.getMilestoneFundingPercentage.call(i);
+        this.setup.helpers.utils.toLog(logPre + "Milestone Percentage["+i+"]:   " + perc.toString());
+    }
+
 };
 
 TestBuildHelper.prototype.displayVaultDetails = async function (vaultAddress, id) {
 
     let FundingVault = await this.getContract("TestFundingVault");
-    let TokenSCADAContract = await this.getContract("TestTokenSCADA1Market");
+    let TokenSCADAContract = await this.getContract("TestTokenSCADAVariable");
     // get vault contents and display
     let vault = await FundingVault.at(vaultAddress);
     let TokenManager = await this.getDeployedByName("TokenManager");
@@ -575,12 +589,10 @@ TestBuildHelper.prototype.displayVaultDetails = async function (vaultAddress, id
         let stageAmount = await vault.stageAmounts.call(stageId);
 
         if(stageId === 1) {
-            stageTokens = await TokenSCADA.getMyTokensInFirstStage.call(vaultAddress, false);
-            PreTokens = stageTokens;
+            PreTokens = await TokenSCADA.getTokensForValueInStage.call(1, stageAmount);
         }
         else if(stageId === 2) {
-            stageTokens = await TokenSCADA.getMyTokensInSecondStage.call(vaultAddress, false);
-            IcoTokens = stageTokens;
+            IcoTokens = await TokenSCADA.getTokensForValueInStage.call(2, stageAmount);
         }
 
         let stageAmountInEth = this.setup.helpers.web3util.fromWei(stageAmount, "ether");
@@ -607,13 +619,13 @@ TestBuildHelper.prototype.displayVaultDetails = async function (vaultAddress, id
     this.setup.helpers.utils.toLog(logPre + "Bought ALL:          " + MyBoughtTokensBalanceInFull);
 
 
-    let unsoldTokenBalance = await TokenSCADA.getUnsoldTokenAmount.call();
-    let unsoldTokenBalanceInFull = this.setup.helpers.web3util.fromWei(unsoldTokenBalance, "ether");
-    this.setup.helpers.utils.toLog(logPre + "Tokens Unsold:       " + unsoldTokenBalanceInFull);
+    // let unsoldTokenBalance = await TokenSCADA.getUnsoldTokenAmount.call();
+    // let unsoldTokenBalanceInFull = this.setup.helpers.web3util.fromWei(unsoldTokenBalance, "ether");
+    // this.setup.helpers.utils.toLog(logPre + "Tokens Unsold:       " + unsoldTokenBalanceInFull);
 
-    let myUnsoldTokenBalance = await TokenSCADA.getUnsoldTokenFraction.call( unsoldTokenBalance, tokenBalance );
-    let myUnsoldTokenBalanceInFull = this.setup.helpers.web3util.fromWei(myUnsoldTokenBalance, "ether");
-    this.setup.helpers.utils.toLog(logPre + "My Unsold Fraction:  " + myUnsoldTokenBalanceInFull);
+    // let myUnsoldTokenBalance = await TokenSCADA.getUnsoldTokenFraction.call( unsoldTokenBalance, tokenBalance );
+    // let myUnsoldTokenBalanceInFull = this.setup.helpers.web3util.fromWei(myUnsoldTokenBalance, "ether");
+    // this.setup.helpers.utils.toLog(logPre + "My Unsold Fraction:  " + myUnsoldTokenBalanceInFull);
 
 };
 
@@ -801,7 +813,8 @@ TestBuildHelper.prototype.addFundingSettings = async function () {
     await fundingAsset.addSettings(
         this.platformWalletAddress,
         this.setup.settings.bylaws["funding_global_soft_cap"],
-        this.setup.settings.bylaws["funding_global_hard_cap"]
+        this.setup.settings.bylaws["funding_global_hard_cap"],
+        this.setup.settings.bylaws["token_sale_percentage"],
     );
 };
 

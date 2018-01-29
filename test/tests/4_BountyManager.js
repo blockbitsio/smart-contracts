@@ -13,7 +13,7 @@ module.exports = function(setup) {
         let deploymentAddress = accounts[0];
         let investorAddress = accounts[1];
         let assetName = "BountyManager";
-        let FundingContract, BountyManagerContract, TokenEntity;
+        let FundingContract, BountyManagerContract, TokenManager, TokenEntity;
 
         // settings
         let platformWalletAddress = accounts[8];
@@ -26,21 +26,13 @@ module.exports = function(setup) {
             FundingContract = await TestBuildHelper.getDeployedByName("Funding");
             BountyManagerContract = await TestBuildHelper.getDeployedByName("BountyManager");
 
-            let TokenManager = await TestBuildHelper.getDeployedByName("TokenManager");
+            TokenManager = await TestBuildHelper.getDeployedByName("TokenManager");
             let TokenEntityAddress = await TokenManager.TokenEntity.call();
 
             let TokenEntityContract = await helpers.getContract("Token");
             TokenEntity = await TokenEntityContract.at(TokenEntityAddress);
         });
 
-        it('token balance matches bylaws', async () => {
-            let Balance = await TokenEntity.balanceOf.call(BountyManagerContract.address.toString());
-            let supply = settings.token.supply;
-            let percentage = settings.bylaws["token_bounty_percentage"];
-            let bountyValid = supply.div( 100 );
-            bountyValid = bountyValid.mul( percentage );
-            assert.equal(Balance.toString(), bountyValid.toString(), 'balances should match');
-        });
 
         context('Before Funding ended', async () => {
 
@@ -56,12 +48,13 @@ module.exports = function(setup) {
 
         });
 
+
         context('After Funding ended', async () => {
 
             let investor1wallet = accounts[10];
-            let investor1amount = 10000 * helpers.solidity.ether;
+            let investor1amount = 5000 * helpers.solidity.ether;
             let investor2wallet = accounts[11];
-            let investor2amount = 10000 * helpers.solidity.ether;
+            let investor2amount = 5000 * helpers.solidity.ether;
             let investor3wallet = accounts[12];
             let investor3amount = 10000 * helpers.solidity.ether;
             let investor4wallet = accounts[13];
@@ -113,6 +106,42 @@ module.exports = function(setup) {
                 await TestBuildHelper.doApplicationStateChanges("Funding End", false);
             });
 
+            it('Bounty token balance matches bylaws', async () => {
+                let Supply = await TokenEntity.totalSupply.call();
+                let Balance = await TokenEntity.balanceOf.call(BountyManagerContract.address.toString());
+                let percentage = settings.bylaws["token_bounty_percentage"];
+                let bountyValid = new helpers.BigNumber(Supply).div( 100 );
+                bountyValid = bountyValid.mul( percentage );
+
+                assert.equal(Balance.toString(), bountyValid.toString(), 'balances should match');
+
+                /*
+                let bountyValidInFull = helpers.web3util.fromWei(bountyValid, "ether");
+                let BalanceInFull = helpers.web3util.fromWei(Balance, "ether");
+                console.log("Bounty Full Tokens:  ", BalanceInFull.toString());
+                console.log("Bounty Valid Tokens: ", bountyValidInFull.toString());
+                */
+            });
+
+            it('Project token balance matches bylaws', async () => {
+                let Supply = await TokenEntity.totalSupply.call();
+                let Balance = await TokenEntity.balanceOf.call(TokenManager.address.toString());
+
+                let project = 100 - settings.bylaws["token_sale_percentage"] - settings.bylaws["token_bounty_percentage"];
+
+                let supplyValid = new helpers.BigNumber(Supply).div( 100 );
+                supplyValid = supplyValid.mul( project );
+
+                assert.equal(Balance.toString(), supplyValid.toString(), 'balances should match');
+
+                /*
+                let supplyValidInFull = helpers.web3util.fromWei(supplyValid, "ether");
+                let BalanceInFull = helpers.web3util.fromWei(Balance, "ether");
+                console.log("Bounty Full Tokens:  ", BalanceInFull.toString());
+                console.log("Bounty Valid Tokens: ", supplyValidInFull.toString());
+                */
+            });
+
 
             it('throws if sendBounty is called by anyone else but deployer', async () => {
                 let state = await FundingContract.CurrentEntityState.call();
@@ -139,6 +168,8 @@ module.exports = function(setup) {
                 let Balance = await TokenEntity.balanceOf.call(accounts[5]);
                 assert.equal(Balance.toString(), 1, 'balance should be 1');
             });
+
+
         });
 
     });

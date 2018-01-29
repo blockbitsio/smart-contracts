@@ -62,7 +62,7 @@ module.exports = function(setup) {
             it('returns boolean value stored in SCADA Contract', async () => {
 
                 let TokenSCADAEntityAddress = await TokenManagerContract.TokenSCADAEntity.call();
-                let TokenSCADAEntityContract = await helpers.getContract("TestTokenSCADA1Market").at(TokenSCADAEntityAddress);
+                let TokenSCADAEntityContract = await helpers.getContract("TestTokenSCADAVariable").at(TokenSCADAEntityAddress);
 
                 let ContractVal = await TokenSCADAEntityContract.SCADA_requires_hard_cap.call();
                 let MethodVal = await TokenManagerContract.getTokenSCADARequiresHardCap.call();

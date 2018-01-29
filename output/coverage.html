@@ -10,8 +10,7 @@
 <pre>
 Starting our own testrpc instance at port 8555
 Generating coverage environment
-Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADA1Market.sol
-Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADAGeneric.sol
+Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADAVariable.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationAsset.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationEntity.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationEntityABI.sol
@@ -43,8 +42,7 @@ Running: node --max-old-space-size=4096 ../node_modules/.bin/truffle test --netw
 (this can take a few seconds)...
 Using network 'coverage'.
 
-Compiling ./contracts/Algorithms/TokenSCADA1Market.sol...
-Compiling ./contracts/Algorithms/TokenSCADAGeneric.sol...
+Compiling ./contracts/Algorithms/TokenSCADAVariable.sol...
 Compiling ./contracts/ApplicationAsset.sol...
 Compiling ./contracts/ApplicationEntity.sol...
 Compiling ./contracts/ApplicationEntityABI.sol...
@@ -98,7 +96,7 @@ Compiling ./test/mocks/TestNewsContract.sol...
 Compiling ./test/mocks/TestProposals.sol...
 Compiling ./test/mocks/TestToken.sol...
 Compiling ./test/mocks/TestTokenManager.sol...
-Compiling ./test/mocks/TestTokenSCADA1Market.sol...
+Compiling ./test/mocks/TestTokenSCADAVariable.sol...
 Compiling ./test/mocks/TestUpgradeTestAsset.sol...
 
 Compilation warnings encountered:
@@ -126,42 +124,43 @@ Spanning multiple lines.
 
 <span style="color:white;font-weight:bold;"> 
   ---------------------------------------------------------------- </span>
-<span style="color:white;font-weight:bold;">   Running test collections [</span><span style="color:yellow;">28</span>]. 
+<span style="color:white;font-weight:bold;">   Running test collections [</span><span style="color:yellow;">29</span>]. 
 <span style="color:white;font-weight:bold;">  ---------------------------------------------------------------- </span>
 
 
   Contract: SafeMath
-  <span style="color:lime;">  ✓</span> multiplies correctly<span style="color:red;"> (96ms)</span>
-  <span style="color:lime;">  ✓</span> adds correctly<span style="color:yellow;"> (65ms)</span>
-  <span style="color:lime;">  ✓</span> subtracts correctly<span style="color:yellow;"> (48ms)</span>
+  <span style="color:lime;">  ✓</span> multiplies correctly<span style="color:red;"> (103ms)</span>
+  <span style="color:lime;">  ✓</span> adds correctly<span style="color:red;"> (79ms)</span>
+  <span style="color:lime;">  ✓</span> subtracts correctly<span style="color:yellow;"> (63ms)</span>
   <span style="color:lime;">  ✓</span> should throw an error if subtraction result would be negative
   <span style="color:lime;">  ✓</span> should throw an error on addition overflow
   <span style="color:lime;">  ✓</span> should throw an error on multiplication overflow
 
-  Contract: ERC20 Token
-  <span style="color:lime;">  ✓</span> creation: in contract settings should match constructor parameters<span style="color:red;"> (192ms)</span>
-  <span style="color:lime;">  ✓</span> creation: should create a correct initial balance for the creator
-  <span style="color:lime;">  ✓</span> creation: test correct setting of vanity information<span style="color:red;"> (109ms)</span>
+  Contract: ERC20 Token - mintable
+  <span style="color:lime;">  ✓</span> creation: should throw if trying to mint after minting is finished
+  <span style="color:lime;">  ✓</span> creation: in contract settings should match constructor parameters<span style="color:red;"> (142ms)</span>
+  <span style="color:lime;">  ✓</span> creation: should create a correct initial balance for the creator<span style="color:yellow;"> (42ms)</span>
+  <span style="color:lime;">  ✓</span> creation: test correct setting of vanity information<span style="color:red;"> (89ms)</span>
   <span style="color:lime;">  ✓</span> creation: should succeed in creating over 2^256 - 1 (max) tokens<span style="color:red;"> (90ms)</span>
   <span style="color:lime;">  ✓</span> transfers: ether transfer should be reversed.
-  <span style="color:lime;">  ✓</span> transfers: should transfer 10000 to accounts[1] with accounts[0] having 10000<span style="color:yellow;"> (68ms)</span>
-  <span style="color:lime;">  ✓</span> transfers: should fail when trying to transfer total amount +1 to accounts[1] with accounts[0] having total amount<span style="color:yellow;"> (67ms)</span>
-  <span style="color:lime;">  ✓</span> transfers: should handle zero-transfers normally<span style="color:yellow;"> (57ms)</span>
+  <span style="color:lime;">  ✓</span> transfers: should transfer 10000 to accounts[1] with accounts[0] having 10000<span style="color:yellow;"> (67ms)</span>
+  <span style="color:lime;">  ✓</span> transfers: should fail when trying to transfer total amount +1 to accounts[1] with accounts[0] having total amount<span style="color:yellow;"> (63ms)</span>
+  <span style="color:lime;">  ✓</span> transfers: should handle zero-transfers normally<span style="color:yellow;"> (53ms)</span>
   <span style="color:lime;">  ✓</span> transfers: should throw if receiver address is 0x0
-  <span style="color:lime;">  ✓</span> transferFrom: should throw if receiver address is 0x0<span style="color:yellow;"> (50ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: msg.sender should approve 100 to accounts[1]<span style="color:yellow;"> (46ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 20 once.<span style="color:red;"> (290ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 20 twice.<span style="color:red;"> (269ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 50 &amp; 60 (2nd tx should fail)<span style="color:red;"> (235ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: attempt withdrawal from account with no allowance (should fail)<span style="color:yellow;"> (61ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: allow accounts[1] 100 to withdraw from accounts[0]. Withdraw 60 and then approve 0 &amp; attempt transfer.<span style="color:red;"> (116ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: approve max (2^256 - 1)<span style="color:yellow;"> (44ms)</span>
-  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of max (2^256 - 1) &amp; withdraws 20<span style="color:red;"> (177ms)</span>
+  <span style="color:lime;">  ✓</span> transferFrom: should throw if receiver address is 0x0<span style="color:yellow;"> (75ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: msg.sender should approve 100 to accounts[1]<span style="color:yellow;"> (55ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 20 once.<span style="color:red;"> (277ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 20 twice.<span style="color:red;"> (307ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of 100 &amp; withdraws 50 &amp; 60 (2nd tx should fail)<span style="color:red;"> (236ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: attempt withdrawal from account with no allowance (should fail)<span style="color:yellow;"> (57ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: allow accounts[1] 100 to withdraw from accounts[0]. Withdraw 60 and then approve 0 &amp; attempt transfer.<span style="color:red;"> (147ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: approve max (2^256 - 1)<span style="color:yellow;"> (54ms)</span>
+  <span style="color:lime;">  ✓</span> approvals: msg.sender approves accounts[1] of max (2^256 - 1) &amp; withdraws 20<span style="color:red;"> (202ms)</span>
   <span style="color:lime;">  ✓</span> allowance: should start with zero
-  <span style="color:lime;">  ✓</span> allowance: should increase by 50 then decrease by 10<span style="color:red;"> (120ms)</span>
-  <span style="color:lime;">  ✓</span> allowance: should be set to zero if decrease value is higher than existing<span style="color:yellow;"> (73ms)</span>
-  <span style="color:lime;">  ✓</span> events: should fire Transfer event properly
-  <span style="color:lime;">  ✓</span> events: should fire Transfer event normally on a zero transfer
+  <span style="color:lime;">  ✓</span> allowance: should increase by 50 then decrease by 10<span style="color:red;"> (117ms)</span>
+  <span style="color:lime;">  ✓</span> allowance: should be set to zero if decrease value is higher than existing<span style="color:red;"> (91ms)</span>
+  <span style="color:lime;">  ✓</span> events: should fire Transfer event properly<span style="color:yellow;"> (46ms)</span>
+  <span style="color:lime;">  ✓</span> events: should fire Transfer event normally on a zero transfer<span style="color:yellow;"> (44ms)</span>
   <span style="color:lime;">  ✓</span> events: should fire Approval event properly
 
   Contract: Gateway Interface
@@ -169,423 +168,468 @@ Spanning multiple lines.
     requestCodeUpgrade()
     <span style="color:lime;">  ✓</span> throws if address is empty ( 0x0 )
     <span style="color:lime;">  ✓</span> throws if calling object misses the initialize() method
-    <span style="color:lime;">  ✓</span> throws if current Application cannot initialize Assets properly<span style="color:red;"> (166ms)</span>
-    <span style="color:lime;">  ✓</span> links Application if valid<span style="color:red;"> (104ms)</span>
-    <span style="color:lime;">  ✓</span> creates &quot;Upgrade Proposal&quot; if a previous Application is already linked<span style="color:red;"> (706ms)</span>
+    <span style="color:lime;">  ✓</span> throws if current Application cannot initialize Assets properly<span style="color:red;"> (184ms)</span>
+    <span style="color:lime;">  ✓</span> links Application if valid<span style="color:red;"> (140ms)</span>
+    <span style="color:lime;">  ✓</span> creates &quot;Upgrade Proposal&quot; if a previous Application is already linked<span style="color:red;"> (803ms)</span>
     approveCodeUpgrade()
-    <span style="color:lime;">  ✓</span> throws if sender is not current Application
-    <span style="color:lime;">  ✓</span> works if sender is current Application<span style="color:red;"> (572ms)</span>
-    <span style="color:lime;">  ✓</span> throws if current Application cannot transfer assets to new application<span style="color:red;"> (336ms)</span>
-    <span style="color:lime;">  ✓</span> throws if current Application cannot initialize new application<span style="color:red;"> (551ms)</span>
-    <span style="color:lime;">  ✓</span> throws if current Application cannot lock itself after transferring assets<span style="color:red;"> (539ms)</span>
+    <span style="color:lime;">  ✓</span> throws if sender is not current Application<span style="color:yellow;"> (40ms)</span>
+    <span style="color:lime;">  ✓</span> works if sender is current Application<span style="color:red;"> (672ms)</span>
+    <span style="color:lime;">  ✓</span> throws if current Application cannot transfer assets to new application<span style="color:red;"> (406ms)</span>
+    <span style="color:lime;">  ✓</span> throws if current Application cannot initialize new application<span style="color:red;"> (673ms)</span>
+    <span style="color:lime;">  ✓</span> throws if current Application cannot lock itself after transferring assets<span style="color:red;"> (667ms)</span>
       misc for extra coverage
-      <span style="color:lime;">  ✓</span> getNewsContractAddress returns actual linked NewsContract Asset address
+      <span style="color:lime;">  ✓</span> getNewsContractAddress returns actual linked NewsContract Asset address<span style="color:yellow;"> (38ms)</span>
       <span style="color:lime;">  ✓</span> getListingContractAddress returns actual linked ListingContract Asset address
 
   Contract: Application Assets
     setInitialOwnerAndName()
-    <span style="color:lime;">  ✓</span> works if linking an asset for the first time<span style="color:red;"> (89ms)</span>
-    <span style="color:lime;">  ✓</span> throws if already owned<span style="color:yellow;"> (70ms)</span>
+    <span style="color:lime;">  ✓</span> works if linking an asset for the first time<span style="color:red;"> (97ms)</span>
+    <span style="color:lime;">  ✓</span> throws if already owned<span style="color:yellow;"> (72ms)</span>
     applyAndLockSettings()
-    <span style="color:lime;">  ✓</span> works if called by deployer account and asset is not locked already<span style="color:red;"> (100ms)</span>
+    <span style="color:lime;">  ✓</span> works if called by deployer account and asset is not locked already<span style="color:red;"> (137ms)</span>
     <span style="color:lime;">  ✓</span> throws if called before initialization
-    <span style="color:lime;">  ✓</span> throws if called when settings are already applied<span style="color:red;"> (100ms)</span>
-    <span style="color:lime;">  ✓</span> throws if not called by deployer's account<span style="color:yellow;"> (54ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when settings are already applied<span style="color:red;"> (123ms)</span>
+    <span style="color:lime;">  ✓</span> throws if not called by deployer's account<span style="color:red;"> (77ms)</span>
     getApplicationAssetAddressByName()
-    <span style="color:lime;">  ✓</span> works if asset is initialized and owned by an application<span style="color:red;"> (96ms)</span>
-    <span style="color:lime;">  ✓</span> works if asset has settings and they are applied<span style="color:red;"> (150ms)</span>
-    <span style="color:lime;">  ✓</span> throws if asset name does not exist in the app's mapping<span style="color:red;"> (110ms)</span>
+    <span style="color:lime;">  ✓</span> works if asset is initialized and owned by an application<span style="color:red;"> (133ms)</span>
+    <span style="color:lime;">  ✓</span> works if asset has settings and they are applied<span style="color:red;"> (183ms)</span>
+    <span style="color:lime;">  ✓</span> throws if asset name does not exist in the app's mapping<span style="color:red;"> (115ms)</span>
     transferToNewOwner()
-    <span style="color:lime;">  ✓</span> works if current caller is owner and requested address is not 0x0<span style="color:red;"> (181ms)</span>
+    <span style="color:lime;">  ✓</span> works if current caller is owner and requested address is not 0x0<span style="color:red;"> (201ms)</span>
     <span style="color:lime;">  ✓</span> throws if called when internal owner address is invalid
-    <span style="color:lime;">  ✓</span> throws if owned and called by other address<span style="color:red;"> (89ms)</span>
-    <span style="color:lime;">  ✓</span> throws if new address is 0x0<span style="color:yellow;"> (62ms)</span>
+    <span style="color:lime;">  ✓</span> throws if owned and called by other address<span style="color:red;"> (77ms)</span>
+    <span style="color:lime;">  ✓</span> throws if new address is 0x0<span style="color:red;"> (81ms)</span>
     Application Bylaws in Application Asset
-    <span style="color:lime;">  ✓</span> getAppBylawBytes32 returns correct value set by project settings<span style="color:yellow;"> (60ms)</span>
-    <span style="color:lime;">  ✓</span> getAppBylawUint256 returns correct value set by project settings<span style="color:yellow;"> (60ms)</span>
+    <span style="color:lime;">  ✓</span> getAppBylawBytes32 returns correct value set by project settings<span style="color:yellow;"> (57ms)</span>
+    <span style="color:lime;">  ✓</span> getAppBylawUint256 returns correct value set by project settings<span style="color:yellow;"> (58ms)</span>
 
   Contract: Application Entity
-  <span style="color:lime;">  ✓</span> initializes with empty properties<span style="color:yellow;"> (56ms)</span>
-  <span style="color:lime;">  ✓</span> initializes with deployer address properly<span style="color:red;"> (141ms)</span>
+  <span style="color:lime;">  ✓</span> initializes with empty properties<span style="color:yellow;"> (52ms)</span>
+  <span style="color:lime;">  ✓</span> initializes with deployer address properly<span style="color:red;"> (161ms)</span>
     setBylawBytes32()
-    <span style="color:lime;">  ✓</span> sets and returns a bylaw bytes32 if not initialized<span style="color:red;"> (165ms)</span>
-    <span style="color:lime;">  ✓</span> throws if if application is already initialized<span style="color:red;"> (79ms)</span>
+    <span style="color:lime;">  ✓</span> sets and returns a bylaw bytes32 if not initialized<span style="color:red;"> (191ms)</span>
+    <span style="color:lime;">  ✓</span> throws if if application is already initialized<span style="color:red;"> (97ms)</span>
     getBylawBytes32()
     <span style="color:lime;">  ✓</span> throws if application is not initialized
-    <span style="color:lime;">  ✓</span> returns correct value set by setBylawBytes32 if application is initialized<span style="color:red;"> (98ms)</span>
+    <span style="color:lime;">  ✓</span> returns correct value set by setBylawBytes32 if application is initialized<span style="color:red;"> (130ms)</span>
     setBylawUint256()
-    <span style="color:lime;">  ✓</span> sets and returns a bylaw uint256 if not initialized<span style="color:red;"> (159ms)</span>
-    <span style="color:lime;">  ✓</span> throws if if application is already initialized<span style="color:red;"> (77ms)</span>
+    <span style="color:lime;">  ✓</span> sets and returns a bylaw uint256 if not initialized<span style="color:red;"> (191ms)</span>
+    <span style="color:lime;">  ✓</span> throws if if application is already initialized<span style="color:red;"> (96ms)</span>
     application bylaws validation
-    <span style="color:lime;">  ✓</span> sets and returns all string and uint256 bylaws<span style="color:red;"> (1321ms)</span>
+    <span style="color:lime;">  ✓</span> sets and returns all string and uint256 bylaws<span style="color:red;"> (1634ms)</span>
     getBylawUint256()
     <span style="color:lime;">  ✓</span> throws if application is not initialized
-    <span style="color:lime;">  ✓</span> returns correct value set by setBylaw if application is initialized<span style="color:red;"> (93ms)</span>
+    <span style="color:lime;">  ✓</span> returns correct value set by setBylaw if application is initialized<span style="color:red;"> (129ms)</span>
     initialize()
-    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:yellow;"> (54ms)</span>
-    <span style="color:lime;">  ✓</span> throws if called with owner missing ( gateway )
-    <span style="color:lime;">  ✓</span> works if owner is set, and it's the one calling<span style="color:red;"> (98ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:yellow;"> (73ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called with owner missing ( gateway )<span style="color:yellow;"> (47ms)</span>
+    <span style="color:lime;">  ✓</span> works if owner is set, and it's the one calling<span style="color:red;"> (97ms)</span>
     initializeAssetsToThisApplication()
-    <span style="color:lime;">  ✓</span> throws if not an asset<span style="color:red;"> (85ms)</span>
-    <span style="color:lime;">  ✓</span> throws if any asset has a 0x0 address<span style="color:yellow;"> (54ms)</span>
-    <span style="color:lime;">  ✓</span> throws if caller is not gateway
+    <span style="color:lime;">  ✓</span> throws if not an asset<span style="color:red;"> (127ms)</span>
+    <span style="color:lime;">  ✓</span> throws if any asset has a 0x0 address<span style="color:red;"> (85ms)</span>
+    <span style="color:lime;">  ✓</span> throws if caller is not gateway<span style="color:yellow;"> (49ms)</span>
     acceptCodeUpgradeProposal()
-    <span style="color:lime;">  ✓</span> throws if caller is not Proposals Asset<span style="color:red;"> (126ms)</span>
+    <span style="color:lime;">  ✓</span> throws if caller is not Proposals Asset<span style="color:red;"> (165ms)</span>
     lock()
     <span style="color:lime;">  ✓</span> throws if sender is not gateway
-    <span style="color:lime;">  ✓</span> works if sender is gateway<span style="color:yellow;"> (71ms)</span>
+    <span style="color:lime;">  ✓</span> works if sender is gateway<span style="color:red;"> (92ms)</span>
     linkToGateway()
-    <span style="color:lime;">  ✓</span> throws if called when owner already exists
-    <span style="color:lime;">  ✓</span> throws if called when already initialized
-    <span style="color:lime;">  ✓</span> will emit EventAppEntityReady on initial linking<span style="color:red;"> (97ms)</span>
-    <span style="color:lime;">  ✓</span> will emit EventNewProposalCreated if a previous ApplicationEntity is already linked<span style="color:red;"> (670ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when owner already exists<span style="color:yellow;"> (49ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:yellow;"> (46ms)</span>
+    <span style="color:lime;">  ✓</span> will emit EventAppEntityReady on initial linking<span style="color:red;"> (113ms)</span>
+    <span style="color:lime;">  ✓</span> will emit EventNewProposalCreated if a previous ApplicationEntity is already linked<span style="color:red;"> (824ms)</span>
     addAsset[AssetName]()
-    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:red;"> (83ms)</span>
-    <span style="color:lime;">  ✓</span> throws if called by any other address than initial deployer<span style="color:yellow;"> (68ms)</span>
-    <span style="color:lime;">  ✓</span> linking an asset will emit EventAppEntityInitAsset event<span style="color:red;"> (80ms)</span>
-    <span style="color:lime;">  ✓</span> linking all assets will emit the same number of EventAppEntityInitAsset events<span style="color:red;"> (722ms)</span>
-    <span style="color:lime;">  ✓</span> linking an asset, then linking the same asset again, will replace it in mapping<span style="color:red;"> (207ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:red;"> (104ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called by any other address than initial deployer<span style="color:red;"> (84ms)</span>
+    <span style="color:lime;">  ✓</span> linking an asset will emit EventAppEntityInitAsset event<span style="color:red;"> (117ms)</span>
+    <span style="color:lime;">  ✓</span> linking all assets will emit the same number of EventAppEntityInitAsset events<span style="color:red;"> (839ms)</span>
+    <span style="color:lime;">  ✓</span> linking an asset, then linking the same asset again, will replace it in mapping<span style="color:red;"> (276ms)</span>
 
   Contract: Application Entity Second
     initializeNewAssetToThisApplication()
-    <span style="color:lime;">  ✓</span> throws if not an asset<span style="color:red;"> (108ms)</span>
-    <span style="color:lime;">  ✓</span> throws if name does not match the asset<span style="color:red;"> (117ms)</span>
-    <span style="color:lime;">  ✓</span> throws if caller is not the deployer<span style="color:yellow;"> (75ms)</span>
-    <span style="color:lime;">  ✓</span> works if caller is the deployer, and asset was already added<span style="color:red;"> (115ms)</span>
+    <span style="color:lime;">  ✓</span> throws if not an asset<span style="color:red;"> (155ms)</span>
+    <span style="color:lime;">  ✓</span> throws if name does not match the asset<span style="color:red;"> (159ms)</span>
+    <span style="color:lime;">  ✓</span> throws if caller is not the deployer<span style="color:red;"> (107ms)</span>
+    <span style="color:lime;">  ✓</span> works if caller is the deployer, and asset was already added<span style="color:red;"> (169ms)</span>
 
   Contract: Gateway and Application Integration
-  <span style="color:lime;">  ✓</span> initial deployment<span style="color:red;"> (95ms)</span>
-  <span style="color:lime;">  ✓</span> first linking<span style="color:red;"> (171ms)</span>
+  <span style="color:lime;">  ✓</span> initial deployment<span style="color:red;"> (119ms)</span>
+  <span style="color:lime;">  ✓</span> first linking<span style="color:red;"> (187ms)</span>
     Application upgrades
-    <span style="color:lime;">  ✓</span> first upgrade<span style="color:red;"> (628ms)</span>
-    <span style="color:lime;">  ✓</span> second upgrade<span style="color:red;"> (1297ms)</span>
-    <span style="color:lime;">  ✓</span> throws if an upgrade request is received from an account that does not pass validCodeUpgradeInitiator check<span style="color:red;"> (194ms)</span>
-    <span style="color:lime;">  ✓</span> mock: works if an upgrade request is received and current ApplicationEntity canInitiateCodeUpgrade allows it<span style="color:red;"> (460ms)</span>
+    <span style="color:lime;">  ✓</span> first upgrade<span style="color:red;"> (719ms)</span>
+    <span style="color:lime;">  ✓</span> second upgrade<span style="color:red;"> (1506ms)</span>
+    <span style="color:lime;">  ✓</span> throws if an upgrade request is received from an account that does not pass validCodeUpgradeInitiator check<span style="color:red;"> (221ms)</span>
+    <span style="color:lime;">  ✓</span> mock: works if an upgrade request is received and current ApplicationEntity canInitiateCodeUpgrade allows it<span style="color:red;"> (510ms)</span>
 
   Contract: TokenManager Asset
     addTokenSettingsAndInit()
-    <span style="color:lime;">  ✓</span> properly sets up the tokens if initialized<span style="color:red;"> (90ms)</span>
-    <span style="color:lime;">  ✓</span> properly sets up the Token SCADA<span style="color:red;"> (170ms)</span>
+    <span style="color:lime;">  ✓</span> properly sets up the tokens if initialized<span style="color:red;"> (116ms)</span>
+    <span style="color:lime;">  ✓</span> properly sets up the Token SCADA<span style="color:red;"> (179ms)</span>
     getTokenSCADARequiresHardCap()
-    <span style="color:lime;">  ✓</span> returns boolean value stored in SCADA Contract<span style="color:red;"> (91ms)</span>
+    <span style="color:lime;">  ✓</span> returns boolean value stored in SCADA Contract<span style="color:red;"> (89ms)</span>
 
   Contract: ListingContract Asset
     setManagerAddress()
     <span style="color:lime;">  ✓</span> throws if caller is not deployer
-    <span style="color:lime;">  ✓</span> works if caller is applicationEntity<span style="color:yellow;"> (66ms)</span>
+    <span style="color:lime;">  ✓</span> works if caller is applicationEntity<span style="color:yellow;"> (75ms)</span>
     addItem()
     <span style="color:lime;">  ✓</span> throws if addItem caller is not applicationEntity
-    <span style="color:lime;">  ✓</span> works if caller is applicationEntity<span style="color:red;"> (126ms)</span>
-    <span style="color:lime;">  ✓</span> works if caller is manager address<span style="color:red;"> (157ms)</span>
+    <span style="color:lime;">  ✓</span> works if caller is applicationEntity<span style="color:red;"> (122ms)</span>
+    <span style="color:lime;">  ✓</span> works if caller is manager address<span style="color:red;"> (170ms)</span>
     getNewsContractAddress()
     <span style="color:lime;">  ✓</span> throws if the child does not actually exist
-    <span style="color:lime;">  ✓</span> throws if the child itemAddress is invalid<span style="color:red;"> (112ms)</span>
-    <span style="color:lime;">  ✓</span> returns a news contract address if the child is an actual ApplicationEntity<span style="color:red;"> (757ms)</span>
+    <span style="color:lime;">  ✓</span> throws if the child itemAddress is invalid<span style="color:red;"> (151ms)</span>
+    <span style="color:lime;">  ✓</span> returns a news contract address if the child is an actual ApplicationEntity<span style="color:red;"> (1074ms)</span>
     delistChild()
-    <span style="color:lime;">  ✓</span> throws if called by any address other than Proposals Asset<span style="color:yellow;"> (45ms)</span>
-    <span style="color:lime;">  ✓</span> works if called by proposals asset, resulting in a child with status == false<span style="color:red;"> (140ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called by any address other than Proposals Asset<span style="color:yellow;"> (67ms)</span>
+    <span style="color:lime;">  ✓</span> works if called by proposals asset, resulting in a child with status == false<span style="color:red;"> (142ms)</span>
 
   Contract: NewsContract Asset
     addItem()
     <span style="color:lime;">  ✓</span> throws if called by anyone else but the deployer address
-    <span style="color:lime;">  ✓</span> works if called by deployer address<span style="color:red;"> (107ms)</span>
+    <span style="color:lime;">  ✓</span> works if called by deployer address<span style="color:red;"> (108ms)</span>
     addInternalMessage()
     <span style="color:lime;">  ✓</span> throws if called by anyone else but the Application address
-    <span style="color:lime;">  ✓</span> works if called by Application address<span style="color:red;"> (80ms)</span>
+    <span style="color:lime;">  ✓</span> works if called by Application address<span style="color:red;"> (83ms)</span>
 
   Contract: Funding Vault
-  <span style="color:lime;">  ✓</span> initializes with empty properties<span style="color:red;"> (115ms)</span>
+  <span style="color:lime;">  ✓</span> initializes with empty properties<span style="color:red;"> (107ms)</span>
   <span style="color:lime;">  ✓</span> addPayment throws if not initialized
     initialize()
-    <span style="color:lime;">  ✓</span> throws if called when already initialized
-    <span style="color:lime;">  ✓</span> works if settings are correct and has not been initialized before<span style="color:red;"> (216ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when already initialized<span style="color:red;"> (79ms)</span>
+    <span style="color:lime;">  ✓</span> works if settings are correct and has not been initialized before<span style="color:red;"> (242ms)</span>
     addPayment()
-    <span style="color:lime;">  ✓</span> FUNDING_DIRECT_METHOD - works with correct settings and caller<span style="color:red;"> (208ms)</span>
-    <span style="color:lime;">  ✓</span> FUNDING_MILESTONE_METHOD - works with correct settings and caller<span style="color:red;"> (175ms)</span>
-    <span style="color:lime;">  ✓</span> throws if msg.value is missing
+    <span style="color:lime;">  ✓</span> FUNDING_DIRECT_METHOD - works with correct settings and caller<span style="color:red;"> (216ms)</span>
+    <span style="color:lime;">  ✓</span> FUNDING_MILESTONE_METHOD - works with correct settings and caller<span style="color:red;"> (215ms)</span>
+    <span style="color:lime;">  ✓</span> throws if msg.value is missing<span style="color:yellow;"> (41ms)</span>
     <span style="color:lime;">  ✓</span> throws if payment method does not exist
     <span style="color:lime;">  ✓</span> throws if called by other address than manager (funding contract)
-    <span style="color:lime;">  ✓</span> handles multiple payments, irregardless of funding method provided<span style="color:red;"> (115ms)</span>
+    <span style="color:lime;">  ✓</span> handles multiple payments, irregardless of funding method provided<span style="color:red;"> (137ms)</span>
 
   Contract: Bounty Manager
-  <span style="color:lime;">  ✓</span> token balance matches bylaws
     Before Funding ended
-    <span style="color:lime;">  ✓</span> throws if sendBounty is called<span style="color:red;"> (79ms)</span>
+    <span style="color:lime;">  ✓</span> throws if sendBounty is called<span style="color:red;"> (121ms)</span>
     After Funding ended
-    <span style="color:lime;">  ✓</span> throws if sendBounty is called by anyone else but deployer<span style="color:yellow;"> (73ms)</span>
-    <span style="color:lime;">  ✓</span> throws if sendBounty amount is higher than remaining value<span style="color:red;"> (80ms)</span>
-    <span style="color:lime;">  ✓</span> works if sendBounty is called by deployer and value is lower than remaining<span style="color:yellow;"> (74ms)</span>
+    <span style="color:lime;">  ✓</span> Bounty token balance matches bylaws
+    <span style="color:lime;">  ✓</span> Project token balance matches bylaws<span style="color:yellow;"> (40ms)</span>
+    <span style="color:lime;">  ✓</span> throws if sendBounty is called by anyone else but deployer<span style="color:red;"> (79ms)</span>
+    <span style="color:lime;">  ✓</span> throws if sendBounty amount is higher than remaining value<span style="color:yellow;"> (73ms)</span>
+    <span style="color:lime;">  ✓</span> works if sendBounty is called by deployer and value is lower than remaining<span style="color:red;"> (97ms)</span>
 
   Contract: Funding Asset
   <span style="color:lime;">  ✓</span> deploys with no Funding Stages
   <span style="color:lime;">  ✓</span> deploys with no multiSigOutputAddress
-  <span style="color:lime;">  ✓</span> deploys with no Funding Inputs<span style="color:red;"> (129ms)</span>
-  <span style="color:lime;">  ✓</span> has Funding Inputs once initialized
+  <span style="color:lime;">  ✓</span> deploys with no Funding Inputs<span style="color:red;"> (177ms)</span>
+  <span style="color:lime;">  ✓</span> has Funding Inputs once initialized<span style="color:yellow;"> (48ms)</span>
     addSettings()
-    <span style="color:lime;">  ✓</span> throws if called when settings are locked<span style="color:red;"> (145ms)</span>
+    <span style="color:lime;">  ✓</span> throws if called when settings are locked<span style="color:yellow;"> (52ms)</span>
     <span style="color:lime;">  ✓</span> throws if global soft cap is greater than global hard cap
-    <span style="color:lime;">  ✓</span> properly sets up the funding settings<span style="color:red;"> (115ms)</span>
+    <span style="color:lime;">  ✓</span> properly sets up the funding settings<span style="color:red;"> (114ms)</span>
     first funding stage
-    <span style="color:lime;">  ✓</span> successfully creates a funding stage with proper settings<span style="color:red;"> (92ms)</span>
-    <span style="color:lime;">  ✓</span> throws if end time is before or equal to start time
-    <span style="color:lime;">  ✓</span> throws if token selling percentage is higher than 100%
-      SCADA Disallows Record Hard Cap, Requires Globals
-      <span style="color:lime;">  ✓</span> throws if soft cap exists
-      <span style="color:lime;">  ✓</span> throws if hard cap exists
-      <span style="color:lime;">  ✓</span> works if hard cap and soft cap is 0<span style="color:red;"> (94ms)</span>
+    <span style="color:lime;">  ✓</span> successfully creates a funding stage with proper settings<span style="color:red;"> (146ms)</span>
+    <span style="color:lime;">  ✓</span> throws if end time is before or equal to start time<span style="color:yellow;"> (53ms)</span>
+      SCADA Requires Record Hard Cap
+      <span style="color:lime;">  ✓</span> throws if hard cap is 0<span style="color:yellow;"> (64ms)</span>
+      <span style="color:lime;">  ✓</span> throws if record soft cap is higher than hard cap<span style="color:yellow;"> (67ms)</span>
+      <span style="color:lime;">  ✓</span> works if hard cap is higher than soft cap which is higher than 0<span style="color:red;"> (133ms)</span>
+      <span style="color:lime;">  ✓</span> throws if token selling percentage is provided in funding stage<span style="color:yellow;"> (68ms)</span>
       when at least 1 funding stage already exists
-      <span style="color:lime;">  ✓</span> successfully creates the second funding stage with proper settings<span style="color:red;"> (95ms)</span>
-      <span style="color:lime;">  ✓</span> throws if new funding stage start time overlaps existing stage<span style="color:yellow;"> (41ms)</span>
-      <span style="color:lime;">  ✓</span> throws if new funding stage + existing stage sell more than 100% of tokens
+      <span style="color:lime;">  ✓</span> successfully creates the second funding stage with proper settings<span style="color:red;"> (140ms)</span>
+      <span style="color:lime;">  ✓</span> throws if new funding stage start time overlaps existing stage<span style="color:yellow;"> (71ms)</span>
     funding stages added, asset initialized
-    <span style="color:lime;">  ✓</span> has correct Funding Inputs after ApplicationEntity grabs asset ownership and initializes it<span style="color:yellow;"> (54ms)</span>
+    <span style="color:lime;">  ✓</span> has correct Funding Inputs after ApplicationEntity grabs asset ownership and initializes it<span style="color:yellow;"> (62ms)</span>
       receivePayment()
       <span style="color:lime;">  ✓</span> throws if called directly in the Funding contract
       <span style="color:lime;">  ✓</span> throws if caller is not funding asset
-      <span style="color:lime;">  ✓</span> throws if _payment_method is not allowed<span style="color:red;"> (114ms)</span>
+      <span style="color:lime;">  ✓</span> throws if _payment_method is not allowed<span style="color:red;"> (134ms)</span>
       canAcceptPayment()
       <span style="color:lime;">  ✓</span> returns false if CurrentEntityState is not IN_PROGRESS
         CurrentEntityState is IN_PROGRESS
         <span style="color:lime;">  ✓</span> returns false if ETH value is 0
-        <span style="color:lime;">  ✓</span> returns false if ETH value is smaller than minimum entry<span style="color:red;"> (414ms)</span>
-        <span style="color:lime;">  ✓</span> returns false if any State changes are required<span style="color:red;"> (599ms)</span>
+        <span style="color:lime;">  ✓</span> returns false if any State changes are required<span style="color:red;"> (546ms)</span>
       Funding State: IN_PROGRESS
         Funding Input: All
         <span style="color:lime;">  ✓</span> has correct FundingAssetAddress
         <span style="color:lime;">  ✓</span> throws if msg.value is missing
-        <span style="color:lime;">  ✓</span> throws if FundingAssetAddress is not set<span style="color:yellow;"> (73ms)</span>
-        <span style="color:lime;">  ✓</span> throws if FundingAsset is not pointing to a Contract<span style="color:yellow;"> (57ms)</span>
+        <span style="color:lime;">  ✓</span> throws if FundingAssetAddress is not set<span style="color:red;"> (88ms)</span>
+        <span style="color:lime;">  ✓</span> throws if FundingAsset is not pointing to a Contract<span style="color:yellow;"> (70ms)</span>
           Funding Input: Direct
           <span style="color:lime;">  ✓</span> has correct type id = 1
-<span style="color:white;font-weight:bold;">      ↓ Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">9039005 </span>
-          <span style="color:lime;">  ✓</span> accepts payments using fallback () method and stores in valut's direct pool<span style="color:red;"> (425ms)</span>
-<span style="color:white;font-weight:bold;">      ↓ First Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">9039005 </span>
-<span style="color:white;font-weight:bold;">      ↓ Second Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">348715 </span>
-          <span style="color:lime;">  ✓</span> accepts second payment from same investor<span style="color:red;"> (710ms)</span>
-          <span style="color:lime;">  ✓</span> accepts second payment from same investor using both payment methods ( Direct &amp; Milestone )<span style="color:red;"> (704ms)</span>
+<span style="color:white;font-weight:bold;">      ↓ Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">9141009 </span>
+          <span style="color:lime;">  ✓</span> accepts payments using fallback () method and stores in valut's direct pool<span style="color:red;"> (602ms)</span>
+<span style="color:white;font-weight:bold;">      ↓ First Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">9141009 </span>
+<span style="color:white;font-weight:bold;">      ↓ Second Direct Payment: GAS USAGE: </span><span style="color:fuchsia;">420653 </span>
+          <span style="color:lime;">  ✓</span> accepts second payment from same investor<span style="color:red;"> (933ms)</span>
+          <span style="color:lime;">  ✓</span> accepts second payment from same investor using both payment methods ( Direct &amp; Milestone )<span style="color:red;"> (997ms)</span>
           Funding Input: Milestone
           <span style="color:lime;">  ✓</span> has correct type id = 2
-<span style="color:white;font-weight:bold;">      ↓ Milestone Payment: GAS USAGE: </span><span style="color:fuchsia;">9039018 </span>
-          <span style="color:lime;">  ✓</span> accepts payments using fallback () method and stores in valut's milestone pool<span style="color:red;"> (458ms)</span>
+<span style="color:white;font-weight:bold;">      ↓ Milestone Payment: GAS USAGE: </span><span style="color:fuchsia;">9141023 </span>
+          <span style="color:lime;">  ✓</span> accepts payments using fallback () method and stores in valut's milestone pool<span style="color:red;"> (618ms)</span>
+
+  Contract: Funding Asset - Payments
+<span style="color:white;font-weight:bold;">      ↓ Direct Payment with value over cap: GAS USAGE: </span><span style="color:fuchsia;">9141009 </span>
+  <span style="color:lime;">  ✓</span> payments do not exist yet, accepts payment that is larger than remaining cap, and returns what's left back to the investor<span style="color:red;"> (735ms)</span>
+<span style="color:white;font-weight:bold;">      ↓ Direct Payment with value over cap: GAS USAGE: </span><span style="color:fuchsia;">9090963 </span>
+  <span style="color:lime;">  ✓</span> payments exist, accepts payment that is larger than remaining cap, and returns what's left back to the investor<span style="color:red;"> (1717ms)</span>
+  <span style="color:lime;">  ✓</span> throws if cap is already reached, even if state change is not done yet. <span style="color:red;"> (1902ms)</span>
 
   Contract: Funding Asset - States
-  <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING if current time is before any funding stage<span style="color:red;"> (278ms)</span>
-  <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW to WAITING when funding does not start yet<span style="color:red;"> (639ms)</span>
-  <span style="color:lime;">  ✓</span> starts with state as New and has correct Token Balance once in WAITING state<span style="color:red;"> (473ms)</span>
-  <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW or WAITING to IN_PROGRESS when funding time start has passed<span style="color:red;"> (509ms)</span>
-  <span style="color:lime;">  ✓</span> is in IN_PROGRESS, receives payments, pre_ico time passes, should Require change to COOLDOWN<span style="color:red;"> (1276ms)</span>
-  <span style="color:lime;">  ✓</span> handles ENTITY state change from IN_PROGRESS to COOLDOWN when funding period time start has passed<span style="color:red;"> (1279ms)</span>
-  <span style="color:lime;">  ✓</span> is in COOLDOWN, ico start time passes, should Require change to IN_PROGRESS<span style="color:red;"> (1574ms)</span>
-  <span style="color:lime;">  ✓</span> handles ENTITY state change from COOLDOWN to IN_PROGRESS when next funding period time start has passed<span style="color:red;"> (1661ms)</span>
-  <span style="color:lime;">  ✓</span> is IN_PROGRESS, ico end time passes, should Require change to FUNDING_ENDED<span style="color:red;"> (2141ms)</span>
+  <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING if current time is before any funding stage<span style="color:red;"> (253ms)</span>
+  <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW to WAITING when funding does not start yet<span style="color:red;"> (616ms)</span>
+  <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW or WAITING to IN_PROGRESS when funding time start has passed<span style="color:red;"> (587ms)</span>
+  <span style="color:lime;">  ✓</span> is in IN_PROGRESS, receives payments, pre_ico time passes, should Require change to COOLDOWN<span style="color:red;"> (1639ms)</span>
+  <span style="color:lime;">  ✓</span> handles ENTITY state change from IN_PROGRESS to COOLDOWN when funding period time start has passed<span style="color:red;"> (1563ms)</span>
+  <span style="color:lime;">  ✓</span> is in COOLDOWN, ico start time passes, should Require change to IN_PROGRESS<span style="color:red;"> (1865ms)</span>
+  <span style="color:lime;">  ✓</span> handles ENTITY state change from COOLDOWN to IN_PROGRESS when next funding period time start has passed<span style="color:red;"> (2088ms)</span>
+  <span style="color:lime;">  ✓</span> is IN_PROGRESS, ico end time passes, should Require change to FUNDING_ENDED<span style="color:red;"> (2771ms)</span>
     handles ENTITY state change from IN_PROGRESS when last funding period time end has passed
-    <span style="color:lime;">  ✓</span> to FAILED when payments did not reach soft cap<span style="color:red;"> (2423ms)</span>
-    <span style="color:lime;">  ✓</span> to SUCCESSFUL when payments reached soft cap<span style="color:red;"> (2343ms)</span>
-    handles ENTITY state change from IN_PROGRESS when Hard Cap is Reached
-    <span style="color:lime;">  ✓</span> to SUCCESSFUL when payments reached hard cap in first funding stage (pre-ico)<span style="color:red;"> (3457ms)</span>
-    <span style="color:lime;">  ✓</span> to SUCCESSFUL when payments reached hard cap in last funding stage (ico)<span style="color:red;"> (3464ms)</span>
+    <span style="color:lime;">  ✓</span> to FAILED when payments did not reach soft cap<span style="color:red;"> (2990ms)</span>
+    <span style="color:lime;">  ✓</span> to SUCCESSFUL when payments reached soft cap<span style="color:red;"> (2987ms)</span>
+    handles ENTITY state change from IN_PROGRESS when stage Hard Cap is Reached
+    <span style="color:lime;">  ✓</span> to COOLDOWN when payments reached hard cap in first funding stage (pre-ico)<span style="color:red;"> (4675ms)</span>
+    <span style="color:lime;">  ✓</span> to SUCCESSFUL when payments reached hard cap in last funding stage (ico)<span style="color:red;"> (12822ms)</span>
     FundingManager Tasks
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from FAILED to FAILED_FINAL after FundingManager Task Process finished<span style="color:red;"> (5886ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from SUCCESSFUL to SUCCESSFUL_FINAL after FundingManager Task Process finished<span style="color:red;"> (17190ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from FAILED to FAILED_FINAL after FundingManager Task Process finished<span style="color:red;"> (7116ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from SUCCESSFUL to SUCCESSFUL_FINAL after FundingManager Task Process finished<span style="color:red;"> (19305ms)</span>
     misc for extra coverage
-    <span style="color:lime;">  ✓</span> isFundingStageUpdateAllowed returns false if not allowed<span style="color:red;"> (561ms)</span>
-    <span style="color:lime;">  ✓</span> should run doStateChanges even if no changes are required<span style="color:red;"> (314ms)</span>
+    <span style="color:lime;">  ✓</span> isFundingStageUpdateAllowed returns false if not allowed<span style="color:red;"> (538ms)</span>
+    <span style="color:lime;">  ✓</span> should run doStateChanges even if no changes are required<span style="color:red;"> (363ms)</span>
 
   Contract: FundingManager Asset
-  <span style="color:lime;">  ✓</span> receivePayment() throws if caller is not funding asset<span style="color:yellow;"> (51ms)</span>
+  <span style="color:lime;">  ✓</span> receivePayment() throws if caller is not funding asset<span style="color:yellow;"> (48ms)</span>
     FundingEndedProcessVaultList()
     <span style="color:lime;">  ✓</span> vaultNum has correct number of payments
     <span style="color:lime;">  ✓</span> throws if Funding State is not &quot;FUNDING_ENDED&quot;
-    <span style="color:lime;">  ✓</span> Funding State is &quot;FUNDING_ENDED&quot;<span style="color:red;"> (4493ms)</span>
+    <span style="color:lime;">  ✓</span> Funding State is &quot;FUNDING_ENDED&quot;<span style="color:red;"> (4560ms)</span>
     states
-    <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING<span style="color:red;"> (127ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW to WAITING<span style="color:red;"> (1568ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW or WAITING to FUNDING_FAILED_DONE when funding state is FAILED <span style="color:red;"> (9403ms)</span>
+    <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING<span style="color:red;"> (110ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW to WAITING<span style="color:red;"> (1652ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from NEW or WAITING to FUNDING_FAILED_DONE when funding state is FAILED <span style="color:red;"> (10873ms)</span>
     <span style="color:lime;">  ✓</span> setVaultCountPerProcess throws if value is not higher than 0
-    <span style="color:lime;">  ✓</span> setVaultCountPerProcess properly sets value<span style="color:yellow;"> (52ms)</span>
+    <span style="color:lime;">  ✓</span> setVaultCountPerProcess properly sets value<span style="color:red;"> (78ms)</span>
       Funding ends, has payments, but does not reach Soft Cap
-      <span style="color:lime;">  ✓</span> handles ENTITY state change to FUNDING_FAILED_DONE, and processes all vaults<span style="color:red;"> (9318ms)</span>
+      <span style="color:lime;">  ✓</span> handles ENTITY state change to FUNDING_FAILED_DONE, and processes all vaults<span style="color:red;"> (10830ms)</span>
       Funding ends, has payments, and Soft Cap is reached
-      <span style="color:lime;">  ✓</span> handles ENTITY state change to FUNDING_SUCCESSFUL_DONE, and processes all vaults<span style="color:red;"> (8625ms)</span>
+      <span style="color:lime;">  ✓</span> handles ENTITY state change to FUNDING_SUCCESSFUL_DONE, and processes all vaults<span style="color:red;"> (9947ms)</span>
 
   Contract: FundingManager Asset
     Successful funding - Token distribution
       Milestone Payments only
-      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 1 payment, 1 payment in pre-ico, 0 payments in ico<span style="color:red;"> (9016ms)</span>
-      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 1 payment, 1 account, 0 payments in pre-ico, 1 payment in ico<span style="color:red;"> (8018ms)</span>
-      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico<span style="color:red;"> (10766ms)</span>
-      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico<span style="color:red;"> (10616ms)</span>
-      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)<span style="color:red;"> (10946ms)</span>
-      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)<span style="color:red;"> (11090ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 1 payment, 1 payment in pre-ico, 0 payments in ico<span style="color:red;"> (10363ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 1 payment, 1 account, 0 payments in pre-ico, 1 payment in ico<span style="color:red;"> (9221ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico<span style="color:red;"> (12136ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico<span style="color:red;"> (12055ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)<span style="color:red;"> (12455ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)<span style="color:red;"> (12434ms)</span>
       Mixed Direct and Milestone Payments
-      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 4 payments, 2 accounts, 2 payment in pre-ico (account 1/2), 2 payment in ico (account 1/2)<span style="color:red;"> (11669ms)</span>
+      <span style="color:lime;">  ✓</span> SoftCap reached in pre-ico, 4 payments, 2 accounts, 2 payments in pre-ico (account 1/2), 2 payments in ico (account 1/2)<span style="color:red;"> (12971ms)</span>
     misc for extra coverage
-    <span style="color:lime;">  ✓</span> SCADA - initCacheForVariables() throws if called by other than FundingManager<span style="color:red;"> (5785ms)</span>
-    <span style="color:lime;">  ✓</span> should run doStateChanges even if no changes are required<span style="color:red;"> (2057ms)</span>
-    <span style="color:lime;">  ✓</span> SCADA - getTokenFraction() should run 0 if my amount is 0<span style="color:red;"> (5829ms)</span>
-    <span style="color:lime;">  ✓</span> SCADA - getUnsoldTokenFraction() should run 0 if my amount is 0<span style="color:red;"> (5840ms)</span>
+    <span style="color:lime;">  ✓</span> should run doStateChanges even if no changes are required<span style="color:red;"> (2163ms)</span>
 
   Contract: Milestones Asset - Settings NOT Locked
-  <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING if current time is before development start<span style="color:red;"> (272ms)</span>
+  <span style="color:lime;">  ✓</span> starts with state as New and requires a change to WAITING if current time is before development start<span style="color:red;"> (268ms)</span>
     addRecord()
-    <span style="color:lime;">  ✓</span> works if settings are not already locked<span style="color:yellow;"> (65ms)</span>
-    <span style="color:lime;">  ✓</span> throws if settings are locked<span style="color:red;"> (304ms)</span>
+    <span style="color:lime;">  ✓</span> works if settings are not already locked<span style="color:yellow;"> (73ms)</span>
+    <span style="color:lime;">  ✓</span> throws if settings are locked<span style="color:red;"> (482ms)</span>
 
   Contract: Milestones Asset - Settings Locked
-  <span style="color:lime;">  ✓</span> isRecordUpdateAllowed should return false<span style="color:red;"> (282ms)</span>
+  <span style="color:lime;">  ✓</span> isRecordUpdateAllowed should return false<span style="color:red;"> (288ms)</span>
     states
-    <span style="color:lime;">  ✓</span> throws if trying to set Meeting time after it was already set.<span style="color:red;"> (5681ms)</span>
-    <span style="color:lime;">  ✓</span> throws if now is @ expiry time and trying to set Meeting time at expiry time.<span style="color:red;"> (3830ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING to WAITING_MEETING_TIME when current time is after development start<span style="color:red;"> (4228ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_FAILED when current time is after milestone end, and meeting time was not set<span style="color:red;"> (5314ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_YES when current time is after milestone end, and meeting time was set<span style="color:red;"> (5682ms)</span>
-    <span style="color:lime;">  ✓</span> handles ENTITY state change from DEADLINE_MEETING_TIME_YES to VOTING_IN_PROGRESS when current time is after meeting time<span style="color:red;"> (7671ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to set Meeting time after it was already set.<span style="color:red;"> (5636ms)</span>
+    <span style="color:lime;">  ✓</span> throws if now is @ expiry time and trying to set Meeting time at expiry time.<span style="color:red;"> (3714ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING to WAITING_MEETING_TIME when current time is after development start<span style="color:red;"> (3949ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_FAILED when current time is after milestone end, and meeting time was not set<span style="color:red;"> (5277ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_YES when current time is after milestone end, and meeting time was set<span style="color:red;"> (5520ms)</span>
+    <span style="color:lime;">  ✓</span> handles ENTITY state change from DEADLINE_MEETING_TIME_YES to VOTING_IN_PROGRESS when current time is after meeting time<span style="color:red;"> (7564ms)</span>
 
   Contract: Proposals Asset
   <span style="color:lime;">  ✓</span> setVoteCountPerProcess throws if value is not higher than 0
-  <span style="color:lime;">  ✓</span> setVoteCountPerProcess properly sets value<span style="color:yellow;"> (55ms)</span>
+  <span style="color:lime;">  ✓</span> setVoteCountPerProcess properly sets value<span style="color:yellow;"> (68ms)</span>
 
   Contract: Proposals Asset - Settings Locked
   <span style="color:lime;">  ✓</span> Asset deploys and initialises properly
     proposal creation
       type 1 - IN_DEVELOPMENT_CODE_UPGRADE - Voting Type - Milestone
       <span style="color:lime;">  ✓</span> throws if called by any address other than ApplicationEntity
-      <span style="color:lime;">  ✓</span> creates the proposal if called by the current ApplicationEntity<span style="color:red;"> (369ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by the current ApplicationEntity<span style="color:red;"> (445ms)</span>
       type 2 - EMERGENCY_FUND_RELEASE - Voting Type - Milestone
       <span style="color:lime;">  ✓</span> throws if called by any address other than deployer
-      <span style="color:lime;">  ✓</span> creates the proposal if called by the current deployer<span style="color:red;"> (246ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by the current deployer<span style="color:red;"> (250ms)</span>
       type 3 - MILESTONE_POSTPONING - Voting Type - Milestone
       <span style="color:lime;">  ✓</span> throws if called by any address other than deployer
-      <span style="color:lime;">  ✓</span> throws if duration is not higher than min postponing bylaw<span style="color:yellow;"> (48ms)</span>
-      <span style="color:lime;">  ✓</span> throws if duration is higher than max postponing bylaw<span style="color:yellow;"> (60ms)</span>
-      <span style="color:lime;">  ✓</span> creates the proposal if called by the current deployer with correct duration<span style="color:red;"> (321ms)</span>
+      <span style="color:lime;">  ✓</span> throws if duration is not higher than min postponing bylaw<span style="color:yellow;"> (46ms)</span>
+      <span style="color:lime;">  ✓</span> throws if duration is higher than max postponing bylaw<span style="color:yellow;"> (65ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by the current deployer with correct duration<span style="color:red;"> (294ms)</span>
       type 4 - MILESTONE_DEADLINE - Voting Type - Milestone
       <span style="color:lime;">  ✓</span> throws if called by any address other than MilestoneAsset
-      <span style="color:lime;">  ✓</span> creates the proposal if called by the current MilestoneAsset<span style="color:red;"> (276ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by the current MilestoneAsset<span style="color:red;"> (285ms)</span>
       type 5 - PROJECT_DELISTING - Voting Type - Tokens
-      <span style="color:lime;">  ✓</span> throws if called by an address that does not hold any tokens. ( none in wallet / none in vault )<span style="color:yellow;"> (40ms)</span>
-      <span style="color:lime;">  ✓</span> throws if child application is beyond FUNDING_STARTED state.<span style="color:red;"> (1372ms)</span>
-      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens locked in vault)<span style="color:red;"> (295ms)</span>
-      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens locked in vault)<span style="color:red;"> (297ms)</span>
-      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens in wallet)<span style="color:red;"> (300ms)</span>
+      <span style="color:lime;">  ✓</span> throws if called by an address that does not hold any tokens. ( none in wallet / none in vault )<span style="color:yellow;"> (45ms)</span>
+      <span style="color:lime;">  ✓</span> throws if child application is beyond FUNDING_STARTED state.<span style="color:red;"> (1379ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens locked in vault)<span style="color:red;"> (313ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens locked in vault)<span style="color:red;"> (303ms)</span>
+      <span style="color:lime;">  ✓</span> creates the proposal if called by a token holder, (tokens in wallet)<span style="color:red;"> (285ms)</span>
       misc for extra coverage
-      <span style="color:lime;">  ✓</span> getRequiredStateChanges()
-      <span style="color:lime;">  ✓</span> hasRequiredStateChanges()
+      <span style="color:lime;">  ✓</span> getRequiredStateChanges()<span style="color:yellow;"> (50ms)</span>
+      <span style="color:lime;">  ✓</span> hasRequiredStateChanges()<span style="color:yellow;"> (43ms)</span>
       <span style="color:lime;">  ✓</span> process() throws if called by any other than ApplicationEntity
-      <span style="color:lime;">  ✓</span> getMyVote()
+      <span style="color:lime;">  ✓</span> getMyVote()<span style="color:yellow;"> (41ms)</span>
       <span style="color:lime;">  ✓</span> getProposalState()
-      <span style="color:lime;">  ✓</span> getBylawsMilestoneMinPostponing()<span style="color:yellow;"> (66ms)</span>
-      <span style="color:lime;">  ✓</span> getBylawsMilestoneMaxPostponing()<span style="color:yellow;"> (63ms)</span>
-      <span style="color:lime;">  ✓</span> getVotingPower() for non existent investor<span style="color:yellow;"> (60ms)</span>
+      <span style="color:lime;">  ✓</span> getBylawsMilestoneMinPostponing()<span style="color:red;"> (77ms)</span>
+      <span style="color:lime;">  ✓</span> getBylawsMilestoneMaxPostponing()<span style="color:yellow;"> (73ms)</span>
+      <span style="color:lime;">  ✓</span> getVotingPower() for non existent investor<span style="color:red;"> (86ms)</span>
 
   Contract: Proposals Asset - Type 1 - IN_DEVELOPMENT_CODE_UPGRADE
-  <span style="color:lime;">  ✓</span> current proposal matches IN_DEVELOPMENT_CODE_UPGRADE settings<span style="color:red;"> (5066ms)</span>
-  <span style="color:lime;">  ✓</span> proposal closes as VOTING_RESULT_YES when time expires and no votes are registered<span style="color:red;"> (5998ms)</span>
-  <span style="color:lime;">  ✓</span> second application has all assets added, and more. Proposal closes as VOTING_RESULT_YES, state change results in assets getting transferred.<span style="color:red;"> (7728ms)</span>
-  <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (85438ms)</span>
+  <span style="color:lime;">  ✓</span> current proposal matches IN_DEVELOPMENT_CODE_UPGRADE settings<span style="color:red;"> (5050ms)</span>
+  <span style="color:lime;">  ✓</span> proposal closes as VOTING_RESULT_YES when time expires and no votes are registered<span style="color:red;"> (6011ms)</span>
+  <span style="color:lime;">  ✓</span> second application has all assets added, and more. Proposal closes as VOTING_RESULT_YES, state change results in assets getting transferred.<span style="color:red;"> (8340ms)</span>
+  <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (114150ms)</span>
 
   Contract: Proposals Asset - Type 2 - EMERGENCY_FUND_RELEASE
-  <span style="color:lime;">  ✓</span> current proposal matches EMERGENCY_FUND_RELEASE settings<span style="color:red;"> (148ms)</span>
-  <span style="color:lime;">  ✓</span> throws if EMERGENCY_FUND_RELEASE proposal was already created once
+  <span style="color:lime;">  ✓</span> current proposal matches EMERGENCY_FUND_RELEASE settings<span style="color:red;"> (132ms)</span>
+  <span style="color:lime;">  ✓</span> throws if EMERGENCY_FUND_RELEASE proposal was already created once<span style="color:yellow;"> (65ms)</span>
     Proposal Created - Voting Started
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (66ms)</span>
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (53ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%<span style="color:red;"> (336ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%<span style="color:red;"> (375ms)</span>
-    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES<span style="color:red;"> (619ms)</span>
-    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO<span style="color:red;"> (382ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (65ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (55ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%<span style="color:red;"> (339ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%<span style="color:red;"> (366ms)</span>
+    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES<span style="color:red;"> (589ms)</span>
+    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO<span style="color:red;"> (424ms)</span>
     <span style="color:lime;">  ✓</span> YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (563ms)</span>
-    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (545ms)</span>
-    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (724ms)</span>
+    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (552ms)</span>
+    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (808ms)</span>
       Voting Successful - Processed before voting expiry time
-      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:yellow;"> (50ms)</span>
-      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (5908ms)</span>
+      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:yellow;"> (72ms)</span>
+      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (6087ms)</span>
       Voting Successful - Voting time expired
-      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (7276ms)</span>
+      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (7386ms)</span>
 
   Contract: Proposals Asset - Type 3 - MILESTONE_POSTPONING
-  <span style="color:lime;">  ✓</span> current proposal matches MILESTONE_POSTPONING settings<span style="color:red;"> (147ms)</span>
-  <span style="color:lime;">  ✓</span> throws if MILESTONE_POSTPONING proposal was already created once<span style="color:red;"> (78ms)</span>
+  <span style="color:lime;">  ✓</span> current proposal matches MILESTONE_POSTPONING settings<span style="color:red;"> (138ms)</span>
+  <span style="color:lime;">  ✓</span> throws if MILESTONE_POSTPONING proposal was already created once<span style="color:red;"> (85ms)</span>
     Proposal Created - Voting Started
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (50ms)</span>
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (48ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%<span style="color:red;"> (329ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%<span style="color:red;"> (355ms)</span>
-    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES<span style="color:red;"> (593ms)</span>
-    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO<span style="color:red;"> (387ms)</span>
-    <span style="color:lime;">  ✓</span> YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (544ms)</span>
-    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (516ms)</span>
-    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (738ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (58ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (68ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%<span style="color:red;"> (297ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%<span style="color:red;"> (347ms)</span>
+    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES<span style="color:red;"> (589ms)</span>
+    <span style="color:lime;">  ✓</span> first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO<span style="color:red;"> (406ms)</span>
+    <span style="color:lime;">  ✓</span> YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (521ms)</span>
+    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (512ms)</span>
+    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (783ms)</span>
       Voting Successful - Processed before voting expiry time
-      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:yellow;"> (50ms)</span>
-      <span style="color:lime;">  ✓</span> MilestoneAsset state processed, record time_end increased<span style="color:red;"> (2043ms)</span>
+      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:yellow;"> (55ms)</span>
+      <span style="color:lime;">  ✓</span> MilestoneAsset state processed, record time_end increased<span style="color:red;"> (1994ms)</span>
       Voting Successful - Voting time expired
-      <span style="color:lime;">  ✓</span> MilestoneAsset state processed, record time_end increased<span style="color:red;"> (4085ms)</span>
+      <span style="color:lime;">  ✓</span> MilestoneAsset state processed, record time_end increased<span style="color:red;"> (3840ms)</span>
 
   Contract: Proposals Asset - Type 4 - MILESTONE_DEADLINE
-  <span style="color:lime;">  ✓</span> current proposal matches MILESTONE_DEADLINE settings<span style="color:red;"> (168ms)</span>
-  <span style="color:lime;">  ✓</span> throws if MILESTONE_DEADLINE proposal was already created once<span style="color:yellow;"> (53ms)</span>
+  <span style="color:lime;">  ✓</span> current proposal matches MILESTONE_DEADLINE settings<span style="color:red;"> (127ms)</span>
+  <span style="color:lime;">  ✓</span> throws if MILESTONE_DEADLINE proposal was already created once<span style="color:yellow;"> (62ms)</span>
     Proposal Created - Voting Started
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (51ms)</span>
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (45ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal<span style="color:red;"> (366ms)</span>
-    <span style="color:lime;">  ✓</span> YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (543ms)</span>
-    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (509ms)</span>
-    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (13422ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (62ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (55ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal<span style="color:red;"> (389ms)</span>
+    <span style="color:lime;">  ✓</span> YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (553ms)</span>
+    <span style="color:lime;">  ✓</span> NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed<span style="color:red;"> (579ms)</span>
+    <span style="color:lime;">  ✓</span> While more than 1 proposal is active, properly re-indexes active proposals once one is closed<span style="color:red;"> (13164ms)</span>
       Voting Successful - Voting time expired
-      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (11064ms)</span>
+      <span style="color:lime;">  ✓</span> FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances<span style="color:red;"> (11113ms)</span>
 
   Contract: Proposals Asset - Type 5 - PROJECT_DELISTING
-  <span style="color:lime;">  ✓</span> current proposal matches PROJECT_DELISTING settings<span style="color:red;"> (148ms)</span>
-  <span style="color:lime;">  ✓</span> throws if PROJECT_DELISTING proposal was already created once<span style="color:yellow;"> (71ms)</span>
+  <span style="color:lime;">  ✓</span> current proposal matches PROJECT_DELISTING settings<span style="color:red;"> (125ms)</span>
+  <span style="color:lime;">  ✓</span> throws if PROJECT_DELISTING proposal was already created once<span style="color:red;"> (80ms)</span>
     Proposal Created - Voting Started
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (55ms)</span>
-    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (38ms)</span>
-    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not require state changes if stake is lower than 50%<span style="color:red;"> (328ms)</span>
-    <span style="color:lime;">  ✓</span> Registers multiple votes and requires state changes if stake is higher than 50%<span style="color:red;"> (623ms)</span>
-    <span style="color:lime;">  ✓</span> Registers multiple YES votes, after processing closes as VOTING_RESULT_YES<span style="color:red;"> (2415ms)</span>
-    <span style="color:lime;">  ✓</span> Registers multiple NO votes, after processing closes as VOTING_RESULT_NO<span style="color:red;"> (2369ms)</span>
-    <span style="color:lime;">  ✓</span> Registers multiple MIXED votes ( most YES ), some change vote, after processing closes as VOTING_RESULT_YES<span style="color:red;"> (2764ms)</span>
-    <span style="color:lime;">  ✓</span> Registers multiple MIXED votes ( most NO ), some change vote, after processing closes as VOTING_RESULT_NO<span style="color:red;"> (2698ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a non existing proposal<span style="color:yellow;"> (61ms)</span>
+    <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal while having no stake in it<span style="color:yellow;"> (46ms)</span>
+    <span style="color:lime;">  ✓</span> Registers a valid vote if voter has a stake in the proposal, does not require state changes if stake is lower than 50%<span style="color:red;"> (346ms)</span>
+    <span style="color:lime;">  ✓</span> Registers multiple votes and requires state changes if stake is higher than 50%<span style="color:red;"> (658ms)</span>
+    <span style="color:lime;">  ✓</span> Registers multiple YES votes, after processing closes as VOTING_RESULT_YES<span style="color:red;"> (2297ms)</span>
+    <span style="color:lime;">  ✓</span> Registers multiple NO votes, after processing closes as VOTING_RESULT_NO<span style="color:red;"> (2374ms)</span>
+    <span style="color:lime;">  ✓</span> Registers multiple MIXED votes ( most YES ), some change vote, after processing closes as VOTING_RESULT_YES<span style="color:red;"> (2708ms)</span>
+    <span style="color:lime;">  ✓</span> Registers multiple MIXED votes ( most NO ), some change vote, after processing closes as VOTING_RESULT_NO<span style="color:red;"> (2659ms)</span>
       Voting Successful - Processed before voting expiry time
-      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:red;"> (2047ms)</span>
-      <span style="color:lime;">  ✓</span> ApplicationEntity state processed, ListingContract delists project<span style="color:red;"> (2016ms)</span>
+      <span style="color:lime;">  ✓</span> throws if trying to vote on a the proposal that has already been finalised<span style="color:red;"> (2003ms)</span>
+      <span style="color:lime;">  ✓</span> ApplicationEntity state processed, ListingContract delists project<span style="color:red;"> (2001ms)</span>
       Voting Successful - Voting time expired
-      <span style="color:lime;">  ✓</span> ApplicationEntity state processed, ListingContract delists project<span style="color:red;"> (1800ms)</span>
+      <span style="color:lime;">  ✓</span> ApplicationEntity state processed, ListingContract delists project<span style="color:red;"> (1746ms)</span>
 
   Contract: Proposals Asset - Type 6 - AFTER_COMPLETE_CODE_UPGRADE
-  <span style="color:lime;">  ✓</span> current proposal matches AFTER_COMPLETE_CODE_UPGRADE settings<span style="color:red;"> (1417ms)</span>
-  <span style="color:lime;">  ✓</span> DEVELOPMENT_COMPLETE, Upgrade to second app, request upgrade to third - Proposal processed.<span style="color:red;"> (4226ms)</span>
+  <span style="color:lime;">  ✓</span> current proposal matches AFTER_COMPLETE_CODE_UPGRADE settings<span style="color:red;"> (1734ms)</span>
+  <span style="color:lime;">  ✓</span> DEVELOPMENT_COMPLETE, Upgrade to second app, request upgrade to third - Proposal processed.<span style="color:red;"> (4709ms)</span>
 
   Contract: Project COMPLETION
-  <span style="color:lime;">  ✓</span> Development started, processes all milestones, and after last one sets application into DEVELOPMENT_COMPLETE state, validates balances each step<span style="color:red;"> (74517ms)</span>
+  <span style="color:lime;">  ✓</span> Development started, processes all milestones, and after last one sets application into DEVELOPMENT_COMPLETE state, validates balances each step<span style="color:red;"> (103124ms)</span>
 
   Contract: CashBack Scenario Testing
     Platform Funding Failed - Cashback Type 1 - Funding processed
-    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (329ms)</span>
-    <span style="color:lime;">  ✓</span> throws if CashBack is requested by other address than vault owner (investor)<span style="color:red;"> (113ms)</span>
-    <span style="color:lime;">  ✓</span> Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage<span style="color:red;"> (302ms)</span>
+    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (332ms)</span>
+    <span style="color:lime;">  ✓</span> throws if CashBack is requested by other address than vault owner (investor)<span style="color:red;"> (121ms)</span>
+    <span style="color:lime;">  ✓</span> Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage<span style="color:red;"> (355ms)</span>
     Platform Funding Failed - Cashback Type 1 - Funding not processed
-    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (749ms)</span>
-    <span style="color:lime;">  ✓</span> throws if CashBack is requested by other address than vault owner (investor)<span style="color:red;"> (229ms)</span>
-    <span style="color:lime;">  ✓</span> Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage<span style="color:red;"> (387ms)</span>
-    <span style="color:lime;">  ✓</span> Once processed Funding Vaults do not allow CashBack<span style="color:red;"> (6497ms)</span>
-    <span style="color:lime;">  ✓</span> If not processed in time, and CashBack is active, throws if trying to process<span style="color:red;"> (2538ms)</span>
+    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (735ms)</span>
+    <span style="color:lime;">  ✓</span> throws if CashBack is requested by other address than vault owner (investor)<span style="color:red;"> (227ms)</span>
+    <span style="color:lime;">  ✓</span> Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage<span style="color:red;"> (414ms)</span>
+    <span style="color:lime;">  ✓</span> Once processed Funding Vaults do not allow CashBack<span style="color:red;"> (7266ms)</span>
+    <span style="color:lime;">  ✓</span> If not processed in time, and CashBack is active, throws if trying to process<span style="color:red;"> (2300ms)</span>
     Platform Funding Successful - Cashback Type 2 - Owner Missing in Action Cashback
-    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (2124ms)</span>
-    <span style="color:lime;">  ✓</span> MIA @ Milestone 1 - Requesting CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (2218ms)</span>
-    <span style="color:lime;">  ✓</span> MIA @ Milestone 3 - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (31250ms)</span>
-    <span style="color:lime;">  ✓</span> MIA @ Milestone LAST - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (67143ms)</span>
+    <span style="color:lime;">  ✓</span> Funding Vaults allow all investors to CashBack<span style="color:red;"> (2091ms)</span>
+    <span style="color:lime;">  ✓</span> MIA @ Milestone 1 - Requesting CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (2259ms)</span>
+    <span style="color:lime;">  ✓</span> MIA @ Milestone 3 - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (31378ms)</span>
+    <span style="color:lime;">  ✓</span> MIA @ Milestone LAST - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage<span style="color:red;"> (98325ms)</span>
     Platform Funding Successful - Cashback Type 3 - Milestone Release
-    <span style="color:lime;">  ✓</span> Proposal processed. Funding Vault allows the investor to CashBack if majority voted NO and investor also voted NO<span style="color:red;"> (17574ms)</span>
-    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances<span style="color:red;"> (2387ms)</span>
-    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (78356ms)</span>
-    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (79442ms)</span>
-    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor does not use CashBack, validate balances, can continue with next milestones<span style="color:red;"> (79353ms)</span>
-    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone LAST - Proposal processed. Investor uses CashBack, validate balances<span style="color:red;"> (67608ms)</span>
-    <span style="color:lime;">  ✓</span> All investors VOTE NO and cashback at @ Milestone 3, Milestone releases now require 0 votes, automatically finalise as successful<span style="color:red;"> (71005ms)</span>
+    <span style="color:lime;">  ✓</span> Proposal processed. Funding Vault allows the investor to CashBack if majority voted NO and investor also voted NO<span style="color:red;"> (16986ms)</span>
+    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances<span style="color:red;"> (2491ms)</span>
+    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (107488ms)</span>
+    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones<span style="color:red;"> (108803ms)</span>
+    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone 3 - Proposal processed. Investor does not use CashBack, validate balances, can continue with next milestones<span style="color:red;"> (107137ms)</span>
+    <span style="color:lime;">  ✓</span> VOTE NO @ Milestone LAST - Proposal processed. Investor uses CashBack, validate balances<span style="color:red;"> (98813ms)</span>
+    <span style="color:lime;">  ✓</span> All investors VOTE NO and cashback at @ Milestone 3, Milestone releases now require 0 votes, automatically finalise as successful<span style="color:red;"> (98168ms)</span>
 
-  <img src="coverage.png" height="789" width="712"/>
+
+ <span style="color:lime;"> 313 passing</span> (39m)
+
+------------------------------|----------|----------|----------|----------|----------------|
+File                          |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
+------------------------------|----------|----------|----------|----------|----------------|
+ contracts/                   |    96.28 |    87.84 |     97.5 |    96.18 |                |
+  ApplicationAsset.sol        |    97.67 |       95 |    95.83 |    98.04 |            183 |
+  ApplicationEntity.sol       |    96.08 |    87.25 |    97.67 |    95.68 |... 421,437,640 |
+  ApplicationEntityABI.sol    |      100 |      100 |      100 |      100 |                |
+  ApplicationEntitySecond.sol |       90 |       75 |      100 |       90 |             34 |
+  GatewayInterface.sol        |    97.22 |    86.36 |      100 |    97.44 |            132 |
+ contracts/Algorithms/        |      100 |      100 |      100 |      100 |                |
+  TokenSCADAVariable.sol      |      100 |      100 |      100 |      100 |                |
+ contracts/Entity/            |    96.87 |     88.1 |      100 |     96.7 |                |
+  BountyManager.sol           |      100 |      100 |      100 |      100 |                |
+  Funding.sol                 |    91.26 |    83.33 |      100 |    90.61 |... 349,355,508 |
+  FundingManager.sol          |    96.65 |    88.28 |      100 |    96.39 |... 228,274,280 |
+  FundingVault.sol            |    99.06 |    87.93 |      100 |    99.17 |            334 |
+  ListingContract.sol         |      100 |       80 |      100 |      100 |                |
+  Meetings.sol                |      100 |      100 |      100 |      100 |                |
+  Milestones.sol              |    98.95 |    91.96 |      100 |    98.87 |        207,212 |
+  NewsContract.sol            |      100 |      100 |      100 |      100 |                |
+  Proposals.sol               |     97.7 |       90 |      100 |    97.67 |... 613,615,679 |
+  Token.sol                   |      100 |       75 |      100 |      100 |                |
+  TokenManager.sol            |      100 |       50 |      100 |      100 |                |
+  UpgradeTestAsset.sol        |      100 |      100 |      100 |      100 |                |
+ contracts/Inputs/            |      100 |      100 |      100 |      100 |                |
+  FundingInputDirect.sol      |      100 |      100 |      100 |      100 |                |
+  FundingInputGeneral.sol     |      100 |      100 |      100 |      100 |                |
+  FundingInputMilestone.sol   |      100 |      100 |      100 |      100 |                |
+ contracts/zeppelin/math/     |      100 |    66.67 |      100 |      100 |                |
+  SafeMath.sol                |      100 |    66.67 |      100 |      100 |                |
+ contracts/zeppelin/token/    |      100 |      100 |      100 |      100 |                |
+  BasicToken.sol              |      100 |      100 |      100 |      100 |                |
+  ERC20.sol                   |      100 |      100 |      100 |      100 |                |
+  ERC20Basic.sol              |      100 |      100 |      100 |      100 |                |
+  StandardToken.sol           |      100 |      100 |      100 |      100 |                |
+------------------------------|----------|----------|----------|----------|----------------|
+All files                     |     96.9 |     88.1 |    99.23 |    96.75 |                |
+------------------------------|----------|----------|----------|----------|----------------|
+
+Istanbul coverage reports generated
+Cleaning up...
 </pre>
 </body>
 </html>

@@ -1,7 +1,6 @@
 Starting our own testrpc instance at port 8555
 Generating coverage environment
-Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADA1Market.sol
-Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADAGeneric.sol
+Instrumenting  ./coverageEnv/contracts/Algorithms/TokenSCADAVariable.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationAsset.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationEntity.sol
 Instrumenting  ./coverageEnv/contracts/ApplicationEntityABI.sol
@@ -33,8 +32,7 @@ Running: node --max-old-space-size=4096 ../node_modules/.bin/truffle test --netw
 (this can take a few seconds)...
 Using network 'coverage'.
 
-Compiling ./contracts/Algorithms/TokenSCADA1Market.sol...
-Compiling ./contracts/Algorithms/TokenSCADAGeneric.sol...
+Compiling ./contracts/Algorithms/TokenSCADAVariable.sol...
 Compiling ./contracts/ApplicationAsset.sol...
 Compiling ./contracts/ApplicationEntity.sol...
 Compiling ./contracts/ApplicationEntityABI.sol...
@@ -88,7 +86,7 @@ Compiling ./test/mocks/TestNewsContract.sol...
 Compiling ./test/mocks/TestProposals.sol...
 Compiling ./test/mocks/TestToken.sol...
 Compiling ./test/mocks/TestTokenManager.sol...
-Compiling ./test/mocks/TestTokenSCADA1Market.sol...
+Compiling ./test/mocks/TestTokenSCADAVariable.sol...
 Compiling ./test/mocks/TestUpgradeTestAsset.sol...
 
 Compilation warnings encountered:
@@ -116,42 +114,43 @@ Spanning multiple lines.
 
 [1;37m 
   ---------------------------------------------------------------- [0m
-[1;37m   Running test collections [[0;33m28[0m]. [0m
+[1;37m   Running test collections [[0;33m29[0m]. [0m
 [1;37m  ---------------------------------------------------------------- [0m
 
 [0m[0m
 [0m  Contract: SafeMath[0m
-  [32m  ✓[0m[90m multiplies correctly[0m[31m (96ms)[0m
-  [32m  ✓[0m[90m adds correctly[0m[33m (65ms)[0m
-  [32m  ✓[0m[90m subtracts correctly[0m[33m (48ms)[0m
+  [32m  ✓[0m[90m multiplies correctly[0m[31m (103ms)[0m
+  [32m  ✓[0m[90m adds correctly[0m[31m (79ms)[0m
+  [32m  ✓[0m[90m subtracts correctly[0m[33m (63ms)[0m
   [32m  ✓[0m[90m should throw an error if subtraction result would be negative[0m
   [32m  ✓[0m[90m should throw an error on addition overflow[0m
   [32m  ✓[0m[90m should throw an error on multiplication overflow[0m
 
-[0m  Contract: ERC20 Token[0m
-  [32m  ✓[0m[90m creation: in contract settings should match constructor parameters[0m[31m (192ms)[0m
-  [32m  ✓[0m[90m creation: should create a correct initial balance for the creator[0m
-  [32m  ✓[0m[90m creation: test correct setting of vanity information[0m[31m (109ms)[0m
+[0m  Contract: ERC20 Token - mintable[0m
+  [32m  ✓[0m[90m creation: should throw if trying to mint after minting is finished[0m
+  [32m  ✓[0m[90m creation: in contract settings should match constructor parameters[0m[31m (142ms)[0m
+  [32m  ✓[0m[90m creation: should create a correct initial balance for the creator[0m[33m (42ms)[0m
+  [32m  ✓[0m[90m creation: test correct setting of vanity information[0m[31m (89ms)[0m
   [32m  ✓[0m[90m creation: should succeed in creating over 2^256 - 1 (max) tokens[0m[31m (90ms)[0m
   [32m  ✓[0m[90m transfers: ether transfer should be reversed.[0m
-  [32m  ✓[0m[90m transfers: should transfer 10000 to accounts[1] with accounts[0] having 10000[0m[33m (68ms)[0m
-  [32m  ✓[0m[90m transfers: should fail when trying to transfer total amount +1 to accounts[1] with accounts[0] having total amount[0m[33m (67ms)[0m
-  [32m  ✓[0m[90m transfers: should handle zero-transfers normally[0m[33m (57ms)[0m
+  [32m  ✓[0m[90m transfers: should transfer 10000 to accounts[1] with accounts[0] having 10000[0m[33m (67ms)[0m
+  [32m  ✓[0m[90m transfers: should fail when trying to transfer total amount +1 to accounts[1] with accounts[0] having total amount[0m[33m (63ms)[0m
+  [32m  ✓[0m[90m transfers: should handle zero-transfers normally[0m[33m (53ms)[0m
   [32m  ✓[0m[90m transfers: should throw if receiver address is 0x0[0m
-  [32m  ✓[0m[90m transferFrom: should throw if receiver address is 0x0[0m[33m (50ms)[0m
-  [32m  ✓[0m[90m approvals: msg.sender should approve 100 to accounts[1][0m[33m (46ms)[0m
-  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 20 once.[0m[31m (290ms)[0m
-  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 20 twice.[0m[31m (269ms)[0m
-  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 50 & 60 (2nd tx should fail)[0m[31m (235ms)[0m
-  [32m  ✓[0m[90m approvals: attempt withdrawal from account with no allowance (should fail)[0m[33m (61ms)[0m
-  [32m  ✓[0m[90m approvals: allow accounts[1] 100 to withdraw from accounts[0]. Withdraw 60 and then approve 0 & attempt transfer.[0m[31m (116ms)[0m
-  [32m  ✓[0m[90m approvals: approve max (2^256 - 1)[0m[33m (44ms)[0m
-  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of max (2^256 - 1) & withdraws 20[0m[31m (177ms)[0m
+  [32m  ✓[0m[90m transferFrom: should throw if receiver address is 0x0[0m[33m (75ms)[0m
+  [32m  ✓[0m[90m approvals: msg.sender should approve 100 to accounts[1][0m[33m (55ms)[0m
+  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 20 once.[0m[31m (277ms)[0m
+  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 20 twice.[0m[31m (307ms)[0m
+  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of 100 & withdraws 50 & 60 (2nd tx should fail)[0m[31m (236ms)[0m
+  [32m  ✓[0m[90m approvals: attempt withdrawal from account with no allowance (should fail)[0m[33m (57ms)[0m
+  [32m  ✓[0m[90m approvals: allow accounts[1] 100 to withdraw from accounts[0]. Withdraw 60 and then approve 0 & attempt transfer.[0m[31m (147ms)[0m
+  [32m  ✓[0m[90m approvals: approve max (2^256 - 1)[0m[33m (54ms)[0m
+  [32m  ✓[0m[90m approvals: msg.sender approves accounts[1] of max (2^256 - 1) & withdraws 20[0m[31m (202ms)[0m
   [32m  ✓[0m[90m allowance: should start with zero[0m
-  [32m  ✓[0m[90m allowance: should increase by 50 then decrease by 10[0m[31m (120ms)[0m
-  [32m  ✓[0m[90m allowance: should be set to zero if decrease value is higher than existing[0m[33m (73ms)[0m
-  [32m  ✓[0m[90m events: should fire Transfer event properly[0m
-  [32m  ✓[0m[90m events: should fire Transfer event normally on a zero transfer[0m
+  [32m  ✓[0m[90m allowance: should increase by 50 then decrease by 10[0m[31m (117ms)[0m
+  [32m  ✓[0m[90m allowance: should be set to zero if decrease value is higher than existing[0m[31m (91ms)[0m
+  [32m  ✓[0m[90m events: should fire Transfer event properly[0m[33m (46ms)[0m
+  [32m  ✓[0m[90m events: should fire Transfer event normally on a zero transfer[0m[33m (44ms)[0m
   [32m  ✓[0m[90m events: should fire Approval event properly[0m
 
 [0m  Contract: Gateway Interface[0m
@@ -159,424 +158,426 @@ Spanning multiple lines.
 [0m    requestCodeUpgrade()[0m
     [32m  ✓[0m[90m throws if address is empty ( 0x0 )[0m
     [32m  ✓[0m[90m throws if calling object misses the initialize() method[0m
-    [32m  ✓[0m[90m throws if current Application cannot initialize Assets properly[0m[31m (166ms)[0m
-    [32m  ✓[0m[90m links Application if valid[0m[31m (104ms)[0m
-    [32m  ✓[0m[90m creates "Upgrade Proposal" if a previous Application is already linked[0m[31m (706ms)[0m
+    [32m  ✓[0m[90m throws if current Application cannot initialize Assets properly[0m[31m (184ms)[0m
+    [32m  ✓[0m[90m links Application if valid[0m[31m (140ms)[0m
+    [32m  ✓[0m[90m creates "Upgrade Proposal" if a previous Application is already linked[0m[31m (803ms)[0m
 [0m    approveCodeUpgrade()[0m
-    [32m  ✓[0m[90m throws if sender is not current Application[0m
-    [32m  ✓[0m[90m works if sender is current Application[0m[31m (572ms)[0m
-    [32m  ✓[0m[90m throws if current Application cannot transfer assets to new application[0m[31m (336ms)[0m
-    [32m  ✓[0m[90m throws if current Application cannot initialize new application[0m[31m (551ms)[0m
-    [32m  ✓[0m[90m throws if current Application cannot lock itself after transferring assets[0m[31m (539ms)[0m
+    [32m  ✓[0m[90m throws if sender is not current Application[0m[33m (40ms)[0m
+    [32m  ✓[0m[90m works if sender is current Application[0m[31m (672ms)[0m
+    [32m  ✓[0m[90m throws if current Application cannot transfer assets to new application[0m[31m (406ms)[0m
+    [32m  ✓[0m[90m throws if current Application cannot initialize new application[0m[31m (673ms)[0m
+    [32m  ✓[0m[90m throws if current Application cannot lock itself after transferring assets[0m[31m (667ms)[0m
 [0m      misc for extra coverage[0m
-      [32m  ✓[0m[90m getNewsContractAddress returns actual linked NewsContract Asset address[0m
+      [32m  ✓[0m[90m getNewsContractAddress returns actual linked NewsContract Asset address[0m[33m (38ms)[0m
       [32m  ✓[0m[90m getListingContractAddress returns actual linked ListingContract Asset address[0m
 
 [0m  Contract: Application Assets[0m
 [0m    setInitialOwnerAndName()[0m
-    [32m  ✓[0m[90m works if linking an asset for the first time[0m[31m (89ms)[0m
-    [32m  ✓[0m[90m throws if already owned[0m[33m (70ms)[0m
+    [32m  ✓[0m[90m works if linking an asset for the first time[0m[31m (97ms)[0m
+    [32m  ✓[0m[90m throws if already owned[0m[33m (72ms)[0m
 [0m    applyAndLockSettings()[0m
-    [32m  ✓[0m[90m works if called by deployer account and asset is not locked already[0m[31m (100ms)[0m
+    [32m  ✓[0m[90m works if called by deployer account and asset is not locked already[0m[31m (137ms)[0m
     [32m  ✓[0m[90m throws if called before initialization[0m
-    [32m  ✓[0m[90m throws if called when settings are already applied[0m[31m (100ms)[0m
-    [32m  ✓[0m[90m throws if not called by deployer's account[0m[33m (54ms)[0m
+    [32m  ✓[0m[90m throws if called when settings are already applied[0m[31m (123ms)[0m
+    [32m  ✓[0m[90m throws if not called by deployer's account[0m[31m (77ms)[0m
 [0m    getApplicationAssetAddressByName()[0m
-    [32m  ✓[0m[90m works if asset is initialized and owned by an application[0m[31m (96ms)[0m
-    [32m  ✓[0m[90m works if asset has settings and they are applied[0m[31m (150ms)[0m
-    [32m  ✓[0m[90m throws if asset name does not exist in the app's mapping[0m[31m (110ms)[0m
+    [32m  ✓[0m[90m works if asset is initialized and owned by an application[0m[31m (133ms)[0m
+    [32m  ✓[0m[90m works if asset has settings and they are applied[0m[31m (183ms)[0m
+    [32m  ✓[0m[90m throws if asset name does not exist in the app's mapping[0m[31m (115ms)[0m
 [0m    transferToNewOwner()[0m
-    [32m  ✓[0m[90m works if current caller is owner and requested address is not 0x0[0m[31m (181ms)[0m
+    [32m  ✓[0m[90m works if current caller is owner and requested address is not 0x0[0m[31m (201ms)[0m
     [32m  ✓[0m[90m throws if called when internal owner address is invalid[0m
-    [32m  ✓[0m[90m throws if owned and called by other address[0m[31m (89ms)[0m
-    [32m  ✓[0m[90m throws if new address is 0x0[0m[33m (62ms)[0m
+    [32m  ✓[0m[90m throws if owned and called by other address[0m[31m (77ms)[0m
+    [32m  ✓[0m[90m throws if new address is 0x0[0m[31m (81ms)[0m
 [0m    Application Bylaws in Application Asset[0m
-    [32m  ✓[0m[90m getAppBylawBytes32 returns correct value set by project settings[0m[33m (60ms)[0m
-    [32m  ✓[0m[90m getAppBylawUint256 returns correct value set by project settings[0m[33m (60ms)[0m
+    [32m  ✓[0m[90m getAppBylawBytes32 returns correct value set by project settings[0m[33m (57ms)[0m
+    [32m  ✓[0m[90m getAppBylawUint256 returns correct value set by project settings[0m[33m (58ms)[0m
 
 [0m  Contract: Application Entity[0m
-  [32m  ✓[0m[90m initializes with empty properties[0m[33m (56ms)[0m
-  [32m  ✓[0m[90m initializes with deployer address properly[0m[31m (141ms)[0m
+  [32m  ✓[0m[90m initializes with empty properties[0m[33m (52ms)[0m
+  [32m  ✓[0m[90m initializes with deployer address properly[0m[31m (161ms)[0m
 [0m    setBylawBytes32()[0m
-    [32m  ✓[0m[90m sets and returns a bylaw bytes32 if not initialized[0m[31m (165ms)[0m
-    [32m  ✓[0m[90m throws if if application is already initialized[0m[31m (79ms)[0m
+    [32m  ✓[0m[90m sets and returns a bylaw bytes32 if not initialized[0m[31m (191ms)[0m
+    [32m  ✓[0m[90m throws if if application is already initialized[0m[31m (97ms)[0m
 [0m    getBylawBytes32()[0m
     [32m  ✓[0m[90m throws if application is not initialized[0m
-    [32m  ✓[0m[90m returns correct value set by setBylawBytes32 if application is initialized[0m[31m (98ms)[0m
+    [32m  ✓[0m[90m returns correct value set by setBylawBytes32 if application is initialized[0m[31m (130ms)[0m
 [0m    setBylawUint256()[0m
-    [32m  ✓[0m[90m sets and returns a bylaw uint256 if not initialized[0m[31m (159ms)[0m
-    [32m  ✓[0m[90m throws if if application is already initialized[0m[31m (77ms)[0m
+    [32m  ✓[0m[90m sets and returns a bylaw uint256 if not initialized[0m[31m (191ms)[0m
+    [32m  ✓[0m[90m throws if if application is already initialized[0m[31m (96ms)[0m
 [0m    application bylaws validation[0m
-    [32m  ✓[0m[90m sets and returns all string and uint256 bylaws[0m[31m (1321ms)[0m
+    [32m  ✓[0m[90m sets and returns all string and uint256 bylaws[0m[31m (1634ms)[0m
 [0m    getBylawUint256()[0m
     [32m  ✓[0m[90m throws if application is not initialized[0m
-    [32m  ✓[0m[90m returns correct value set by setBylaw if application is initialized[0m[31m (93ms)[0m
+    [32m  ✓[0m[90m returns correct value set by setBylaw if application is initialized[0m[31m (129ms)[0m
 [0m    initialize()[0m
-    [32m  ✓[0m[90m throws if called when already initialized[0m[33m (54ms)[0m
-    [32m  ✓[0m[90m throws if called with owner missing ( gateway )[0m
-    [32m  ✓[0m[90m works if owner is set, and it's the one calling[0m[31m (98ms)[0m
+    [32m  ✓[0m[90m throws if called when already initialized[0m[33m (73ms)[0m
+    [32m  ✓[0m[90m throws if called with owner missing ( gateway )[0m[33m (47ms)[0m
+    [32m  ✓[0m[90m works if owner is set, and it's the one calling[0m[31m (97ms)[0m
 [0m    initializeAssetsToThisApplication()[0m
-    [32m  ✓[0m[90m throws if not an asset[0m[31m (85ms)[0m
-    [32m  ✓[0m[90m throws if any asset has a 0x0 address[0m[33m (54ms)[0m
-    [32m  ✓[0m[90m throws if caller is not gateway[0m
+    [32m  ✓[0m[90m throws if not an asset[0m[31m (127ms)[0m
+    [32m  ✓[0m[90m throws if any asset has a 0x0 address[0m[31m (85ms)[0m
+    [32m  ✓[0m[90m throws if caller is not gateway[0m[33m (49ms)[0m
 [0m    acceptCodeUpgradeProposal()[0m
-    [32m  ✓[0m[90m throws if caller is not Proposals Asset[0m[31m (126ms)[0m
+    [32m  ✓[0m[90m throws if caller is not Proposals Asset[0m[31m (165ms)[0m
 [0m    lock()[0m
     [32m  ✓[0m[90m throws if sender is not gateway[0m
-    [32m  ✓[0m[90m works if sender is gateway[0m[33m (71ms)[0m
+    [32m  ✓[0m[90m works if sender is gateway[0m[31m (92ms)[0m
 [0m    linkToGateway()[0m
-    [32m  ✓[0m[90m throws if called when owner already exists[0m
-    [32m  ✓[0m[90m throws if called when already initialized[0m
-    [32m  ✓[0m[90m will emit EventAppEntityReady on initial linking[0m[31m (97ms)[0m
-    [32m  ✓[0m[90m will emit EventNewProposalCreated if a previous ApplicationEntity is already linked[0m[31m (670ms)[0m
+    [32m  ✓[0m[90m throws if called when owner already exists[0m[33m (49ms)[0m
+    [32m  ✓[0m[90m throws if called when already initialized[0m[33m (46ms)[0m
+    [32m  ✓[0m[90m will emit EventAppEntityReady on initial linking[0m[31m (113ms)[0m
+    [32m  ✓[0m[90m will emit EventNewProposalCreated if a previous ApplicationEntity is already linked[0m[31m (824ms)[0m
 [0m    addAsset[AssetName]()[0m
-    [32m  ✓[0m[90m throws if called when already initialized[0m[31m (83ms)[0m
-    [32m  ✓[0m[90m throws if called by any other address than initial deployer[0m[33m (68ms)[0m
-    [32m  ✓[0m[90m linking an asset will emit EventAppEntityInitAsset event[0m[31m (80ms)[0m
-    [32m  ✓[0m[90m linking all assets will emit the same number of EventAppEntityInitAsset events[0m[31m (722ms)[0m
-    [32m  ✓[0m[90m linking an asset, then linking the same asset again, will replace it in mapping[0m[31m (207ms)[0m
+    [32m  ✓[0m[90m throws if called when already initialized[0m[31m (104ms)[0m
+    [32m  ✓[0m[90m throws if called by any other address than initial deployer[0m[31m (84ms)[0m
+    [32m  ✓[0m[90m linking an asset will emit EventAppEntityInitAsset event[0m[31m (117ms)[0m
+    [32m  ✓[0m[90m linking all assets will emit the same number of EventAppEntityInitAsset events[0m[31m (839ms)[0m
+    [32m  ✓[0m[90m linking an asset, then linking the same asset again, will replace it in mapping[0m[31m (276ms)[0m
 
 [0m  Contract: Application Entity Second[0m
 [0m    initializeNewAssetToThisApplication()[0m
-    [32m  ✓[0m[90m throws if not an asset[0m[31m (108ms)[0m
-    [32m  ✓[0m[90m throws if name does not match the asset[0m[31m (117ms)[0m
-    [32m  ✓[0m[90m throws if caller is not the deployer[0m[33m (75ms)[0m
-    [32m  ✓[0m[90m works if caller is the deployer, and asset was already added[0m[31m (115ms)[0m
+    [32m  ✓[0m[90m throws if not an asset[0m[31m (155ms)[0m
+    [32m  ✓[0m[90m throws if name does not match the asset[0m[31m (159ms)[0m
+    [32m  ✓[0m[90m throws if caller is not the deployer[0m[31m (107ms)[0m
+    [32m  ✓[0m[90m works if caller is the deployer, and asset was already added[0m[31m (169ms)[0m
 
 [0m  Contract: Gateway and Application Integration[0m
-  [32m  ✓[0m[90m initial deployment[0m[31m (95ms)[0m
-  [32m  ✓[0m[90m first linking[0m[31m (171ms)[0m
+  [32m  ✓[0m[90m initial deployment[0m[31m (119ms)[0m
+  [32m  ✓[0m[90m first linking[0m[31m (187ms)[0m
 [0m    Application upgrades[0m
-    [32m  ✓[0m[90m first upgrade[0m[31m (628ms)[0m
-    [32m  ✓[0m[90m second upgrade[0m[31m (1297ms)[0m
-    [32m  ✓[0m[90m throws if an upgrade request is received from an account that does not pass validCodeUpgradeInitiator check[0m[31m (194ms)[0m
-    [32m  ✓[0m[90m mock: works if an upgrade request is received and current ApplicationEntity canInitiateCodeUpgrade allows it[0m[31m (460ms)[0m
+    [32m  ✓[0m[90m first upgrade[0m[31m (719ms)[0m
+    [32m  ✓[0m[90m second upgrade[0m[31m (1506ms)[0m
+    [32m  ✓[0m[90m throws if an upgrade request is received from an account that does not pass validCodeUpgradeInitiator check[0m[31m (221ms)[0m
+    [32m  ✓[0m[90m mock: works if an upgrade request is received and current ApplicationEntity canInitiateCodeUpgrade allows it[0m[31m (510ms)[0m
 
 [0m  Contract: TokenManager Asset[0m
 [0m    addTokenSettingsAndInit()[0m
-    [32m  ✓[0m[90m properly sets up the tokens if initialized[0m[31m (90ms)[0m
-    [32m  ✓[0m[90m properly sets up the Token SCADA[0m[31m (170ms)[0m
+    [32m  ✓[0m[90m properly sets up the tokens if initialized[0m[31m (116ms)[0m
+    [32m  ✓[0m[90m properly sets up the Token SCADA[0m[31m (179ms)[0m
 [0m    getTokenSCADARequiresHardCap()[0m
-    [32m  ✓[0m[90m returns boolean value stored in SCADA Contract[0m[31m (91ms)[0m
+    [32m  ✓[0m[90m returns boolean value stored in SCADA Contract[0m[31m (89ms)[0m
 
 [0m  Contract: ListingContract Asset[0m
 [0m    setManagerAddress()[0m
     [32m  ✓[0m[90m throws if caller is not deployer[0m
-    [32m  ✓[0m[90m works if caller is applicationEntity[0m[33m (66ms)[0m
+    [32m  ✓[0m[90m works if caller is applicationEntity[0m[33m (75ms)[0m
 [0m    addItem()[0m
     [32m  ✓[0m[90m throws if addItem caller is not applicationEntity[0m
-    [32m  ✓[0m[90m works if caller is applicationEntity[0m[31m (126ms)[0m
-    [32m  ✓[0m[90m works if caller is manager address[0m[31m (157ms)[0m
+    [32m  ✓[0m[90m works if caller is applicationEntity[0m[31m (122ms)[0m
+    [32m  ✓[0m[90m works if caller is manager address[0m[31m (170ms)[0m
 [0m    getNewsContractAddress()[0m
     [32m  ✓[0m[90m throws if the child does not actually exist[0m
-    [32m  ✓[0m[90m throws if the child itemAddress is invalid[0m[31m (112ms)[0m
-    [32m  ✓[0m[90m returns a news contract address if the child is an actual ApplicationEntity[0m[31m (757ms)[0m
+    [32m  ✓[0m[90m throws if the child itemAddress is invalid[0m[31m (151ms)[0m
+    [32m  ✓[0m[90m returns a news contract address if the child is an actual ApplicationEntity[0m[31m (1074ms)[0m
 [0m    delistChild()[0m
-    [32m  ✓[0m[90m throws if called by any address other than Proposals Asset[0m[33m (45ms)[0m
-    [32m  ✓[0m[90m works if called by proposals asset, resulting in a child with status == false[0m[31m (140ms)[0m
+    [32m  ✓[0m[90m throws if called by any address other than Proposals Asset[0m[33m (67ms)[0m
+    [32m  ✓[0m[90m works if called by proposals asset, resulting in a child with status == false[0m[31m (142ms)[0m
 
 [0m  Contract: NewsContract Asset[0m
 [0m    addItem()[0m
     [32m  ✓[0m[90m throws if called by anyone else but the deployer address[0m
-    [32m  ✓[0m[90m works if called by deployer address[0m[31m (107ms)[0m
+    [32m  ✓[0m[90m works if called by deployer address[0m[31m (108ms)[0m
 [0m    addInternalMessage()[0m
     [32m  ✓[0m[90m throws if called by anyone else but the Application address[0m
-    [32m  ✓[0m[90m works if called by Application address[0m[31m (80ms)[0m
+    [32m  ✓[0m[90m works if called by Application address[0m[31m (83ms)[0m
 
 [0m  Contract: Funding Vault[0m
-  [32m  ✓[0m[90m initializes with empty properties[0m[31m (115ms)[0m
+  [32m  ✓[0m[90m initializes with empty properties[0m[31m (107ms)[0m
   [32m  ✓[0m[90m addPayment throws if not initialized[0m
 [0m    initialize()[0m
-    [32m  ✓[0m[90m throws if called when already initialized[0m
-    [32m  ✓[0m[90m works if settings are correct and has not been initialized before[0m[31m (216ms)[0m
+    [32m  ✓[0m[90m throws if called when already initialized[0m[31m (79ms)[0m
+    [32m  ✓[0m[90m works if settings are correct and has not been initialized before[0m[31m (242ms)[0m
 [0m    addPayment()[0m
-    [32m  ✓[0m[90m FUNDING_DIRECT_METHOD - works with correct settings and caller[0m[31m (208ms)[0m
-    [32m  ✓[0m[90m FUNDING_MILESTONE_METHOD - works with correct settings and caller[0m[31m (175ms)[0m
-    [32m  ✓[0m[90m throws if msg.value is missing[0m
+    [32m  ✓[0m[90m FUNDING_DIRECT_METHOD - works with correct settings and caller[0m[31m (216ms)[0m
+    [32m  ✓[0m[90m FUNDING_MILESTONE_METHOD - works with correct settings and caller[0m[31m (215ms)[0m
+    [32m  ✓[0m[90m throws if msg.value is missing[0m[33m (41ms)[0m
     [32m  ✓[0m[90m throws if payment method does not exist[0m
     [32m  ✓[0m[90m throws if called by other address than manager (funding contract)[0m
-    [32m  ✓[0m[90m handles multiple payments, irregardless of funding method provided[0m[31m (115ms)[0m
+    [32m  ✓[0m[90m handles multiple payments, irregardless of funding method provided[0m[31m (137ms)[0m
 
 [0m  Contract: Bounty Manager[0m
-  [32m  ✓[0m[90m token balance matches bylaws[0m
 [0m    Before Funding ended[0m
-    [32m  ✓[0m[90m throws if sendBounty is called[0m[31m (79ms)[0m
+    [32m  ✓[0m[90m throws if sendBounty is called[0m[31m (121ms)[0m
 [0m    After Funding ended[0m
-    [32m  ✓[0m[90m throws if sendBounty is called by anyone else but deployer[0m[33m (73ms)[0m
-    [32m  ✓[0m[90m throws if sendBounty amount is higher than remaining value[0m[31m (80ms)[0m
-    [32m  ✓[0m[90m works if sendBounty is called by deployer and value is lower than remaining[0m[33m (74ms)[0m
+    [32m  ✓[0m[90m Bounty token balance matches bylaws[0m
+    [32m  ✓[0m[90m Project token balance matches bylaws[0m[33m (40ms)[0m
+    [32m  ✓[0m[90m throws if sendBounty is called by anyone else but deployer[0m[31m (79ms)[0m
+    [32m  ✓[0m[90m throws if sendBounty amount is higher than remaining value[0m[33m (73ms)[0m
+    [32m  ✓[0m[90m works if sendBounty is called by deployer and value is lower than remaining[0m[31m (97ms)[0m
 
 [0m  Contract: Funding Asset[0m
   [32m  ✓[0m[90m deploys with no Funding Stages[0m
   [32m  ✓[0m[90m deploys with no multiSigOutputAddress[0m
-  [32m  ✓[0m[90m deploys with no Funding Inputs[0m[31m (129ms)[0m
-  [32m  ✓[0m[90m has Funding Inputs once initialized[0m
+  [32m  ✓[0m[90m deploys with no Funding Inputs[0m[31m (177ms)[0m
+  [32m  ✓[0m[90m has Funding Inputs once initialized[0m[33m (48ms)[0m
 [0m    addSettings()[0m
-    [32m  ✓[0m[90m throws if called when settings are locked[0m[31m (145ms)[0m
+    [32m  ✓[0m[90m throws if called when settings are locked[0m[33m (52ms)[0m
     [32m  ✓[0m[90m throws if global soft cap is greater than global hard cap[0m
-    [32m  ✓[0m[90m properly sets up the funding settings[0m[31m (115ms)[0m
+    [32m  ✓[0m[90m properly sets up the funding settings[0m[31m (114ms)[0m
 [0m    first funding stage[0m
-    [32m  ✓[0m[90m successfully creates a funding stage with proper settings[0m[31m (92ms)[0m
-    [32m  ✓[0m[90m throws if end time is before or equal to start time[0m
-    [32m  ✓[0m[90m throws if token selling percentage is higher than 100%[0m
-[0m      SCADA Disallows Record Hard Cap, Requires Globals[0m
-      [32m  ✓[0m[90m throws if soft cap exists[0m
-      [32m  ✓[0m[90m throws if hard cap exists[0m
-      [32m  ✓[0m[90m works if hard cap and soft cap is 0[0m[31m (94ms)[0m
+    [32m  ✓[0m[90m successfully creates a funding stage with proper settings[0m[31m (146ms)[0m
+    [32m  ✓[0m[90m throws if end time is before or equal to start time[0m[33m (53ms)[0m
+[0m      SCADA Requires Record Hard Cap[0m
+      [32m  ✓[0m[90m throws if hard cap is 0[0m[33m (64ms)[0m
+      [32m  ✓[0m[90m throws if record soft cap is higher than hard cap[0m[33m (67ms)[0m
+      [32m  ✓[0m[90m works if hard cap is higher than soft cap which is higher than 0[0m[31m (133ms)[0m
+      [32m  ✓[0m[90m throws if token selling percentage is provided in funding stage[0m[33m (68ms)[0m
 [0m      when at least 1 funding stage already exists[0m
-      [32m  ✓[0m[90m successfully creates the second funding stage with proper settings[0m[31m (95ms)[0m
-      [32m  ✓[0m[90m throws if new funding stage start time overlaps existing stage[0m[33m (41ms)[0m
-      [32m  ✓[0m[90m throws if new funding stage + existing stage sell more than 100% of tokens[0m
+      [32m  ✓[0m[90m successfully creates the second funding stage with proper settings[0m[31m (140ms)[0m
+      [32m  ✓[0m[90m throws if new funding stage start time overlaps existing stage[0m[33m (71ms)[0m
 [0m    funding stages added, asset initialized[0m
-    [32m  ✓[0m[90m has correct Funding Inputs after ApplicationEntity grabs asset ownership and initializes it[0m[33m (54ms)[0m
+    [32m  ✓[0m[90m has correct Funding Inputs after ApplicationEntity grabs asset ownership and initializes it[0m[33m (62ms)[0m
 [0m      receivePayment()[0m
       [32m  ✓[0m[90m throws if called directly in the Funding contract[0m
       [32m  ✓[0m[90m throws if caller is not funding asset[0m
-      [32m  ✓[0m[90m throws if _payment_method is not allowed[0m[31m (114ms)[0m
+      [32m  ✓[0m[90m throws if _payment_method is not allowed[0m[31m (134ms)[0m
 [0m      canAcceptPayment()[0m
       [32m  ✓[0m[90m returns false if CurrentEntityState is not IN_PROGRESS[0m
 [0m        CurrentEntityState is IN_PROGRESS[0m
         [32m  ✓[0m[90m returns false if ETH value is 0[0m
-        [32m  ✓[0m[90m returns false if ETH value is smaller than minimum entry[0m[31m (414ms)[0m
-        [32m  ✓[0m[90m returns false if any State changes are required[0m[31m (599ms)[0m
+        [32m  ✓[0m[90m returns false if any State changes are required[0m[31m (546ms)[0m
 [0m      Funding State: IN_PROGRESS[0m
 [0m        Funding Input: All[0m
         [32m  ✓[0m[90m has correct FundingAssetAddress[0m
         [32m  ✓[0m[90m throws if msg.value is missing[0m
-        [32m  ✓[0m[90m throws if FundingAssetAddress is not set[0m[33m (73ms)[0m
-        [32m  ✓[0m[90m throws if FundingAsset is not pointing to a Contract[0m[33m (57ms)[0m
+        [32m  ✓[0m[90m throws if FundingAssetAddress is not set[0m[31m (88ms)[0m
+        [32m  ✓[0m[90m throws if FundingAsset is not pointing to a Contract[0m[33m (70ms)[0m
 [0m          Funding Input: Direct[0m
           [32m  ✓[0m[90m has correct type id = 1[0m
-[1;37m      ↓ Direct Payment: GAS USAGE: [0;35m9039005 [0m
-          [32m  ✓[0m[90m accepts payments using fallback () method and stores in valut's direct pool[0m[31m (425ms)[0m
-[1;37m      ↓ First Direct Payment: GAS USAGE: [0;35m9039005 [0m
-[1;37m      ↓ Second Direct Payment: GAS USAGE: [0;35m348715 [0m
-          [32m  ✓[0m[90m accepts second payment from same investor[0m[31m (710ms)[0m
-          [32m  ✓[0m[90m accepts second payment from same investor using both payment methods ( Direct & Milestone )[0m[31m (704ms)[0m
+[1;37m      ↓ Direct Payment: GAS USAGE: [0;35m9141009 [0m
+          [32m  ✓[0m[90m accepts payments using fallback () method and stores in valut's direct pool[0m[31m (602ms)[0m
+[1;37m      ↓ First Direct Payment: GAS USAGE: [0;35m9141009 [0m
+[1;37m      ↓ Second Direct Payment: GAS USAGE: [0;35m420653 [0m
+          [32m  ✓[0m[90m accepts second payment from same investor[0m[31m (933ms)[0m
+          [32m  ✓[0m[90m accepts second payment from same investor using both payment methods ( Direct & Milestone )[0m[31m (997ms)[0m
 [0m          Funding Input: Milestone[0m
           [32m  ✓[0m[90m has correct type id = 2[0m
-[1;37m      ↓ Milestone Payment: GAS USAGE: [0;35m9039018 [0m
-          [32m  ✓[0m[90m accepts payments using fallback () method and stores in valut's milestone pool[0m[31m (458ms)[0m
+[1;37m      ↓ Milestone Payment: GAS USAGE: [0;35m9141023 [0m
+          [32m  ✓[0m[90m accepts payments using fallback () method and stores in valut's milestone pool[0m[31m (618ms)[0m
+
+[0m  Contract: Funding Asset - Payments[0m
+[1;37m      ↓ Direct Payment with value over cap: GAS USAGE: [0;35m9141009 [0m
+  [32m  ✓[0m[90m payments do not exist yet, accepts payment that is larger than remaining cap, and returns what's left back to the investor[0m[31m (735ms)[0m
+[1;37m      ↓ Direct Payment with value over cap: GAS USAGE: [0;35m9090963 [0m
+  [32m  ✓[0m[90m payments exist, accepts payment that is larger than remaining cap, and returns what's left back to the investor[0m[31m (1717ms)[0m
+  [32m  ✓[0m[90m throws if cap is already reached, even if state change is not done yet. [0m[31m (1902ms)[0m
 
 [0m  Contract: Funding Asset - States[0m
-  [32m  ✓[0m[90m starts with state as New and requires a change to WAITING if current time is before any funding stage[0m[31m (278ms)[0m
-  [32m  ✓[0m[90m handles ENTITY state change from NEW to WAITING when funding does not start yet[0m[31m (639ms)[0m
-  [32m  ✓[0m[90m starts with state as New and has correct Token Balance once in WAITING state[0m[31m (473ms)[0m
-  [32m  ✓[0m[90m handles ENTITY state change from NEW or WAITING to IN_PROGRESS when funding time start has passed[0m[31m (509ms)[0m
-  [32m  ✓[0m[90m is in IN_PROGRESS, receives payments, pre_ico time passes, should Require change to COOLDOWN[0m[31m (1276ms)[0m
-  [32m  ✓[0m[90m handles ENTITY state change from IN_PROGRESS to COOLDOWN when funding period time start has passed[0m[31m (1279ms)[0m
-  [32m  ✓[0m[90m is in COOLDOWN, ico start time passes, should Require change to IN_PROGRESS[0m[31m (1574ms)[0m
-  [32m  ✓[0m[90m handles ENTITY state change from COOLDOWN to IN_PROGRESS when next funding period time start has passed[0m[31m (1661ms)[0m
-  [32m  ✓[0m[90m is IN_PROGRESS, ico end time passes, should Require change to FUNDING_ENDED[0m[31m (2141ms)[0m
+  [32m  ✓[0m[90m starts with state as New and requires a change to WAITING if current time is before any funding stage[0m[31m (253ms)[0m
+  [32m  ✓[0m[90m handles ENTITY state change from NEW to WAITING when funding does not start yet[0m[31m (616ms)[0m
+  [32m  ✓[0m[90m handles ENTITY state change from NEW or WAITING to IN_PROGRESS when funding time start has passed[0m[31m (587ms)[0m
+  [32m  ✓[0m[90m is in IN_PROGRESS, receives payments, pre_ico time passes, should Require change to COOLDOWN[0m[31m (1639ms)[0m
+  [32m  ✓[0m[90m handles ENTITY state change from IN_PROGRESS to COOLDOWN when funding period time start has passed[0m[31m (1563ms)[0m
+  [32m  ✓[0m[90m is in COOLDOWN, ico start time passes, should Require change to IN_PROGRESS[0m[31m (1865ms)[0m
+  [32m  ✓[0m[90m handles ENTITY state change from COOLDOWN to IN_PROGRESS when next funding period time start has passed[0m[31m (2088ms)[0m
+  [32m  ✓[0m[90m is IN_PROGRESS, ico end time passes, should Require change to FUNDING_ENDED[0m[31m (2771ms)[0m
 [0m    handles ENTITY state change from IN_PROGRESS when last funding period time end has passed[0m
-    [32m  ✓[0m[90m to FAILED when payments did not reach soft cap[0m[31m (2423ms)[0m
-    [32m  ✓[0m[90m to SUCCESSFUL when payments reached soft cap[0m[31m (2343ms)[0m
-[0m    handles ENTITY state change from IN_PROGRESS when Hard Cap is Reached[0m
-    [32m  ✓[0m[90m to SUCCESSFUL when payments reached hard cap in first funding stage (pre-ico)[0m[31m (3457ms)[0m
-    [32m  ✓[0m[90m to SUCCESSFUL when payments reached hard cap in last funding stage (ico)[0m[31m (3464ms)[0m
+    [32m  ✓[0m[90m to FAILED when payments did not reach soft cap[0m[31m (2990ms)[0m
+    [32m  ✓[0m[90m to SUCCESSFUL when payments reached soft cap[0m[31m (2987ms)[0m
+[0m    handles ENTITY state change from IN_PROGRESS when stage Hard Cap is Reached[0m
+    [32m  ✓[0m[90m to COOLDOWN when payments reached hard cap in first funding stage (pre-ico)[0m[31m (4675ms)[0m
+    [32m  ✓[0m[90m to SUCCESSFUL when payments reached hard cap in last funding stage (ico)[0m[31m (12822ms)[0m
 [0m    FundingManager Tasks[0m
-    [32m  ✓[0m[90m handles ENTITY state change from FAILED to FAILED_FINAL after FundingManager Task Process finished[0m[31m (5886ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from SUCCESSFUL to SUCCESSFUL_FINAL after FundingManager Task Process finished[0m[31m (17190ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from FAILED to FAILED_FINAL after FundingManager Task Process finished[0m[31m (7116ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from SUCCESSFUL to SUCCESSFUL_FINAL after FundingManager Task Process finished[0m[31m (19305ms)[0m
 [0m    misc for extra coverage[0m
-    [32m  ✓[0m[90m isFundingStageUpdateAllowed returns false if not allowed[0m[31m (561ms)[0m
-    [32m  ✓[0m[90m should run doStateChanges even if no changes are required[0m[31m (314ms)[0m
+    [32m  ✓[0m[90m isFundingStageUpdateAllowed returns false if not allowed[0m[31m (538ms)[0m
+    [32m  ✓[0m[90m should run doStateChanges even if no changes are required[0m[31m (363ms)[0m
 
 [0m  Contract: FundingManager Asset[0m
-  [32m  ✓[0m[90m receivePayment() throws if caller is not funding asset[0m[33m (51ms)[0m
+  [32m  ✓[0m[90m receivePayment() throws if caller is not funding asset[0m[33m (48ms)[0m
 [0m    FundingEndedProcessVaultList()[0m
     [32m  ✓[0m[90m vaultNum has correct number of payments[0m
     [32m  ✓[0m[90m throws if Funding State is not "FUNDING_ENDED"[0m
-    [32m  ✓[0m[90m Funding State is "FUNDING_ENDED"[0m[31m (4493ms)[0m
+    [32m  ✓[0m[90m Funding State is "FUNDING_ENDED"[0m[31m (4560ms)[0m
 [0m    states[0m
-    [32m  ✓[0m[90m starts with state as New and requires a change to WAITING[0m[31m (127ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from NEW to WAITING[0m[31m (1568ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from NEW or WAITING to FUNDING_FAILED_DONE when funding state is FAILED [0m[31m (9403ms)[0m
+    [32m  ✓[0m[90m starts with state as New and requires a change to WAITING[0m[31m (110ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from NEW to WAITING[0m[31m (1652ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from NEW or WAITING to FUNDING_FAILED_DONE when funding state is FAILED [0m[31m (10873ms)[0m
     [32m  ✓[0m[90m setVaultCountPerProcess throws if value is not higher than 0[0m
-    [32m  ✓[0m[90m setVaultCountPerProcess properly sets value[0m[33m (52ms)[0m
+    [32m  ✓[0m[90m setVaultCountPerProcess properly sets value[0m[31m (78ms)[0m
 [0m      Funding ends, has payments, but does not reach Soft Cap[0m
-      [32m  ✓[0m[90m handles ENTITY state change to FUNDING_FAILED_DONE, and processes all vaults[0m[31m (9318ms)[0m
+      [32m  ✓[0m[90m handles ENTITY state change to FUNDING_FAILED_DONE, and processes all vaults[0m[31m (10830ms)[0m
 [0m      Funding ends, has payments, and Soft Cap is reached[0m
-      [32m  ✓[0m[90m handles ENTITY state change to FUNDING_SUCCESSFUL_DONE, and processes all vaults[0m[31m (8625ms)[0m
+      [32m  ✓[0m[90m handles ENTITY state change to FUNDING_SUCCESSFUL_DONE, and processes all vaults[0m[31m (9947ms)[0m
 
 [0m  Contract: FundingManager Asset[0m
 [0m    Successful funding - Token distribution[0m
 [0m      Milestone Payments only[0m
-      [32m  ✓[0m[90m SoftCap reached in pre-ico, 1 payment, 1 payment in pre-ico, 0 payments in ico[0m[31m (9016ms)[0m
-      [32m  ✓[0m[90m SoftCap reached in ico, 1 payment, 1 account, 0 payments in pre-ico, 1 payment in ico[0m[31m (8018ms)[0m
-      [32m  ✓[0m[90m SoftCap reached in pre-ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico[0m[31m (10766ms)[0m
-      [32m  ✓[0m[90m SoftCap reached in ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico[0m[31m (10616ms)[0m
-      [32m  ✓[0m[90m SoftCap reached in pre-ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)[0m[31m (10946ms)[0m
-      [32m  ✓[0m[90m SoftCap reached in ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)[0m[31m (11090ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in pre-ico, 1 payment, 1 payment in pre-ico, 0 payments in ico[0m[31m (10363ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in ico, 1 payment, 1 account, 0 payments in pre-ico, 1 payment in ico[0m[31m (9221ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in pre-ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico[0m[31m (12136ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in ico, 2 payments, 1 account, 1 payment in pre-ico, 1 payment in ico[0m[31m (12055ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in pre-ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)[0m[31m (12455ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in ico, 2 payments, 2 accounts, 1 payment in pre-ico (account 1), 1 payment in ico (account 2)[0m[31m (12434ms)[0m
 [0m      Mixed Direct and Milestone Payments[0m
-      [32m  ✓[0m[90m SoftCap reached in pre-ico, 4 payments, 2 accounts, 2 payment in pre-ico (account 1/2), 2 payment in ico (account 1/2)[0m[31m (11669ms)[0m
+      [32m  ✓[0m[90m SoftCap reached in pre-ico, 4 payments, 2 accounts, 2 payments in pre-ico (account 1/2), 2 payments in ico (account 1/2)[0m[31m (12971ms)[0m
 [0m    misc for extra coverage[0m
-    [32m  ✓[0m[90m SCADA - initCacheForVariables() throws if called by other than FundingManager[0m[31m (5785ms)[0m
-    [32m  ✓[0m[90m should run doStateChanges even if no changes are required[0m[31m (2057ms)[0m
-    [32m  ✓[0m[90m SCADA - getTokenFraction() should run 0 if my amount is 0[0m[31m (5829ms)[0m
-    [32m  ✓[0m[90m SCADA - getUnsoldTokenFraction() should run 0 if my amount is 0[0m[31m (5840ms)[0m
+    [32m  ✓[0m[90m should run doStateChanges even if no changes are required[0m[31m (2163ms)[0m
 
 [0m  Contract: Milestones Asset - Settings NOT Locked[0m
-  [32m  ✓[0m[90m starts with state as New and requires a change to WAITING if current time is before development start[0m[31m (272ms)[0m
+  [32m  ✓[0m[90m starts with state as New and requires a change to WAITING if current time is before development start[0m[31m (268ms)[0m
 [0m    addRecord()[0m
-    [32m  ✓[0m[90m works if settings are not already locked[0m[33m (65ms)[0m
-    [32m  ✓[0m[90m throws if settings are locked[0m[31m (304ms)[0m
+    [32m  ✓[0m[90m works if settings are not already locked[0m[33m (73ms)[0m
+    [32m  ✓[0m[90m throws if settings are locked[0m[31m (482ms)[0m
 
 [0m  Contract: Milestones Asset - Settings Locked[0m
-  [32m  ✓[0m[90m isRecordUpdateAllowed should return false[0m[31m (282ms)[0m
+  [32m  ✓[0m[90m isRecordUpdateAllowed should return false[0m[31m (288ms)[0m
 [0m    states[0m
-    [32m  ✓[0m[90m throws if trying to set Meeting time after it was already set.[0m[31m (5681ms)[0m
-    [32m  ✓[0m[90m throws if now is @ expiry time and trying to set Meeting time at expiry time.[0m[31m (3830ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from WAITING to WAITING_MEETING_TIME when current time is after development start[0m[31m (4228ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_FAILED when current time is after milestone end, and meeting time was not set[0m[31m (5314ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_YES when current time is after milestone end, and meeting time was set[0m[31m (5682ms)[0m
-    [32m  ✓[0m[90m handles ENTITY state change from DEADLINE_MEETING_TIME_YES to VOTING_IN_PROGRESS when current time is after meeting time[0m[31m (7671ms)[0m
+    [32m  ✓[0m[90m throws if trying to set Meeting time after it was already set.[0m[31m (5636ms)[0m
+    [32m  ✓[0m[90m throws if now is @ expiry time and trying to set Meeting time at expiry time.[0m[31m (3714ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from WAITING to WAITING_MEETING_TIME when current time is after development start[0m[31m (3949ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_FAILED when current time is after milestone end, and meeting time was not set[0m[31m (5277ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from WAITING_MEETING_TIME to DEADLINE_MEETING_TIME_YES when current time is after milestone end, and meeting time was set[0m[31m (5520ms)[0m
+    [32m  ✓[0m[90m handles ENTITY state change from DEADLINE_MEETING_TIME_YES to VOTING_IN_PROGRESS when current time is after meeting time[0m[31m (7564ms)[0m
 
 [0m  Contract: Proposals Asset[0m
   [32m  ✓[0m[90m setVoteCountPerProcess throws if value is not higher than 0[0m
-  [32m  ✓[0m[90m setVoteCountPerProcess properly sets value[0m[33m (55ms)[0m
+  [32m  ✓[0m[90m setVoteCountPerProcess properly sets value[0m[33m (68ms)[0m
 
 [0m  Contract: Proposals Asset - Settings Locked[0m
   [32m  ✓[0m[90m Asset deploys and initialises properly[0m
 [0m    proposal creation[0m
 [0m      type 1 - IN_DEVELOPMENT_CODE_UPGRADE - Voting Type - Milestone[0m
       [32m  ✓[0m[90m throws if called by any address other than ApplicationEntity[0m
-      [32m  ✓[0m[90m creates the proposal if called by the current ApplicationEntity[0m[31m (369ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by the current ApplicationEntity[0m[31m (445ms)[0m
 [0m      type 2 - EMERGENCY_FUND_RELEASE - Voting Type - Milestone[0m
       [32m  ✓[0m[90m throws if called by any address other than deployer[0m
-      [32m  ✓[0m[90m creates the proposal if called by the current deployer[0m[31m (246ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by the current deployer[0m[31m (250ms)[0m
 [0m      type 3 - MILESTONE_POSTPONING - Voting Type - Milestone[0m
       [32m  ✓[0m[90m throws if called by any address other than deployer[0m
-      [32m  ✓[0m[90m throws if duration is not higher than min postponing bylaw[0m[33m (48ms)[0m
-      [32m  ✓[0m[90m throws if duration is higher than max postponing bylaw[0m[33m (60ms)[0m
-      [32m  ✓[0m[90m creates the proposal if called by the current deployer with correct duration[0m[31m (321ms)[0m
+      [32m  ✓[0m[90m throws if duration is not higher than min postponing bylaw[0m[33m (46ms)[0m
+      [32m  ✓[0m[90m throws if duration is higher than max postponing bylaw[0m[33m (65ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by the current deployer with correct duration[0m[31m (294ms)[0m
 [0m      type 4 - MILESTONE_DEADLINE - Voting Type - Milestone[0m
       [32m  ✓[0m[90m throws if called by any address other than MilestoneAsset[0m
-      [32m  ✓[0m[90m creates the proposal if called by the current MilestoneAsset[0m[31m (276ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by the current MilestoneAsset[0m[31m (285ms)[0m
 [0m      type 5 - PROJECT_DELISTING - Voting Type - Tokens[0m
-      [32m  ✓[0m[90m throws if called by an address that does not hold any tokens. ( none in wallet / none in vault )[0m[33m (40ms)[0m
-      [32m  ✓[0m[90m throws if child application is beyond FUNDING_STARTED state.[0m[31m (1372ms)[0m
-      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens locked in vault)[0m[31m (295ms)[0m
-      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens locked in vault)[0m[31m (297ms)[0m
-      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens in wallet)[0m[31m (300ms)[0m
+      [32m  ✓[0m[90m throws if called by an address that does not hold any tokens. ( none in wallet / none in vault )[0m[33m (45ms)[0m
+      [32m  ✓[0m[90m throws if child application is beyond FUNDING_STARTED state.[0m[31m (1379ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens locked in vault)[0m[31m (313ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens locked in vault)[0m[31m (303ms)[0m
+      [32m  ✓[0m[90m creates the proposal if called by a token holder, (tokens in wallet)[0m[31m (285ms)[0m
 [0m      misc for extra coverage[0m
-      [32m  ✓[0m[90m getRequiredStateChanges()[0m
-      [32m  ✓[0m[90m hasRequiredStateChanges()[0m
+      [32m  ✓[0m[90m getRequiredStateChanges()[0m[33m (50ms)[0m
+      [32m  ✓[0m[90m hasRequiredStateChanges()[0m[33m (43ms)[0m
       [32m  ✓[0m[90m process() throws if called by any other than ApplicationEntity[0m
-      [32m  ✓[0m[90m getMyVote()[0m
+      [32m  ✓[0m[90m getMyVote()[0m[33m (41ms)[0m
       [32m  ✓[0m[90m getProposalState()[0m
-      [32m  ✓[0m[90m getBylawsMilestoneMinPostponing()[0m[33m (66ms)[0m
-      [32m  ✓[0m[90m getBylawsMilestoneMaxPostponing()[0m[33m (63ms)[0m
-      [32m  ✓[0m[90m getVotingPower() for non existent investor[0m[33m (60ms)[0m
+      [32m  ✓[0m[90m getBylawsMilestoneMinPostponing()[0m[31m (77ms)[0m
+      [32m  ✓[0m[90m getBylawsMilestoneMaxPostponing()[0m[33m (73ms)[0m
+      [32m  ✓[0m[90m getVotingPower() for non existent investor[0m[31m (86ms)[0m
 
 [0m  Contract: Proposals Asset - Type 1 - IN_DEVELOPMENT_CODE_UPGRADE[0m
-  [32m  ✓[0m[90m current proposal matches IN_DEVELOPMENT_CODE_UPGRADE settings[0m[31m (5066ms)[0m
-  [32m  ✓[0m[90m proposal closes as VOTING_RESULT_YES when time expires and no votes are registered[0m[31m (5998ms)[0m
-  [32m  ✓[0m[90m second application has all assets added, and more. Proposal closes as VOTING_RESULT_YES, state change results in assets getting transferred.[0m[31m (7728ms)[0m
-  [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (85438ms)[0m
+  [32m  ✓[0m[90m current proposal matches IN_DEVELOPMENT_CODE_UPGRADE settings[0m[31m (5050ms)[0m
+  [32m  ✓[0m[90m proposal closes as VOTING_RESULT_YES when time expires and no votes are registered[0m[31m (6011ms)[0m
+  [32m  ✓[0m[90m second application has all assets added, and more. Proposal closes as VOTING_RESULT_YES, state change results in assets getting transferred.[0m[31m (8340ms)[0m
+  [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (114150ms)[0m
 
 [0m  Contract: Proposals Asset - Type 2 - EMERGENCY_FUND_RELEASE[0m
-  [32m  ✓[0m[90m current proposal matches EMERGENCY_FUND_RELEASE settings[0m[31m (148ms)[0m
-  [32m  ✓[0m[90m throws if EMERGENCY_FUND_RELEASE proposal was already created once[0m
+  [32m  ✓[0m[90m current proposal matches EMERGENCY_FUND_RELEASE settings[0m[31m (132ms)[0m
+  [32m  ✓[0m[90m throws if EMERGENCY_FUND_RELEASE proposal was already created once[0m[33m (65ms)[0m
 [0m    Proposal Created - Voting Started[0m
-    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (66ms)[0m
-    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (53ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%[0m[31m (336ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%[0m[31m (375ms)[0m
-    [32m  ✓[0m[90m first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES[0m[31m (619ms)[0m
-    [32m  ✓[0m[90m first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO[0m[31m (382ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (65ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (55ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%[0m[31m (339ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%[0m[31m (366ms)[0m
+    [32m  ✓[0m[90m first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES[0m[31m (589ms)[0m
+    [32m  ✓[0m[90m first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO[0m[31m (424ms)[0m
     [32m  ✓[0m[90m YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (563ms)[0m
-    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (545ms)[0m
-    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (724ms)[0m
+    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (552ms)[0m
+    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (808ms)[0m
 [0m      Voting Successful - Processed before voting expiry time[0m
-      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[33m (50ms)[0m
-      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (5908ms)[0m
+      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[33m (72ms)[0m
+      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (6087ms)[0m
 [0m      Voting Successful - Voting time expired[0m
-      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (7276ms)[0m
+      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (7386ms)[0m
 
 [0m  Contract: Proposals Asset - Type 3 - MILESTONE_POSTPONING[0m
-  [32m  ✓[0m[90m current proposal matches MILESTONE_POSTPONING settings[0m[31m (147ms)[0m
-  [32m  ✓[0m[90m throws if MILESTONE_POSTPONING proposal was already created once[0m[31m (78ms)[0m
+  [32m  ✓[0m[90m current proposal matches MILESTONE_POSTPONING settings[0m[31m (138ms)[0m
+  [32m  ✓[0m[90m throws if MILESTONE_POSTPONING proposal was already created once[0m[31m (85ms)[0m
 [0m    Proposal Created - Voting Started[0m
-    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (50ms)[0m
-    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (48ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%[0m[31m (329ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%[0m[31m (355ms)[0m
-    [32m  ✓[0m[90m first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES[0m[31m (593ms)[0m
-    [32m  ✓[0m[90m first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO[0m[31m (387ms)[0m
-    [32m  ✓[0m[90m YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (544ms)[0m
-    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (516ms)[0m
-    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (738ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (58ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (68ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not close voting if stake is lower than 50%[0m[31m (297ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, closes voting if stake is higher than 50%[0m[31m (347ms)[0m
+    [32m  ✓[0m[90m first vote NO stake below 50%, second vote YES above 50%, closes as VOTING_RESULT_YES[0m[31m (589ms)[0m
+    [32m  ✓[0m[90m first vote NO stake below 50%, second vote NO above 50%, closes as VOTING_RESULT_NO[0m[31m (406ms)[0m
+    [32m  ✓[0m[90m YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (521ms)[0m
+    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (512ms)[0m
+    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (783ms)[0m
 [0m      Voting Successful - Processed before voting expiry time[0m
-      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[33m (50ms)[0m
-      [32m  ✓[0m[90m MilestoneAsset state processed, record time_end increased[0m[31m (2043ms)[0m
+      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[33m (55ms)[0m
+      [32m  ✓[0m[90m MilestoneAsset state processed, record time_end increased[0m[31m (1994ms)[0m
 [0m      Voting Successful - Voting time expired[0m
-      [32m  ✓[0m[90m MilestoneAsset state processed, record time_end increased[0m[31m (4085ms)[0m
+      [32m  ✓[0m[90m MilestoneAsset state processed, record time_end increased[0m[31m (3840ms)[0m
 
 [0m  Contract: Proposals Asset - Type 4 - MILESTONE_DEADLINE[0m
-  [32m  ✓[0m[90m current proposal matches MILESTONE_DEADLINE settings[0m[31m (168ms)[0m
-  [32m  ✓[0m[90m throws if MILESTONE_DEADLINE proposal was already created once[0m[33m (53ms)[0m
+  [32m  ✓[0m[90m current proposal matches MILESTONE_DEADLINE settings[0m[31m (127ms)[0m
+  [32m  ✓[0m[90m throws if MILESTONE_DEADLINE proposal was already created once[0m[33m (62ms)[0m
 [0m    Proposal Created - Voting Started[0m
-    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (51ms)[0m
-    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (45ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal[0m[31m (366ms)[0m
-    [32m  ✓[0m[90m YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (543ms)[0m
-    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (509ms)[0m
-    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (13422ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (62ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (55ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal[0m[31m (389ms)[0m
+    [32m  ✓[0m[90m YES Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (553ms)[0m
+    [32m  ✓[0m[90m NO Vote, Annuls and registers a new valid vote if voter already voted, has a stake in the proposal, and proposal is not closed[0m[31m (579ms)[0m
+    [32m  ✓[0m[90m While more than 1 proposal is active, properly re-indexes active proposals once one is closed[0m[31m (13164ms)[0m
 [0m      Voting Successful - Voting time expired[0m
-      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (11064ms)[0m
+      [32m  ✓[0m[90m FundingManagerAsset state processed, releases ether to owner, tokens to investors, validates balances[0m[31m (11113ms)[0m
 
 [0m  Contract: Proposals Asset - Type 5 - PROJECT_DELISTING[0m
-  [32m  ✓[0m[90m current proposal matches PROJECT_DELISTING settings[0m[31m (148ms)[0m
-  [32m  ✓[0m[90m throws if PROJECT_DELISTING proposal was already created once[0m[33m (71ms)[0m
+  [32m  ✓[0m[90m current proposal matches PROJECT_DELISTING settings[0m[31m (125ms)[0m
+  [32m  ✓[0m[90m throws if PROJECT_DELISTING proposal was already created once[0m[31m (80ms)[0m
 [0m    Proposal Created - Voting Started[0m
-    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (55ms)[0m
-    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (38ms)[0m
-    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not require state changes if stake is lower than 50%[0m[31m (328ms)[0m
-    [32m  ✓[0m[90m Registers multiple votes and requires state changes if stake is higher than 50%[0m[31m (623ms)[0m
-    [32m  ✓[0m[90m Registers multiple YES votes, after processing closes as VOTING_RESULT_YES[0m[31m (2415ms)[0m
-    [32m  ✓[0m[90m Registers multiple NO votes, after processing closes as VOTING_RESULT_NO[0m[31m (2369ms)[0m
-    [32m  ✓[0m[90m Registers multiple MIXED votes ( most YES ), some change vote, after processing closes as VOTING_RESULT_YES[0m[31m (2764ms)[0m
-    [32m  ✓[0m[90m Registers multiple MIXED votes ( most NO ), some change vote, after processing closes as VOTING_RESULT_NO[0m[31m (2698ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a non existing proposal[0m[33m (61ms)[0m
+    [32m  ✓[0m[90m throws if trying to vote on a the proposal while having no stake in it[0m[33m (46ms)[0m
+    [32m  ✓[0m[90m Registers a valid vote if voter has a stake in the proposal, does not require state changes if stake is lower than 50%[0m[31m (346ms)[0m
+    [32m  ✓[0m[90m Registers multiple votes and requires state changes if stake is higher than 50%[0m[31m (658ms)[0m
+    [32m  ✓[0m[90m Registers multiple YES votes, after processing closes as VOTING_RESULT_YES[0m[31m (2297ms)[0m
+    [32m  ✓[0m[90m Registers multiple NO votes, after processing closes as VOTING_RESULT_NO[0m[31m (2374ms)[0m
+    [32m  ✓[0m[90m Registers multiple MIXED votes ( most YES ), some change vote, after processing closes as VOTING_RESULT_YES[0m[31m (2708ms)[0m
+    [32m  ✓[0m[90m Registers multiple MIXED votes ( most NO ), some change vote, after processing closes as VOTING_RESULT_NO[0m[31m (2659ms)[0m
 [0m      Voting Successful - Processed before voting expiry time[0m
-      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[31m (2047ms)[0m
-      [32m  ✓[0m[90m ApplicationEntity state processed, ListingContract delists project[0m[31m (2016ms)[0m
+      [32m  ✓[0m[90m throws if trying to vote on a the proposal that has already been finalised[0m[31m (2003ms)[0m
+      [32m  ✓[0m[90m ApplicationEntity state processed, ListingContract delists project[0m[31m (2001ms)[0m
 [0m      Voting Successful - Voting time expired[0m
-      [32m  ✓[0m[90m ApplicationEntity state processed, ListingContract delists project[0m[31m (1800ms)[0m
+      [32m  ✓[0m[90m ApplicationEntity state processed, ListingContract delists project[0m[31m (1746ms)[0m
 
 [0m  Contract: Proposals Asset - Type 6 - AFTER_COMPLETE_CODE_UPGRADE[0m
-  [32m  ✓[0m[90m current proposal matches AFTER_COMPLETE_CODE_UPGRADE settings[0m[31m (1417ms)[0m
-  [32m  ✓[0m[90m DEVELOPMENT_COMPLETE, Upgrade to second app, request upgrade to third - Proposal processed.[0m[31m (4226ms)[0m
+  [32m  ✓[0m[90m current proposal matches AFTER_COMPLETE_CODE_UPGRADE settings[0m[31m (1734ms)[0m
+  [32m  ✓[0m[90m DEVELOPMENT_COMPLETE, Upgrade to second app, request upgrade to third - Proposal processed.[0m[31m (4709ms)[0m
 
 [0m  Contract: Project COMPLETION[0m
-  [32m  ✓[0m[90m Development started, processes all milestones, and after last one sets application into DEVELOPMENT_COMPLETE state, validates balances each step[0m[31m (74517ms)[0m
+  [32m  ✓[0m[90m Development started, processes all milestones, and after last one sets application into DEVELOPMENT_COMPLETE state, validates balances each step[0m[31m (103124ms)[0m
 
 [0m  Contract: CashBack Scenario Testing[0m
 [0m    Platform Funding Failed - Cashback Type 1 - Funding processed[0m
-    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (329ms)[0m
-    [32m  ✓[0m[90m throws if CashBack is requested by other address than vault owner (investor)[0m[31m (113ms)[0m
-    [32m  ✓[0m[90m Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage[0m[31m (302ms)[0m
+    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (332ms)[0m
+    [32m  ✓[0m[90m throws if CashBack is requested by other address than vault owner (investor)[0m[31m (121ms)[0m
+    [32m  ✓[0m[90m Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage[0m[31m (355ms)[0m
 [0m    Platform Funding Failed - Cashback Type 1 - Funding not processed[0m
-    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (749ms)[0m
-    [32m  ✓[0m[90m throws if CashBack is requested by other address than vault owner (investor)[0m[31m (229ms)[0m
-    [32m  ✓[0m[90m Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage[0m[31m (387ms)[0m
-    [32m  ✓[0m[90m Once processed Funding Vaults do not allow CashBack[0m[31m (6497ms)[0m
-    [32m  ✓[0m[90m If not processed in time, and CashBack is active, throws if trying to process[0m[31m (2538ms)[0m
+    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (735ms)[0m
+    [32m  ✓[0m[90m throws if CashBack is requested by other address than vault owner (investor)[0m[31m (227ms)[0m
+    [32m  ✓[0m[90m Requesting CashBack transfers all locked ether back to the investor, validates balances and gas usage[0m[31m (414ms)[0m
+    [32m  ✓[0m[90m Once processed Funding Vaults do not allow CashBack[0m[31m (7266ms)[0m
+    [32m  ✓[0m[90m If not processed in time, and CashBack is active, throws if trying to process[0m[31m (2300ms)[0m
 [0m    Platform Funding Successful - Cashback Type 2 - Owner Missing in Action Cashback[0m
-    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (2124ms)[0m
-    [32m  ✓[0m[90m MIA @ Milestone 1 - Requesting CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (2218ms)[0m
-    [32m  ✓[0m[90m MIA @ Milestone 3 - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (31250ms)[0m
-    [32m  ✓[0m[90m MIA @ Milestone LAST - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (67143ms)[0m
+    [32m  ✓[0m[90m Funding Vaults allow all investors to CashBack[0m[31m (2091ms)[0m
+    [32m  ✓[0m[90m MIA @ Milestone 1 - Requesting CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (2259ms)[0m
+    [32m  ✓[0m[90m MIA @ Milestone 3 - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (31378ms)[0m
+    [32m  ✓[0m[90m MIA @ Milestone LAST - CashBack transfers all locked ether back to the investor, and locked tokens to platform owner, validates balances and gas usage[0m[31m (98325ms)[0m
 [0m    Platform Funding Successful - Cashback Type 3 - Milestone Release[0m
-    [32m  ✓[0m[90m Proposal processed. Funding Vault allows the investor to CashBack if majority voted NO and investor also voted NO[0m[31m (17574ms)[0m
-    [32m  ✓[0m[90m VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances[0m[31m (2387ms)[0m
-    [32m  ✓[0m[90m VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (78356ms)[0m
-    [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (79442ms)[0m
-    [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor does not use CashBack, validate balances, can continue with next milestones[0m[31m (79353ms)[0m
-    [32m  ✓[0m[90m VOTE NO @ Milestone LAST - Proposal processed. Investor uses CashBack, validate balances[0m[31m (67608ms)[0m
-    [32m  ✓[0m[90m All investors VOTE NO and cashback at @ Milestone 3, Milestone releases now require 0 votes, automatically finalise as successful[0m[31m (71005ms)[0m
+    [32m  ✓[0m[90m Proposal processed. Funding Vault allows the investor to CashBack if majority voted NO and investor also voted NO[0m[31m (16986ms)[0m
+    [32m  ✓[0m[90m VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances[0m[31m (2491ms)[0m
+    [32m  ✓[0m[90m VOTE NO @ Milestone 1 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (107488ms)[0m
+    [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor uses CashBack, validate balances, can continue with next milestones[0m[31m (108803ms)[0m
+    [32m  ✓[0m[90m VOTE NO @ Milestone 3 - Proposal processed. Investor does not use CashBack, validate balances, can continue with next milestones[0m[31m (107137ms)[0m
+    [32m  ✓[0m[90m VOTE NO @ Milestone LAST - Proposal processed. Investor uses CashBack, validate balances[0m[31m (98813ms)[0m
+    [32m  ✓[0m[90m All investors VOTE NO and cashback at @ Milestone 3, Milestone releases now require 0 votes, automatically finalise as successful[0m[31m (98168ms)[0m
 
 
-[92m [0m[32m 314 passing[0m[90m (31m)[0m
+[92m [0m[32m 313 passing[0m[90m (39m)[0m
 
 ------------------------------|----------|----------|----------|----------|----------------|
 File                          |  % Stmts | % Branch |  % Funcs |  % Lines |Uncovered Lines |
@@ -586,21 +587,20 @@ File                          |  % Stmts | % Branch |  % Funcs |  % Lines |Uncov
   ApplicationEntity.sol       |    96.08 |    87.25 |    97.67 |    95.68 |... 421,437,640 |
   ApplicationEntityABI.sol    |      100 |      100 |      100 |      100 |                |
   ApplicationEntitySecond.sol |       90 |       75 |      100 |       90 |             34 |
-  GatewayInterface.sol        |    97.22 |    86.36 |      100 |    97.44 |            123 |
- contracts/Algorithms/        |      100 |    88.24 |      100 |      100 |                |
-  TokenSCADA1Market.sol       |      100 |      100 |      100 |      100 |                |
-  TokenSCADAGeneric.sol       |      100 |    88.24 |      100 |      100 |                |
- contracts/Entity/            |    98.28 |    90.63 |      100 |    98.24 |                |
+  GatewayInterface.sol        |    97.22 |    86.36 |      100 |    97.44 |            132 |
+ contracts/Algorithms/        |      100 |      100 |      100 |      100 |                |
+  TokenSCADAVariable.sol      |      100 |      100 |      100 |      100 |                |
+ contracts/Entity/            |    96.87 |     88.1 |      100 |     96.7 |                |
   BountyManager.sol           |      100 |      100 |      100 |      100 |                |
-  Funding.sol                 |     99.4 |    95.56 |      100 |    99.39 |            333 |
-  FundingManager.sol          |    96.39 |    88.52 |      100 |    96.07 |... 222,270,276 |
-  FundingVault.sol            |    99.06 |    89.66 |      100 |    99.17 |            334 |
+  Funding.sol                 |    91.26 |    83.33 |      100 |    90.61 |... 349,355,508 |
+  FundingManager.sol          |    96.65 |    88.28 |      100 |    96.39 |... 228,274,280 |
+  FundingVault.sol            |    99.06 |    87.93 |      100 |    99.17 |            334 |
   ListingContract.sol         |      100 |       80 |      100 |      100 |                |
   Meetings.sol                |      100 |      100 |      100 |      100 |                |
-  Milestones.sol              |    98.95 |    91.96 |      100 |    98.88 |        214,219 |
+  Milestones.sol              |    98.95 |    91.96 |      100 |    98.87 |        207,212 |
   NewsContract.sol            |      100 |      100 |      100 |      100 |                |
-  Proposals.sol               |    97.69 |       90 |      100 |    97.66 |... 611,613,677 |
-  Token.sol                   |      100 |      100 |      100 |      100 |                |
+  Proposals.sol               |     97.7 |       90 |      100 |    97.67 |... 613,615,679 |
+  Token.sol                   |      100 |       75 |      100 |      100 |                |
   TokenManager.sol            |      100 |       50 |      100 |      100 |                |
   UpgradeTestAsset.sol        |      100 |      100 |      100 |      100 |                |
  contracts/Inputs/            |      100 |      100 |      100 |      100 |                |
@@ -615,7 +615,7 @@ File                          |  % Stmts | % Branch |  % Funcs |  % Lines |Uncov
   ERC20Basic.sol              |      100 |      100 |      100 |      100 |                |
   StandardToken.sol           |      100 |      100 |      100 |      100 |                |
 ------------------------------|----------|----------|----------|----------|----------------|
-All files                     |    98.12 |    89.89 |    99.27 |    98.04 |                |
+All files                     |     96.9 |     88.1 |    99.23 |    96.75 |                |
 ------------------------------|----------|----------|----------|----------|----------------|
 
 Istanbul coverage reports generated

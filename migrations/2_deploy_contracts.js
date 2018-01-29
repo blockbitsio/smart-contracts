@@ -140,7 +140,7 @@ async function doStage(deployer)  {
             stage.amount_cap_hard,
             stage.methods,
             stage.minimum_entry,
-            stage.start_parity,
+            stage.fixed_tokens,
             stage.price_addition_percentage,
             stage.token_share_percentage
         );
