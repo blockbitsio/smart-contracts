@@ -68,17 +68,17 @@ Used by the BlockBits.io funding.
 ----------------------------
 |Contract Name | Address (Ethereum - MainNet)|
 |:--- | :--- |
-| GatewayInterface | 0xb53c1cf91c8e973e2a662b2f34213c1f9f434330| 
-| ApplicationEntity | 0x0395899092b1c0d99b7c7bc10b463ab1a306b698| 
-| - ListingContract | 0xc92226702b530207dd0fd6ea92d79e8f86af5b88| 
-| - NewsContract | 0xb15e2264a2ca33fedc93db932b7926718771a28d| 
-| - TokenManager | 0x2be8674f4ddea5db4feb7925c1af5360e28344fd| 
-| - Proposals | 0xb56c079685b8228cbe953e577817713036a63996| 
-| - FundingManager | 0x6a86a4815f74cb8ab54a23b5d8d3104c8bdc8de2| 
-| - Funding | 0xd7a7432687ae65af028438733a23ad4ddfb9c675| 
-| - Milestones | 0x98aa85d44e959eaaac6e21a56be8cd38fd6ec9c2| 
-| - Meetings | 0xf76e30c00dbe64bac46bd84536564b47f287f0ef| 
-| - BountyManager | 0x9b1844acc6386407ba6c1597ff324240ef6b6562| 
+| GatewayInterface | [0x3dfa93d0d80c9985c9c78ce3620bd0803767a95c](https://etherscan.io/address/0x3dfa93d0d80c9985c9c78ce3620bd0803767a95c)| 
+| ApplicationEntity | [0x29632c10d76bd1aed6b1524bf5bde4c992610670](https://etherscan.io/address/0x29632c10d76bd1aed6b1524bf5bde4c992610670)| 
+| - ListingContract | [0x5f03b7561e62efdab8b2fb740d83630d4d2710d7](https://etherscan.io/address/0x5f03b7561e62efdab8b2fb740d83630d4d2710d7) | 
+| - NewsContract | [0x7d88463cc6d0ba403d302204236898414db3251a](https://etherscan.io/address/0x7d88463cc6d0ba403d302204236898414db3251a) | 
+| - TokenManager | [0x584af734a101538cad9b9522d1b9c87f1c08f9c4](https://etherscan.io/address/0x584af734a101538cad9b9522d1b9c87f1c08f9c4) | 
+| - Proposals | [0x5b2db92a43aa86fff2d9a3696a7ee264d03fc907](https://etherscan.io/address/0x5b2db92a43aa86fff2d9a3696a7ee264d03fc907) | 
+| - FundingManager | [0xb4007597da3402a1e2b69c8e1c6dd753d01a8035](https://etherscan.io/address/0xb4007597da3402a1e2b69c8e1c6dd753d01a8035) | 
+| - Funding | [0x58534c480ef96b6478940f9bbf6748da8f2ec935](https://etherscan.io/address/0x58534c480ef96b6478940f9bbf6748da8f2ec935) | 
+| - Milestones | [0xb4e8d821b5b43fca08f5986d9b52a8dc00565cc5](https://etherscan.io/address/0xb4e8d821b5b43fca08f5986d9b52a8dc00565cc5) | 
+| - Meetings | [0xb435c8dd6edd82918606f0b2d73970683806b004](https://etherscan.io/address/0xb435c8dd6edd82918606f0b2d73970683806b004) | 
+| - BountyManager | [0x766d1f049ba649f9a89ae417ba555599a6546b5a](https://etherscan.io/address/0x766d1f049ba649f9a89ae417ba555599a6546b5a) | 
 ----------------------------
 
 ## Funding Methods
@@ -86,9 +86,9 @@ Used by the BlockBits.io funding.
 ----------------------------
 |Contract Name | Address (Ethereum - MainNet)|
 |:--- | :--- |
-|InputDirect | 0x706c110ecdd7259b6a1a2c0702b610581189f4b3|
-|InputMilestone | 0xeb548240fcb9b113f1cf2b9ef1c7ca4c8afe7804|
-|InputMarketing | 0x35038318a0dd465c49851f7744c052fb5a239d50|
+|InputDirect | [0xb05faba79ac993dc1ff7e3a0a764c3d0478cdc1f](https://etherscan.io/address/0xb05faba79ac993dc1ff7e3a0a764c3d0478cdc1f)|
+|InputMilestone | [0x91ca47b9ec3187c77f324281a1851f4b991103f1](https://etherscan.io/address/0x91ca47b9ec3187c77f324281a1851f4b991103f1)|
+|InputMarketing | [0xdfe06d5a4534fbe955eebe8a4908ef596763c2a4](https://etherscan.io/address/0xdfe06d5a4534fbe955eebe8a4908ef596763c2a4)|
 ----------------------------
 
 
@@ -97,8 +97,8 @@ Used by the BlockBits.io funding.
 ----------------------------
 |Contract Name | Address (Ethereum - MainNet)|
 |:--- | :--- |
-| TokenSCADA | 0xdb9f5c7558306d3f8e9103819ffa0cfe3f9e31be|
-| ERC20 - Token | 0x28dbf31a80b741ceb7d880eb7c37dfee6a5df2e1|
+| TokenSCADA | [0x73600ae44810343067e6fac315d90d30b3e0378a](https://etherscan.io/address/0x73600ae44810343067e6fac315d90d30b3e0378a)|
+| ERC20 - Token | [0xc00b9bdb6b2ae341b4321be4b2a752ae6a5db18c](https://etherscan.io/address/0xc00b9bdb6b2ae341b4321be4b2a752ae6a5db18c)|
 ----------------------------
 
 
