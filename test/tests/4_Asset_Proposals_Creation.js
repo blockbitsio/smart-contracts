@@ -270,7 +270,8 @@ module.exports = function(setup) {
                         token:           settings.token,
                         tokenSCADA:      settings.tokenSCADA,
                         solidity:        settings.solidity,
-                        doDeployments:   settings.doDeployments
+                        doDeployments:   settings.doDeployments,
+                        extra_marketing: settings.extra_marketing
                     };
 
                     let childSetup = helpers.utils.getSetupClone(setup, childSettings);

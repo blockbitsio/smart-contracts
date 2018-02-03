@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Bounty Program Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -10,14 +12,15 @@
 pragma solidity ^0.4.17;
 
 import "./../ApplicationAsset.sol";
-import "./Token.sol";
-import "./TokenManager.sol";
-import "./Funding.sol";
+
+import "./../abis/ABIFunding.sol";
+import "./../abis/ABIToken.sol";
+import "./../abis/ABITokenManager.sol";
 
 contract BountyManager is ApplicationAsset {
 
-    Funding FundingEntity;
-    Token TokenEntity;
+    ABIFunding FundingEntity;
+    ABIToken TokenEntity;
 
     function runBeforeApplyingSettings()
         internal
@@ -25,11 +28,11 @@ contract BountyManager is ApplicationAsset {
         requireSettingsNotApplied
     {
         address FundingAddress = getApplicationAssetAddressByName('Funding');
-        FundingEntity = Funding(FundingAddress);
+        FundingEntity = ABIFunding(FundingAddress);
 
         address TokenManagerAddress = getApplicationAssetAddressByName('TokenManager');
-        TokenManager TokenManagerEntity = TokenManager(TokenManagerAddress);
-        TokenEntity = Token(TokenManagerEntity.TokenEntity());
+        ABITokenManager TokenManagerEntity = ABITokenManager(TokenManagerAddress);
+        TokenEntity = ABIToken(TokenManagerEntity.TokenEntity());
 
         EventRunBeforeApplyingSettings(assetName);
     }

@@ -14,7 +14,7 @@ contract TestApplicationEntitySecond is ApplicationEntitySecond {
 
     function setTestGatewayInterfaceEntity(address _address) external {
         GatewayInterfaceAddress = _address;
-        GatewayInterfaceEntity = GatewayInterface(GatewayInterfaceAddress);
+        GatewayInterfaceEntity = ABIGatewayInterface(GatewayInterfaceAddress);
     }
 
     uint256 _mockTime = now;

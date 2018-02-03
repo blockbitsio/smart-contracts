@@ -16,11 +16,11 @@ contract TestGatewayInterface is GatewayInterface {
     }
 
     function callTestApplicationEntityInitialize() external {
-        ApplicationEntity(currentApplicationEntityAddress).initialize();
+        ApplicationEntityABI(currentApplicationEntityAddress).initialize();
     }
 
     function callTestLockCurrentApp() external {
-        ApplicationEntity(currentApplicationEntityAddress).lock();
+        ApplicationEntityABI(currentApplicationEntityAddress).lock();
     }
 
 }

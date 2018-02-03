@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Gateway Interface Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -14,19 +16,18 @@
 
 pragma solidity ^0.4.17;
 
-import "./ApplicationEntity.sol";
+import "./ApplicationEntityABI.sol";
 
 contract GatewayInterface {
 
     event EventGatewayNewLinkRequest ( address indexed newAddress );
     event EventGatewayNewAddress ( address indexed newAddress );
 
-    address public currentApplicationEntityAddress;     // currently linked ApplicationEntity address
-    ApplicationEntity private currentApp;
+    address public currentApplicationEntityAddress;
+    ApplicationEntityABI private currentApp;
 
     address public deployerAddress;
 
-    // constructor
     function GatewayInterface() public {
         deployerAddress = msg.sender;
     }
@@ -67,7 +68,7 @@ contract GatewayInterface {
         */
         if(currentApplicationEntityAddress == address(0x0)) {
 
-            if(!ApplicationEntity(_newAddress).initializeAssetsToThisApplication()) {
+            if(!ApplicationEntityABI(_newAddress).initializeAssetsToThisApplication()) {
                 revert();
             }
             link(_newAddress);
@@ -127,7 +128,7 @@ contract GatewayInterface {
     function link( address _newAddress ) internal returns (bool) {
 
         currentApplicationEntityAddress = _newAddress;
-        currentApp = ApplicationEntity(currentApplicationEntityAddress);
+        currentApp = ApplicationEntityABI(currentApplicationEntityAddress);
         if( !currentApp.initialize() ) {
             revert();
         }
@@ -166,14 +167,14 @@ contract GatewayInterface {
     modifier validCodeUpgradeInitiator() {
         bool valid = false;
 
-        ApplicationEntity newDeployedApp = ApplicationEntity(msg.sender);
+        ApplicationEntityABI newDeployedApp = ApplicationEntityABI(msg.sender);
         address newDeployer = newDeployedApp.deployerAddress();
 
         if(newDeployer == deployerAddress) {
             valid = true;
         } else {
             if(currentApplicationEntityAddress != address(0x0)) {
-                currentApp = ApplicationEntity(currentApplicationEntityAddress);
+                currentApp = ApplicationEntityABI(currentApplicationEntityAddress);
                 if(currentApp.canInitiateCodeUpgrade(newDeployer)) {
                     valid = true;
                 }

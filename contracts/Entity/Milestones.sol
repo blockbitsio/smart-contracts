@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Milestones Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -11,16 +13,16 @@
 pragma solidity ^0.4.17;
 
 import "./../ApplicationAsset.sol";
-import "./FundingManager.sol";
-import "./Meetings.sol";
-import "./Proposals.sol";
+import "./../abis/ABIFundingManager.sol";
+import "./../abis/ABIMeetings.sol";
+import "./../abis/ABIProposals.sol";
 
 
 contract Milestones is ApplicationAsset {
 
-    FundingManager FundingManagerEntity;
-    Proposals ProposalsEntity;
-    Meetings MeetingsEntity;
+    ABIFundingManager FundingManagerEntity;
+    ABIProposals ProposalsEntity;
+    ABIMeetings MeetingsEntity;
 
     struct Record {
         bytes32 name;
@@ -81,9 +83,9 @@ contract Milestones is ApplicationAsset {
     }
 
     function runBeforeInitialization() internal requireNotInitialised {
-        FundingManagerEntity = FundingManager( getApplicationAssetAddressByName('FundingManager') );
-        MeetingsEntity = Meetings( getApplicationAssetAddressByName('Meetings') );
-        ProposalsEntity = Proposals( getApplicationAssetAddressByName('Proposals') );
+        FundingManagerEntity = ABIFundingManager( getApplicationAssetAddressByName('FundingManager') );
+        MeetingsEntity = ABIMeetings( getApplicationAssetAddressByName('Meetings') );
+        ProposalsEntity = ABIProposals( getApplicationAssetAddressByName('Proposals') );
         EventRunBeforeInit(assetName);
     }
 

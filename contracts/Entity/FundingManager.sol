@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Funding Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -11,22 +13,25 @@
 pragma solidity ^0.4.17;
 
 import "./../ApplicationAsset.sol";
+
+import "./../abis/ABITokenManager.sol";
+import "./../abis/ABIProposals.sol";
+import "./../abis/ABIMilestones.sol";
+import "./../abis/ABIFunding.sol";
+import "./../abis/ABIToken.sol";
+import "./../abis/ABITokenSCADAVariable.sol";
+
 import "./FundingVault.sol";
-import "./TokenManager.sol";
-import "./Proposals.sol";
-import "./Milestones.sol";
-import "./Funding.sol";
-import "./Token.sol";
-import "./../Algorithms/TokenSCADAVariable.sol";
+
 
 contract FundingManager is ApplicationAsset {
 
-    Funding FundingEntity;
-    TokenManager TokenManagerEntity;
-    Token TokenEntity;
-    TokenSCADAVariable TokenSCADAEntity;
-    Proposals ProposalsEntity;
-    Milestones MilestonesEntity;
+    ABIFunding FundingEntity;
+    ABITokenManager TokenManagerEntity;
+    ABIToken TokenEntity;
+    ABITokenSCADAVariable TokenSCADAEntity;
+    ABIProposals ProposalsEntity;
+    ABIMilestones MilestonesEntity;
 
     uint256 public LockedVotingTokens = 0;
 
@@ -77,21 +82,22 @@ contract FundingManager is ApplicationAsset {
         requireSettingsNotApplied
     {
         address FundingAddress = getApplicationAssetAddressByName('Funding');
-        FundingEntity = Funding(FundingAddress);
+        FundingEntity = ABIFunding(FundingAddress);
         EventRunBeforeApplyingSettings(assetName);
 
         address TokenManagerAddress = getApplicationAssetAddressByName('TokenManager');
-        TokenManagerEntity = TokenManager(TokenManagerAddress);
-        TokenEntity = Token(TokenManagerEntity.TokenEntity());
+        TokenManagerEntity = ABITokenManager(TokenManagerAddress);
+
+        TokenEntity = ABIToken(TokenManagerEntity.TokenEntity());
 
         address TokenSCADAAddress = TokenManagerEntity.TokenSCADAEntity();
-        TokenSCADAEntity = TokenSCADAVariable(TokenSCADAAddress) ;
+        TokenSCADAEntity = ABITokenSCADAVariable(TokenSCADAAddress) ;
 
         address MilestonesAddress = getApplicationAssetAddressByName('Milestones');
-        MilestonesEntity = Milestones(MilestonesAddress) ;
+        MilestonesEntity = ABIMilestones(MilestonesAddress) ;
 
         address ProposalsAddress = getApplicationAssetAddressByName('Proposals');
-        ProposalsEntity = Proposals(ProposalsAddress) ;
+        ProposalsEntity = ABIProposals(ProposalsAddress) ;
     }
 
 

@@ -11,7 +11,7 @@ module.exports = function (setup) {
 
     contract('Funding Asset', accounts => {
 
-        let app, assetContract, TestBuildHelper = {};
+        let app, assetContract, TestBuildHelper = {}, direct, milestone;
         let assetName = "Funding";
 
         // test wallets
@@ -30,7 +30,12 @@ module.exports = function (setup) {
             await TestBuildHelper.AddAllAssetSettingsAndLockExcept("Funding");
 
             assetContract = await TestBuildHelper.getDeployedByName("Funding");
+
+            direct = await TestBuildHelper.getDeployedByName("FundingInputDirect");
+            milestone = await TestBuildHelper.getDeployedByName("FundingInputMilestone");
+
         });
+
 
         it('deploys with no Funding Stages', async () => {
             assert.equal(await assetContract.FundingStageNum.call(), 0, 'FundingStageNum should be 0!');
@@ -46,9 +51,9 @@ module.exports = function (setup) {
             assert.equal(await NewfundingContract.MilestoneInput.call(), 0, 'MilestoneInput should be 0!');
         });
 
-        it('has Funding Inputs once initialized', async () => {
-            assert.notEqual(await assetContract.DirectInput.call(), 0, 'DirectInput should not be 0!');
-            assert.notEqual(await assetContract.MilestoneInput.call(), 0, 'MilestoneInput should not be 0!');
+        it('has no Funding Inputs once initialized', async () => {
+            assert.equal(await assetContract.DirectInput.call(), 0, 'DirectInput should be 0!');
+            assert.equal(await assetContract.MilestoneInput.call(), 0, 'MilestoneInput should be 0!');
         });
 
         context("addSettings()", async () => {
@@ -61,7 +66,9 @@ module.exports = function (setup) {
                         platformWalletAddress,
                         settings.bylaws["funding_global_soft_cap"],
                         settings.bylaws["funding_global_hard_cap"],
-                        settings.bylaws["token_sale_percentage"]
+                        settings.bylaws["token_sale_percentage"],
+                        direct.address,
+                        milestone.address
                     );
                 });
             });
@@ -72,7 +79,9 @@ module.exports = function (setup) {
                         platformWalletAddress,
                         settings.bylaws["funding_global_hard_cap"],
                         settings.bylaws["funding_global_soft_cap"],
-                        settings.bylaws["token_sale_percentage"]
+                        settings.bylaws["token_sale_percentage"],
+                        direct.address,
+                        milestone.address
                     );
                 });
             });
@@ -83,7 +92,9 @@ module.exports = function (setup) {
                     platformWalletAddress,
                     settings.bylaws["funding_global_soft_cap"],
                     settings.bylaws["funding_global_hard_cap"],
-                    settings.bylaws["token_sale_percentage"]
+                    settings.bylaws["token_sale_percentage"],
+                    direct.address,
+                    milestone.address
                 );
 
                 let softCap = await assetContract.GlobalAmountCapSoft.call();
@@ -103,6 +114,21 @@ module.exports = function (setup) {
                     settings.bylaws["funding_global_hard_cap"].toString(),
                     'GlobalAmountCapHard should not be 0!'
                 );
+            });
+
+            it('has Funding Inputs once settings are added', async () => {
+
+                let tx = await assetContract.addSettings(
+                    platformWalletAddress,
+                    settings.bylaws["funding_global_soft_cap"],
+                    settings.bylaws["funding_global_hard_cap"],
+                    settings.bylaws["token_sale_percentage"],
+                    direct.address,
+                    milestone.address
+                );
+
+                assert.notEqual(await assetContract.DirectInput.call(), 0, 'DirectInput should not be 0!');
+                assert.notEqual(await assetContract.MilestoneInput.call(), 0, 'MilestoneInput should not be 0!');
             });
 
         });
@@ -193,8 +219,6 @@ module.exports = function (setup) {
         });
 
 
-
-
         context("funding stages added, asset initialized", async () => {
             let FundingInputDirect, FundingInputMilestone;
 
@@ -215,6 +239,8 @@ module.exports = function (setup) {
                 FundingInputMilestone = await FundingInputMilestoneContract.at(FundingInputMilestoneAddress);
 
             });
+
+
 
             it('has correct Funding Inputs after ApplicationEntity grabs asset ownership and initializes it', async () => {
                 assert.isAddress(await assetContract.DirectInput.call(), 'DirectInput should be a valid address');
@@ -313,7 +339,7 @@ module.exports = function (setup) {
                     it('has correct FundingAssetAddress', async () => {
                         let FundingAssetAddress = await FundingInputDirect.FundingAssetAddress.call();
                         assert.isAddress(FundingAssetAddress, 'FundingAssetAddress should be a valid address');
-                        assert.equal(FundingAssetAddress, assetContract.address, 'FundingAssetAddress should be a ' + assetContract.address + ' address');
+                        assert.equal(FundingAssetAddress, assetContract.address, 'FundingAssetAddress should be ' + assetContract.address + ' address');
                     });
 
                     it('throws if msg.value is missing', async () => {

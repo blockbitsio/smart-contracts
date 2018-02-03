@@ -27,7 +27,7 @@ contract TestFunding is Funding, TestApplicationAsset {
     }
 
     function setTestFundingInputDirect(address _addr) public {
-        DirectInput = FundingInputDirect(_addr);
+        DirectInput = ABIFundingInputGeneral(_addr);
     }
 
 }

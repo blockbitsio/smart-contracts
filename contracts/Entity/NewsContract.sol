@@ -1,10 +1,13 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        News Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
 
-Contains This Application's News Items
+ Contains This Application's News Items
+
 */
 
 pragma solidity ^0.4.17;

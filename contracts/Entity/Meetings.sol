@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Meetings Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -13,13 +15,6 @@ pragma solidity ^0.4.17;
 import "./../ApplicationAsset.sol";
 
 contract Meetings is ApplicationAsset {
-    /*
-    function add() public view onlyOwner {
-        // find out AppEntity delivery state and based on that decide if initiator has access to call this or not
-
-    }
-    */
-
     struct Record {
         bytes32 hash;
         bytes32 name;
@@ -28,7 +23,5 @@ contract Meetings is ApplicationAsset {
         uint256 duration;
         uint8 index;
     }
-
     mapping (uint8 => Record) public Collection;
-
 }

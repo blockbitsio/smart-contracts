@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Application Asset Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>

@@ -1,5 +1,6 @@
 /*
 
+ * source       https://github.com/blockbitsio/
  * @name        Token Stake Calculation And Distribution Algorithm - Type 3 - Sell a variable amount of tokens for a fixed price
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -24,19 +25,25 @@
 
 pragma solidity 0.4.17;
 
-import "./../Entity/Funding.sol";
-import "./../Entity/Token.sol";
-import "./../Entity/FundingVault.sol";
+import "./../abis/ABIFunding.sol";
+import "./../abis/ABIFundingVault.sol";
 
 contract TokenSCADAVariable {
 
-    Funding FundingEntity;
+    ABIFunding FundingEntity;
 
     bool public SCADA_requires_hard_cap = true;
+    bool public initialized = false;
+    address public deployerAddress;
 
-    function TokenSCADAVariable( address _fundingContract ) public {
+    function TokenSCADAVariable() public {
+        deployerAddress = msg.sender;
+    }
 
-        FundingEntity = Funding(_fundingContract);
+    function addSettings(address _fundingContract) onlyDeployer public {
+        require(initialized == false);
+        FundingEntity = ABIFunding(_fundingContract);
+        initialized = true;
     }
 
     function requiresHardCap() public view returns (bool) {
@@ -53,7 +60,7 @@ contract TokenSCADAVariable {
     }
 
     function getBoughtTokens( address _vaultAddress, bool _direct ) public view returns (uint256) {
-        FundingVault vault = FundingVault(_vaultAddress);
+        ABIFundingVault vault = ABIFundingVault(_vaultAddress);
 
         if(_direct) {
             uint256 DirectTokens = getTokensForValueInStage(1, vault.stageAmountsDirect(1));
@@ -64,5 +71,10 @@ contract TokenSCADAVariable {
             TotalTokens+= getTokensForValueInStage(2, vault.stageAmounts(2));
             return TotalTokens;
         }
+    }
+
+    modifier onlyDeployer() {
+        require(msg.sender == deployerAddress);
+        _;
     }
 }

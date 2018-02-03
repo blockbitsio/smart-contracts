@@ -29,7 +29,7 @@ start_testrpc() {
 
 if testrpc_running; then
     kill -9 $( lsof -i -P | grep $testrpc_port | awk '{print $2}' ) > /dev/null
-    # echo "not killing anything";
+    #echo "not killing anything";
 fi
 
 # sleep 2

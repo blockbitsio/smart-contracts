@@ -1,58 +1,29 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Token Manager Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
-
-
 
 */
 
 pragma solidity ^0.4.17;
 
-import "./Token.sol";
 import "./../ApplicationAsset.sol";
-import "./../ApplicationEntity.sol";
-
-import "./../Algorithms/TokenSCADAVariable.sol";
+import "./../abis/ABIToken.sol";
+import "./../abis/ABITokenSCADAVariable.sol";
 
 contract TokenManager is ApplicationAsset {
 
-    TokenSCADAVariable public TokenSCADAEntity;
-    Token public TokenEntity;
+    ABITokenSCADAVariable public TokenSCADAEntity;
+    ABIToken public TokenEntity;
+    address public MarketingMethodAddress;
 
-    function addTokenSettingsAndInit(
-        uint256 _tokenSupply,
-        uint8 _tokenDecimals,
-        string _tokenName,
-        string _tokenSymbol,
-        string _version
-    )
-        public
-        requireInitialised
-        requireSettingsNotApplied
-        onlyDeployer
-    {
-        TokenEntity = new Token(
-            _tokenSupply,
-            _tokenName,
-            _tokenDecimals,
-            _tokenSymbol,
-            _version
-        );
-    }
-
-    function runBeforeApplyingSettings()
-        internal
-        requireInitialised
-        requireSettingsNotApplied
-    {
-        // we need token address
-        // we need funding contract address.. let's ask application entity ABI for it :D
-        address fundingContractAddress = getApplicationAssetAddressByName('Funding');
-
-        TokenSCADAEntity = new TokenSCADAVariable(fundingContractAddress);
-        EventRunBeforeApplyingSettings(assetName);
+    function addSettings(address _scadaAddress, address _tokenAddress, address _marketing ) onlyDeployer public {
+        TokenSCADAEntity = ABITokenSCADAVariable(_scadaAddress);
+        TokenEntity = ABIToken(_tokenAddress);
+        MarketingMethodAddress = _marketing;
     }
 
     function getTokenSCADARequiresHardCap() public view returns (bool) {
@@ -73,6 +44,20 @@ contract TokenManager is ApplicationAsset {
         returns (bool)
     {
         return TokenEntity.finishMinting();
+    }
+
+    function mintForMarketingPool(address _to, uint256 _amount)
+        onlyMarketingPoolAsset
+        requireSettingsApplied
+        external
+        returns (bool)
+    {
+        return TokenEntity.mint(_to, _amount);
+    }
+
+    modifier onlyMarketingPoolAsset() {
+        require(msg.sender == MarketingMethodAddress);
+        _;
     }
 
     // Development stage complete, release tokens to Project Owners

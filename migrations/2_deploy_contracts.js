@@ -1,13 +1,17 @@
-const utils                 = require('../test/helpers/utils');
-const web3util              = require('web3-utils');
-const Token                 = artifacts.require('Token');
-const GatewayInterface      = artifacts.require('GatewayInterface');
-const ApplicationEntity     = artifacts.require('ApplicationEntity');
-const getContract = (obj)   => artifacts.require(obj.name);
-const ProjectSettings           = require('../project-settings.js');
+const BigNumber = require('bignumber.js');    // using bn.js from web3-utils
+const utils                         = require('../test/helpers/utils');
+const web3util                      = require('web3-utils');
+
+const Token                         = artifacts.require('Token');
+const GatewayInterface              = artifacts.require('GatewayInterface');
+const ApplicationEntity             = artifacts.require('ApplicationEntity');
+const ExtraFundingInputMarketing    = artifacts.require('ExtraFundingInputMarketing');
+
+const ProjectSettings               = require('../project-settings.js');
+const getContract = (obj)           => artifacts.require(obj.name);
 
 let settings = ProjectSettings.application_settings;
-settings.sourceCodeUrl = "http://www.blockbits.io/"
+settings.sourceCodeUrl = "http://www.test.io/";
 
 let token_settings = settings.token;
 
@@ -22,7 +26,6 @@ const assets = [
     {'name' : 'Meetings'},
     {'name' : 'BountyManager'},
 ];
-
 
 const entities = assets.map(getContract);
 
@@ -39,8 +42,9 @@ const mapDeployedAssets = (asset) => {
     return obj;
 };
 
+
 async function doStage(deployer)  {
-    console.log();
+
     utils.toLog(
         ' ----------------------------------------------------------------\n'+
         '  Stage 1 - Initial Gateway and Application Deployment\n'+
@@ -71,17 +75,27 @@ async function doStage(deployer)  {
         await contract.setInitialApplicationAddress(app.address);
     }
 
-    /*
-    await Promise.all(entities.map(async (entity) => {
-        let name = entity.contract_name;
-        utils.toLog("    Asset: " + entity.contract_name);
-        await deployer.deploy(entity).then(function(){
-            let arts = artifacts.require(name);
-            let contract = arts.at(arts.address);
-            return contract.setInitialApplicationAddress( app.address );
-        });
-    }));
-    */
+
+    await deployer.deploy(artifacts.require("Token"));
+    utils.toLog("    Contract: Token" );
+    await deployer.deploy(artifacts.require("TokenSCADAVariable"));
+    utils.toLog("    Contract: TokenSCADAVariable" );
+    await deployer.deploy(artifacts.require("ExtraFundingInputMarketing"));
+    utils.toLog("    Contract: ExtraFundingInputMarketing" );
+
+    await deployer.deploy(artifacts.require("FundingInputDirect"));     // FundingInputDirect: 0xb05faba79ac993dc1ff7e3a0a764c3d0478cdc1f
+    utils.toLog("    Contract: FundingInputDirect" );
+
+    await deployer.deploy(artifacts.require("FundingInputMilestone"));  // FundingInputMilestone: 0x91ca47b9ec3187c77f324281a1851f4b991103f1
+    utils.toLog("    Contract: FundingInputMilestone" );
+
+
+    let FundingInputDirect = artifacts.require("FundingInputDirect");
+    let FundingInputDirectObject = await FundingInputDirect.at( FundingInputDirect.address );
+
+    let FundingInputMilestone = artifacts.require("FundingInputMilestone");
+    let FundingInputMilestoneObject = await FundingInputMilestone.at( FundingInputMilestone.address );
+
 
     deployedAssets = assets.map(mapDeployedAssets);
 
@@ -94,17 +108,9 @@ async function doStage(deployer)  {
         utils.toLog("    Successfully linked: " +utils.colors.green+ web3util.toAscii(eventFilter[0].topics[1]) );
     }
 
-    /*
-    await Promise.all(deployedAssets.map(async (entity) => {
-        // toLog("    Asset: " + entity.name);
-        let eventFilter = await utils.hasEvent(receipt, 'EventAppEntityInitAsset(bytes32,address)');
-        utils.toLog("    Successfully linked: " +utils.colors.green+ web3util.toAscii(eventFilter[0].topics[1]) );
-    }));
-    */
-
     utils.toLog("  Link ApplicationEntity to GatewayInterface");
 
-    let receipt = await app.linkToGateway(GatewayInterface.address, "http://dummy.url");
+    let receipt = await app.linkToGateway(GatewayInterface.address, "https://blockbits.io");
     let eventFilter = utils.hasEvent(receipt, 'EventAppEntityReady(address)');
     utils.toLog("    "+utils.colors.green+"EventAppEntityReady => " + eventFilter.length+utils.colors.none);
 
@@ -118,19 +124,46 @@ async function doStage(deployer)  {
     let TokenManagerAssetContract = await artifacts.require(TokenManagerAsset.name);
     TokenManagerAssetContract = await TokenManagerAssetContract.at(TokenManagerAsset.address);
 
-    await TokenManagerAssetContract.addTokenSettingsAndInit(
-        token_settings.supply,
-        token_settings.decimals,
-        token_settings.name,
-        token_settings.symbol,
-        token_settings.version
+    let ScadaAssetContract = await artifacts.require("TokenSCADAVariable");
+    let ScadaAsset = await ScadaAssetContract.at(ScadaAssetContract.address);
+    await ScadaAsset.addSettings(FundingAsset.address);
+
+    utils.toLog("  Added TokenSCADAVariable Settings");
+
+    let tokenContract = await artifacts.require("Token");
+    let tokenAsset = await tokenContract.at(tokenContract.address);
+
+    await tokenAsset.transferOwnership(TokenManagerAssetContract.address);
+
+    utils.toLog("  Added Token Settings");
+
+    let ExtraContract = await artifacts.require("ExtraFundingInputMarketing");
+    let ExtraAsset = await ExtraContract.at(ExtraContract.address);
+
+    await ExtraAsset.addSettings(
+        TokenManagerAssetContract.address,        // TokenManager Entity address
+        settings.platformWalletAddress,           // Output Address
+        settings.extra_marketing.hard_cap,        // 300 ether hard cap
+        settings.extra_marketing.tokens_per_eth,  // 20 000 BBX per ETH
+        settings.extra_marketing.start_date,      // 31.01.2018
+        settings.extra_marketing.end_date         // 10.03.2018
     );
+
+    utils.toLog("  Added ExtraFundingInput Settings");
+
+
+    await TokenManagerAssetContract.addSettings(
+        ScadaAsset.address, tokenContract.address, ExtraAsset.address
+    );
+
     utils.toLog("  Added TokenManager Settings");
 
     // Setup Funding
     let FundingAssetContract = await artifacts.require(FundingAsset.name);
     FundingAssetContract = await FundingAssetContract.at(FundingAsset.address);
+
     for (let i = 0; i < settings.funding_periods.length; i++) {
+
         let stage = settings.funding_periods[i];
         await FundingAssetContract.addFundingStage(
             stage.name,
@@ -150,7 +183,10 @@ async function doStage(deployer)  {
     await FundingAssetContract.addSettings(
         settings.platformWalletAddress,
         settings.bylaws["funding_global_soft_cap"],
-        settings.bylaws["funding_global_hard_cap"]
+        settings.bylaws["funding_global_hard_cap"],
+        settings.bylaws["token_sale_percentage"],
+        FundingInputDirect.address,
+        FundingInputMilestone.address
     );
 
     utils.toLog("  Added Funding Settings");
@@ -171,12 +207,13 @@ async function doStage(deployer)  {
 
     utils.toLog("  Added Milestones Settings");
 
-
     utils.toLog(
         '  Lock and initialized Settings into Entities:\n'+
         '  ----------------------------------------------------------------\n');
 
     utils.toLog("  Set assets ownership and initialize");
+
+
 
     for(let i = 0; i < deployedAssets.length; i++) {
         let entity = deployedAssets[i];
@@ -184,40 +221,20 @@ async function doStage(deployer)  {
         let name = entity.name;
         let arts = await artifacts.require(name);
         let contract = await arts.at(arts.address);
+
         let eventFilter = await utils.hasEvent(
             await contract.applyAndLockSettings(),
             'EventRunBeforeApplyingSettings(bytes32)'
         );
 
-        if(eventFilter.length === 1) {
-            utils.toLog("    Successfully locked: " +utils.colors.green+ name +utils.colors.none) ;
+        if (eventFilter.length === 1) {
+            utils.toLog("    Successfully locked: " + utils.colors.green + name + utils.colors.none);
         } else {
-            throw name+': EventRunBeforeApplyingSettings event not received.';
+            throw name + ': EventRunBeforeApplyingSettings event not received.';
         }
+
 
     }
-
-    /*
-    await Promise.all(deployedAssets.map(async (entity) => {
-
-        utils.toLog("    try to lock: " +utils.colors.green+ entity.name +utils.colors.none) ;
-
-        let name = entity.name;
-        let arts = await artifacts.require(name);
-        let contract = await arts.at(arts.address);
-        let eventFilter = await utils.hasEvent(
-            await contract.applyAndLockSettings(),
-            'EventRunBeforeApplyingSettings(bytes32)'
-        );
-
-        if(eventFilter.length === 1) {
-            utils.toLog("    Successfully locked: " +utils.colors.green+ name +utils.colors.none) ;
-        } else {
-            throw name+': EventRunBeforeApplyingSettings event not received.';
-        }
-
-    }));
-    */
 
     utils.toLog(
         '\n  ----------------------------------------------------------------\n'+
@@ -266,25 +283,6 @@ async function doStage(deployer)  {
 
     }
 
-    /*
-    await Promise.all(deployedAssets.map(async (entity) => {
-
-        let name = entity.name;
-        let arts = await artifacts.require(name);
-        let contract = await arts.at(arts.address);
-
-        let _initialized = await contract._initialized.call();
-        let _settingsApplied = await contract._settingsApplied.call();
-
-        if(_initialized.toString() === "true" && _settingsApplied.toString() === "true") {
-            utils.toLog("    "+utils.colors.green+ name +utils.colors.white+": locked and settings applied.") ;
-        } else {
-            throw utils.colors.green+ name +utils.colors.none+" is not locked or has settings not applied" ;
-        }
-
-    }));
-    */
-
     utils.toLog(
         '\n  ----------------------------------------------------------------\n'+
         '  Stage 1 - DONE\n'+
@@ -301,6 +299,23 @@ async function doStage(deployer)  {
     entities.map((entity) => {
         utils.toLog("      "+entity.contract_name+": "+ entity.address);
     });
+
+    // funding inputs
+    let FundingInputDirectAddress = await FundingAssetContract.DirectInput.call();
+    let FundingInputMilestoneAddress = await FundingAssetContract.MilestoneInput.call();
+
+    utils.toLog("  ----------------------------------------------------------------\n");
+    utils.toLog("    InputDirect:    "+ FundingInputDirectAddress);
+    utils.toLog("    InputMilestone: "+ FundingInputMilestoneAddress);
+    utils.toLog("    InputMarketing: "+ ExtraAsset.address);
+
+
+    utils.toLog("  ----------------------------------------------------------------");
+    utils.toLog("    TokenSCADA:     "+ ScadaAsset.address);
+    utils.toLog("    TokenEntity:    "+ tokenAsset.address);
+    utils.toLog("  ----------------------------------------------------------------\n");
+
+
 }
 
 addBylawsIntoApp = async function (app, settings) {
@@ -330,11 +345,17 @@ addBylawsIntoApp = async function (app, settings) {
     }
 };
 
+
+async function doTest(deployer) {
+    await deployer.deploy("NewsContract");
+}
+
 module.exports = (deployer, network) => {
 
     if(settings.doDeployments) {
         deployer.then(async () => await doStage(deployer));
     }
+
 };
 
 

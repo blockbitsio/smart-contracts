@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Funding Vault
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -7,22 +9,17 @@
     each purchase creates a separate funding vault contract
 */
 
-// add Token / Ether Black Hole prevention
-
-// add Emergency Fund
-
-// think about team's locked tokens
-
-
 pragma solidity ^0.4.17;
 
-import "./Token.sol";
-import "./Funding.sol";
-import "./Milestones.sol";
-import "./TokenManager.sol";
-import "./../Algorithms/TokenSCADAVariable.sol";
-
 import "./../ApplicationEntityABI.sol";
+
+import "./../abis/ABIToken.sol";
+import "./../abis/ABIFunding.sol";
+import "./../abis/ABIMilestones.sol";
+import "./../abis/ABIProposals.sol";
+import "./../abis/ABITokenManager.sol";
+import "./../abis/ABIFundingManager.sol";
+import "./../abis/ABITokenSCADAVariable.sol";
 
 contract FundingVault {
 
@@ -50,14 +47,12 @@ contract FundingVault {
         Assets
     */
     // ApplicationEntityABI public ApplicationEntity;
-    Funding FundingEntity;
-    FundingManager FundingManagerEntity;
-    Milestones MilestonesEntity;
-    Proposals ProposalsEntity;
-    // TokenManager TokenManagerEntity;
-    TokenSCADAVariable TokenSCADAEntity;
-    // address TokenSCADAAddress;
-    Token TokenEntity ;
+    ABIFunding FundingEntity;
+    ABIFundingManager FundingManagerEntity;
+    ABIMilestones MilestonesEntity;
+    ABIProposals ProposalsEntity;
+    ABITokenSCADAVariable TokenSCADAEntity;
+    ABIToken TokenEntity ;
 
     /*
         Globals
@@ -106,19 +101,19 @@ contract FundingVault {
         managerAddress = msg.sender;
 
         // assets
-        FundingEntity = Funding(_fundingAddress);
-        FundingManagerEntity = FundingManager(managerAddress);
-        MilestonesEntity = Milestones(_milestoneAddress);
-        ProposalsEntity = Proposals(_proposalsAddress);
+        FundingEntity = ABIFunding(_fundingAddress);
+        FundingManagerEntity = ABIFundingManager(managerAddress);
+        MilestonesEntity = ABIMilestones(_milestoneAddress);
+        ProposalsEntity = ABIProposals(_proposalsAddress);
 
         address TokenManagerAddress = FundingEntity.getApplicationAssetAddressByName("TokenManager");
-        TokenManager TokenManagerEntity = TokenManager(TokenManagerAddress);
+        ABITokenManager TokenManagerEntity = ABITokenManager(TokenManagerAddress);
 
         address TokenAddress = TokenManagerEntity.TokenEntity();
-        TokenEntity = Token(TokenAddress);
+        TokenEntity = ABIToken(TokenAddress);
 
         address TokenSCADAAddress = TokenManagerEntity.TokenSCADAEntity();
-        TokenSCADAEntity = TokenSCADAVariable(TokenSCADAAddress);
+        TokenSCADAEntity = ABITokenSCADAVariable(TokenSCADAAddress);
 
         // set Emergency Fund Percentage if available.
         address ApplicationEntityAddress = TokenManagerEntity.owner();
@@ -398,10 +393,7 @@ contract FundingVault {
         if( FundingEntity.getTimestamp() >= FundingEntity.Funding_Setting_cashback_time_start() ) {
 
             // should only be possible if funding entity has been stuck in processing for more than 7 days.
-            if(
-                FundingEntity.CurrentEntityState() != FundingEntity.getEntityState("FAILED_FINAL") &&
-                FundingEntity.CurrentEntityState() != FundingEntity.getEntityState("SUCCESSFUL_FINAL")
-            ) {
+            if( FundingEntity.CurrentEntityState() != FundingEntity.getEntityState("SUCCESSFUL_FINAL") ) {
                 return true;
             }
         }

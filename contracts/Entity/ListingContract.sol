@@ -1,14 +1,14 @@
 /*
 
- * @name        Funding Contract
+ * source       https://github.com/blockbitsio/
+
+ * @name        Listing Contract ABI
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
 
  Contains the Listing Contract
  - used by the platform to find child campaigns
  - used by mobile application to retrieve News Items
-
-ropsten - 0x1ec6988a826c4236b3b07c5eed9059e3aa033fe2
 
 */
 

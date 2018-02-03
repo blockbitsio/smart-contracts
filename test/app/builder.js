@@ -67,6 +67,15 @@ TestBuildHelper.prototype.deployAndInitializeApplication = async function () {
     // add bylaws into app
     await this.addBylawsIntoApp();
 
+    // deploy token and scada
+
+    let token = await this.deploy("Token");
+    let scada = await this.deploy("TokenSCADAVariable");
+    let extra = await this.deploy("ExtraFundingInputMarketing");
+
+    let direct = await this.deploy("FundingInputDirect");
+    let milestone = await this.deploy("FundingInputMilestone");
+
     // deploy and add requirement asset contracts
     for (let i = 0; i < this.setup.assetContractNames.length; i++) {
         let name = this.setup.assetContractNames[i];
@@ -123,6 +132,15 @@ TestBuildHelper.prototype.deployAndInitializeAsset = async function (assetName, 
 
     // add bylaws into app
     await this.addBylawsIntoApp();
+
+    // deploy token and scada
+
+    let token = await this.deploy("Token");
+    let scada = await this.deploy("TokenSCADAVariable");
+    let extra = await this.deploy("ExtraFundingInputMarketing");
+
+    let direct = await this.deploy("FundingInputDirect");
+    let milestone = await this.deploy("FundingInputMilestone");
 
     // deploy asset contract
     let assetContract = await this.deploy(assetName);
@@ -810,12 +828,22 @@ TestBuildHelper.prototype.getMyVaultAddress = async function (myAddress) {
 
 TestBuildHelper.prototype.addFundingSettings = async function () {
     let fundingAsset = this.getDeployedByName("Funding");
+
+    let direct = this.getDeployedByName("FundingInputDirect");
+    let milestone = this.getDeployedByName("FundingInputMilestone");
+
     await fundingAsset.addSettings(
         this.platformWalletAddress,
         this.setup.settings.bylaws["funding_global_soft_cap"],
         this.setup.settings.bylaws["funding_global_hard_cap"],
         this.setup.settings.bylaws["token_sale_percentage"],
+        direct.address,
+        milestone.address
     );
+
+    await direct.setFundingAssetAddress(fundingAsset.address);
+    await milestone.setFundingAssetAddress(fundingAsset.address);
+
 };
 
 TestBuildHelper.prototype.getTokenStakeInFundingPeriod = async function (FundingPeriodId, DirectPaymentValue) {
@@ -841,19 +869,37 @@ TestBuildHelper.prototype.getTokenStakeInFundingPeriod = async function (Funding
 };
 
 TestBuildHelper.prototype.AddAssetSettingsAndLock = async function (name) {
+
     let object = this.getDeployedByName(name);
 
     if (name === "TokenManager") {
         // add token settings
         let token_settings = this.setup.settings.token;
+        let FundingAsset = this.getDeployedByName("Funding");
+        let ScadaAsset = this.getDeployedByName("TokenSCADAVariable");
+        await ScadaAsset.addSettings(FundingAsset.address);
 
-        await object.addTokenSettingsAndInit(
-            token_settings.supply.toString(),
-            token_settings.decimals,
-            token_settings.name,
-            token_settings.symbol,
-            token_settings.version
+        let tokenContract = this.getDeployedByName("Token");
+
+        await tokenContract.transferOwnership(object.address);
+
+        let extra = this.getDeployedByName("ExtraFundingInputMarketing");
+        await extra.addSettings(
+            object.address,                                      // TokenManager Entity address
+            this.platformWalletAddress,                          // Output Address
+            this.setup.settings.extra_marketing.hard_cap,        // 300 ether hard cap
+            this.setup.settings.extra_marketing.tokens_per_eth,  // 20 000 BBX per ETH
+            this.setup.settings.extra_marketing.start_date,      // 31.01.2018
+            this.setup.settings.extra_marketing.end_date         // 10.03.2018
         );
+
+        await object.addSettings(
+            ScadaAsset.address, tokenContract.address, extra.address
+        );
+
+        // tests only
+        let app = await this.getDeployedByName("ApplicationEntity");
+        await extra.setAppAddress( app.address );
 
     } else if (name === "Funding") {
         // add funding phases
@@ -880,6 +926,12 @@ TestBuildHelper.prototype.AddAssetSettingsAndLock = async function (name) {
 TestBuildHelper.prototype.deploy = async function (name) {
     let object = await this.getContract("Test" + name);
     this.deployed[name] = await object.new();
+    return this.deployed[name];
+};
+
+TestBuildHelper.prototype.deployWithParams = async function (name, params) {
+    let object = await this.getContract("Test" + name);
+    this.deployed[name] = await object.new(params);
     return this.deployed[name];
 };
 

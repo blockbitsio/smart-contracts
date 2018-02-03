@@ -17,7 +17,7 @@ contract TestApplicationEntity is ApplicationEntity {
 
     function setTestGatewayInterfaceEntity(address _address) external {
         GatewayInterfaceAddress = _address;
-        GatewayInterfaceEntity = GatewayInterface(GatewayInterfaceAddress);
+        GatewayInterfaceEntity = ABIGatewayInterface(GatewayInterfaceAddress);
     }
 
     function callTestApproveCodeUpgrade(address _address) external {

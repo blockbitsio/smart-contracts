@@ -1,81 +1,57 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Token Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
 
- Zeppelin ERC20 Standard Token
+  Mintable ERC20 Standard Token
 
 */
 
 pragma solidity ^0.4.17;
 
-import "../zeppelin/token/StandardToken.sol";
+import '../zeppelin/token/ERC20/MintableToken.sol';
 
-contract Token is StandardToken {
-    string public  symbol;
-    string public  name;
-    uint8 public   decimals;
-    uint256 public totalSupply;
-    string public  version = 'v1';
 
-    address public owner;
+/**
+ * @title Burnable Token
+ * @dev Token that can be irreversibly burned (destroyed).
+ */
+contract BurnableToken is BasicToken {
 
-    event Mint(address indexed to, uint256 amount);
-    event MintFinished();
-
-    bool public mintingFinished = false;
-
-    function Token(
-        uint256 _initialAmount,
-        string _tokenName,
-        uint8 _decimalUnits,
-        string _tokenSymbol,
-        string _version
-    )
-    public
-    {
-        decimals = _decimalUnits;                               // Amount of decimals for display purposes
-        totalSupply = _initialAmount;                           // Set initial supply.. should be 0 if we're minting
-        name = _tokenName;                                      // Set the name for display purposes
-        symbol = _tokenSymbol;                                  // Set the symbol for display purposes
-        version = _version;                                     // Set token version string
-
-        // set internal owner that can mint tokens.
-        owner = msg.sender;
-    }
-
-    modifier canMint() {
-        require(!mintingFinished);
-        _;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner);
-        _;
-    }
+    event Burn(address indexed burner, uint256 value);
 
     /**
-     * @dev Function to mint tokens
-     * @param _to The address that will receive the minted tokens.
-     * @param _amount The amount of tokens to mint.
-     * @return A boolean that indicates if the operation was successful.
+     * @dev Burns a specific amount of tokens.
+     * @param _value The amount of token to be burned.
      */
-    function mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool) {
-        totalSupply = totalSupply.add(_amount);
-        balances[_to] = balances[_to].add(_amount);
-        Mint(_to, _amount);
-        Transfer(address(0), _to, _amount);
-        return true;
-    }
+    function burn(uint256 _value) public {
+        require(_value <= balances[msg.sender]);
 
-    /**
-     * @dev Function to stop minting new tokens.
-     * @return True if the operation was successful.
-     */
-    function finishMinting() onlyOwner canMint public returns (bool) {
-        mintingFinished = true;
-        MintFinished();
-        return true;
+        address burner = msg.sender;
+        balances[burner] = balances[burner].sub(_value);
+        totalSupply_ = totalSupply_.sub(_value);
+        Burn(burner, _value);
     }
 }
+
+contract Token is MintableToken, BurnableToken {
+
+    string public name;
+    string public symbol;
+    string public version;
+    uint8 public decimals;
+    uint256 totalSupply_;
+
+    function Token() public {
+        decimals = 18;                             // Amount of decimals for display purposes
+        totalSupply_ = 0;                          // Set initial supply.. should be 0 if we're minting
+        name = "BlockBitsIO Token";                // Set the name for display purposes
+        symbol = "BBX";                            // Set the symbol for display purposes
+        version = "1";                             // Set token version string
+    }
+
+}
+

@@ -8,13 +8,13 @@ if (!process.env.SOLIDITY_COVERAGE) {
 }
 
 let HDWalletProvider = require('truffle-hdwallet-provider');
-const mnemonic = 'call will neutral van sponsor select present lion pizza dice resist gate';
-const addr = '0x52b333c238Bf73888fDDe266E9D2A39B75752807';
+const mnemonic = 'lunch release trick fluid omit about fatigue suffer dentist minute cube want';
+const addr = '0x4b70518d879a4e2da4ad9cf0189b32d8dc6b7a9b';
 
-//if (process.env.LIVE_NETWORKS) {
-ropstenProvider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/')
-rinkebyProvider = new HDWalletProvider(mnemonic, 'https://rinkeby.infura.io/c5GRJ5dejitOp13GXgu3')
-//}
+ropstenProvider = new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/');
+
+// Please get your own infura key and replace it below.
+rinkebyProvider = new HDWalletProvider(mnemonic, 'https://rinkeby.infura.io/c5GRJ5dejitOp13GXgu3');
 
 module.exports = {
     synchronization_timeout: 3600000,
@@ -23,33 +23,32 @@ module.exports = {
             network_id: 15,
             provider: developmentProvider,
             gas: 4.6e6, // 9e6,
-            // gasPrice: 1000000000 // 1 gwei
             gasPrice: 100000000 // 0.1 gwei
         },
         rpc: {
             network_id: 15,
             host: 'localhost',
             port: 8545,
-            // gas: 4.7e6,
-            // gas: 6.7e6, < max @ nov 29 2017
             gas: 6.1e6,
-            gasPrice: 100000000 // 0.1 gwei -> 100 mil wei
+            gasPrice: 1010000000, // 0.1 gwei -> 100 mil wei
         },
         ropsten: {
             network_id: 3,
             provider: ropstenProvider,
-            // gas: 4.712e6,
-            gas: 6.1e6,
+            gas: 4.712e6,       // max atm.. so not good for us.
+            // gas: 6.1e6,
             gasPrice: 100000000 // 0.1 gwei -> 100 mil wei
         },
         rinkeby: {
+            synchronization_timeout: 3600000,
+            from: addr,
             provider: rinkebyProvider,
-            // from: addr,
             network_id: 4,
             gas: 6.7e6,
-            // gasPrice: 100000000, // 0.1 gwei -> 100 mil wei
-            gasPrice: 20000000000, // 0.1 gwei -> 100 mil wei
-            synchronization_timeout: 3600000
+               gasPrice:  10000000000, // 10 gwei
+            // gasPrice: 100000000000, // 100 gwei -> 100000 mil wei
+            // gasPrice:    100000000, // 0.1 gwei -> 100 mil wei
+            // gasPrice:  20000000000, // 20 gwei -> 100 mil wei
         },
         coverage: {
             host: "localhost",

@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Application Entity Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -10,16 +12,16 @@
 
 pragma solidity ^0.4.17;
 
-import "./GatewayInterface.sol";
-import "./Entity/Proposals.sol";
-import "./Entity/Funding.sol";
-import "./Entity/Meetings.sol";
-import "./Entity/Milestones.sol";
-import "./Entity/BountyManager.sol";
-import "./Entity/TokenManager.sol";
-import "./Entity/FundingManager.sol";
-import "./Entity/ListingContract.sol";
-import "./Entity/NewsContract.sol";
+import "./abis/ABIGatewayInterface.sol";
+import "./abis/ABIProposals.sol";
+import "./abis/ABIFunding.sol";
+import "./abis/ABIMeetings.sol";
+import "./abis/ABIMilestones.sol";
+import "./abis/ABIBountyManager.sol";
+import "./abis/ABITokenManager.sol";
+import "./abis/ABIFundingManager.sol";
+import "./abis/ABIListingContract.sol";
+import "./abis/ABINewsContract.sol";
 
 contract ApplicationEntity {
 
@@ -42,18 +44,18 @@ contract ApplicationEntity {
     address public GatewayInterfaceAddress;
 
     /* Parent Entity Instance */
-    GatewayInterface GatewayInterfaceEntity;
+    ABIGatewayInterface GatewayInterfaceEntity;
 
     /* Asset Entities */
-    Proposals public ProposalsEntity;
-    Funding public FundingEntity;
-    Milestones public MilestonesEntity;
-    Meetings public MeetingsEntity;
-    BountyManager public BountyManagerEntity;
-    TokenManager public TokenManagerEntity;
-    ListingContract public ListingContractEntity;
-    FundingManager public FundingManagerEntity;
-    NewsContract public NewsContractEntity;
+    ABIProposals public ProposalsEntity;
+    ABIFunding public FundingEntity;
+    ABIMilestones public MilestonesEntity;
+    ABIMeetings public MeetingsEntity;
+    ABIBountyManager public BountyManagerEntity;
+    ABITokenManager public TokenManagerEntity;
+    ABIListingContract public ListingContractEntity;
+    ABIFundingManager public FundingManagerEntity;
+    ABINewsContract public NewsContractEntity;
 
     /* Asset Collection */
     mapping (bytes32 => address) public AssetCollection;
@@ -122,7 +124,7 @@ contract ApplicationEntity {
         sourceCodeUrl = _sourceCodeUrl;
 
         // init gateway entity and set app address
-        GatewayInterfaceEntity = GatewayInterface(GatewayInterfaceAddress);
+        GatewayInterfaceEntity = ABIGatewayInterface(GatewayInterfaceAddress);
         GatewayInterfaceEntity.requestCodeUpgrade( address(this), sourceCodeUrl );
     }
 
@@ -135,47 +137,47 @@ contract ApplicationEntity {
         an array of addresses
     */
     function addAssetProposals(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        ProposalsEntity = Proposals(_assetAddresses);
+        ProposalsEntity = ABIProposals(_assetAddresses);
         assetInitialized("Proposals", _assetAddresses);
     }
 
     function addAssetFunding(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        FundingEntity = Funding(_assetAddresses);
+        FundingEntity = ABIFunding(_assetAddresses);
         assetInitialized("Funding", _assetAddresses);
     }
 
     function addAssetMilestones(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        MilestonesEntity = Milestones(_assetAddresses);
+        MilestonesEntity = ABIMilestones(_assetAddresses);
         assetInitialized("Milestones", _assetAddresses);
     }
 
     function addAssetMeetings(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        MeetingsEntity = Meetings(_assetAddresses);
+        MeetingsEntity = ABIMeetings(_assetAddresses);
         assetInitialized("Meetings", _assetAddresses);
     }
 
     function addAssetBountyManager(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        BountyManagerEntity = BountyManager(_assetAddresses);
+        BountyManagerEntity = ABIBountyManager(_assetAddresses);
         assetInitialized("BountyManager", _assetAddresses);
     }
 
     function addAssetTokenManager(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        TokenManagerEntity = TokenManager(_assetAddresses);
+        TokenManagerEntity = ABITokenManager(_assetAddresses);
         assetInitialized("TokenManager", _assetAddresses);
     }
 
     function addAssetFundingManager(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        FundingManagerEntity = FundingManager(_assetAddresses);
+        FundingManagerEntity = ABIFundingManager(_assetAddresses);
         assetInitialized("FundingManager", _assetAddresses);
     }
 
     function addAssetListingContract(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        ListingContractEntity = ListingContract(_assetAddresses);
+        ListingContractEntity = ABIListingContract(_assetAddresses);
         assetInitialized("ListingContract", _assetAddresses);
     }
 
     function addAssetNewsContract(address _assetAddresses) external requireNotInitialised onlyDeployer {
-        NewsContractEntity = NewsContract(_assetAddresses);
+        NewsContractEntity = ABINewsContract(_assetAddresses);
         assetInitialized("NewsContract", _assetAddresses);
     }
 
@@ -631,7 +633,6 @@ contract ApplicationEntity {
             // EntityStateRequired = getEntityState("FINISHED_CODE_UPGRADE");
 
         }
-
 
         return (CurrentEntityState, EntityStateRequired);
     }

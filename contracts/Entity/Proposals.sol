@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Proposals Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -10,23 +12,26 @@
 
 pragma solidity ^0.4.17;
 
-import "./Token.sol";
-import "./TokenManager.sol";
-
 import "./../ApplicationAsset.sol";
+
 import "./../ApplicationEntityABI.sol";
-import "./ListingContract.sol";
-import "./FundingVault.sol";
+
+import "../abis/ABIToken.sol";
+import "../abis/ABITokenManager.sol";
+import "../abis/ABIListingContract.sol";
+import "../abis/ABIFunding.sol";
+import "../abis/ABIFundingManager.sol";
+import "../abis/ABIMilestones.sol";
 
 contract Proposals is ApplicationAsset {
 
     ApplicationEntityABI public Application;
-    ListingContract public ListingContractEntity;
-    Funding public FundingEntity;
-    FundingManager public FundingManagerEntity;
-    TokenManager public TokenManagerEntity;
-    Token public TokenEntity;
-    Milestones public MilestonesEntity;
+    ABIListingContract public ListingContractEntity;
+    ABIFunding public FundingEntity;
+    ABIFundingManager public FundingManagerEntity;
+    ABITokenManager public TokenManagerEntity;
+    ABIToken public TokenEntity;
+    ABIMilestones public MilestonesEntity;
 
     function getRecordState(bytes32 name) public view returns (uint8) {
         return RecordStates[name];
@@ -74,20 +79,20 @@ contract Proposals is ApplicationAsset {
         requireSettingsNotApplied
     {
         address FundingAddress = getApplicationAssetAddressByName('Funding');
-        FundingEntity = Funding(FundingAddress);
+        FundingEntity = ABIFunding(FundingAddress);
 
         address FundingManagerAddress = getApplicationAssetAddressByName('FundingManager');
-        FundingManagerEntity = FundingManager(FundingManagerAddress);
+        FundingManagerEntity = ABIFundingManager(FundingManagerAddress);
 
         address TokenManagerAddress = getApplicationAssetAddressByName('TokenManager');
-        TokenManagerEntity = TokenManager(TokenManagerAddress);
-        TokenEntity = Token(TokenManagerEntity.TokenEntity());
+        TokenManagerEntity = ABITokenManager(TokenManagerAddress);
+        TokenEntity = ABIToken(TokenManagerEntity.TokenEntity());
 
         address ListingContractAddress = getApplicationAssetAddressByName('ListingContract');
-        ListingContractEntity = ListingContract(ListingContractAddress);
+        ListingContractEntity = ABIListingContract(ListingContractAddress);
 
         address MilestonesContractAddress = getApplicationAssetAddressByName('Milestones');
-        MilestonesEntity = Milestones(MilestonesContractAddress);
+        MilestonesEntity = ABIMilestones(MilestonesContractAddress);
 
         EventRunBeforeApplyingSettings(assetName);
     }

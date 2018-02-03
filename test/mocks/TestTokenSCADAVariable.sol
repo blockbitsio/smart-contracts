@@ -11,13 +11,4 @@ import "../../contracts/Algorithms/TokenSCADAVariable.sol";
 
 contract TestTokenSCADAVariable is TokenSCADAVariable {
 
-    function
-        TestTokenSCADAVariable ( address _fundingContract )
-        TokenSCADAVariable ( _fundingContract )
-        public
-    {
-
-    }
-
-
 }

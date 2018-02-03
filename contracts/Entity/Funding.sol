@@ -1,31 +1,31 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        Funding Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
 
  Contains the Funding Contract code deployed and linked to the Application Entity
 
-
-    !!! Links directly to Milestones
+ !!! Links directly to Milestones
 
 */
 
 pragma solidity ^0.4.17;
 
 import "./../ApplicationAsset.sol";
-import "./../Entity/FundingManager.sol";
-import "./../Entity/TokenManager.sol";
 
-import "./../Inputs/FundingInputDirect.sol";
-import "./../Inputs/FundingInputMilestone.sol";
+import "./../abis/ABIFundingManager.sol";
+import "./../abis/ABITokenManager.sol";
+
+import "./../abis/ABIFundingInputGeneral.sol";
 
 contract Funding is ApplicationAsset {
 
     address public multiSigOutputAddress;
-    FundingInputDirect public DirectInput;
-    FundingInputMilestone public MilestoneInput;
-
+    ABIFundingInputGeneral public DirectInput;
+    ABIFundingInputGeneral public MilestoneInput;
 
     // mapping (bytes32 => uint8) public FundingMethods;
     enum FundingMethodIds {
@@ -35,8 +35,8 @@ contract Funding is ApplicationAsset {
         DIRECT_AND_MILESTONE		//
     }
 
-    TokenManager public TokenManagerEntity;
-    FundingManager public FundingManagerEntity;
+    ABITokenManager public TokenManagerEntity;
+    ABIFundingManager public FundingManagerEntity;
 
     event FundingStageCreated( uint8 indexed index, bytes32 indexed name );
 
@@ -80,7 +80,7 @@ contract Funding is ApplicationAsset {
 
     // to be taken from application bylaws
     uint256 public Funding_Setting_cashback_before_start_wait_duration = 7 days;
-    uint256 public Funding_Setting_cashback_duration = 90 days;
+    uint256 public Funding_Setting_cashback_duration = 365 days;
 
     event LifeCycle();
     event DebugRecordRequiredChanges( bytes32 indexed _assetName, uint8 indexed _current, uint8 indexed _required );
@@ -95,30 +95,13 @@ contract Funding is ApplicationAsset {
     event EventFundingReceivedPayment(address indexed _sender, uint8 indexed _payment_method, uint256 indexed _amount );
 
     function runBeforeInitialization() internal requireNotInitialised {
-        DirectInput = new FundingInputDirect();
-        MilestoneInput = new FundingInputMilestone();
 
         // instantiate token manager, moved from runBeforeApplyingSettings
-        TokenManagerEntity = TokenManager( getApplicationAssetAddressByName('TokenManager') );
-        FundingManagerEntity = FundingManager( getApplicationAssetAddressByName('FundingManager') );
+        TokenManagerEntity = ABITokenManager( getApplicationAssetAddressByName('TokenManager') );
+        FundingManagerEntity = ABIFundingManager( getApplicationAssetAddressByName('FundingManager') );
 
         EventRunBeforeInit(assetName);
     }
-
-    /*
-    function runBeforeApplyingSettings() internal requireInitialised requireSettingsNotApplied {
-        AllocateTokens();
-        EventRunBeforeApplyingSettings(assetName);
-    }
-
-    event EventAllocateTokens(address _addr, uint8 _value);
-
-    function AllocateTokens() internal {
-        EventAllocateTokens(address(FundingManagerEntity), TokenSellPercentage);
-        TokenManagerEntity.AllocateInitialTokenBalances(TokenSellPercentage, address(FundingManagerEntity), getApplicationAssetAddressByName('BountyManager'));
-    }
-    */
-
 
     function setAssetStates() internal {
         // Asset States
@@ -140,16 +123,7 @@ contract Funding is ApplicationAsset {
         RecordStates["FINAL"]           = 3;
     }
 
-
-    /*
-        When using a funding model that can sell tokens at the market decided value, then a global hard cap is required.
-        If global hard cap is defined:
-            - funding stage caps are ignored.
-            - token distribution is done based on fractions in each funding stage
-            - tokens left unsold in funding stages get redistributed to all participants
-    */
-
-    function addSettings(address _outputAddress, uint256 soft_cap, uint256 hard_cap, uint8 sale_percentage )
+    function addSettings(address _outputAddress, uint256 soft_cap, uint256 hard_cap, uint8 sale_percentage, address _direct, address _milestone )
         public
         requireInitialised
         requireSettingsNotApplied
@@ -166,7 +140,10 @@ contract Funding is ApplicationAsset {
             revert();
         }
 
-        TokenSellPercentage =  sale_percentage;
+        TokenSellPercentage = sale_percentage;
+
+        DirectInput = ABIFundingInputGeneral(_direct);
+        MilestoneInput = ABIFundingInputGeneral(_milestone);
     }
 
     function addFundingStage(
@@ -192,40 +169,18 @@ contract Funding is ApplicationAsset {
             revert();
         }
 
-        // if TokenSCADA requires hard cap, then we require it, otherwise we reject it if provided
+        // make sure hard cap exists!
+        if(_amount_cap_hard == 0) {
+            revert();
+        }
 
-        if(TokenManagerEntity.getTokenSCADARequiresHardCap() == true)
-        {
-            // make sure hard cap exists!
-            if(_amount_cap_hard == 0) {
-                revert();
-            }
+        // make sure soft cap is not higher than hard cap
+        if(_amount_cap_soft > _amount_cap_hard) {
+            revert();
+        }
 
-            // make sure soft cap is not higher than hard cap
-            if(_amount_cap_soft > _amount_cap_hard) {
-                revert();
-            }
-
-            if(_token_share_percentage > 0) {
-                revert();
-            }
-
-
-        } else {
-
-            // make sure record hard cap and soft cap is zero!
-            if(_amount_cap_hard != 0) {
-                revert();
-            }
-
-            if(_amount_cap_soft != 0) {
-                revert();
-            }
-
-            // make sure we're not selling more than 100% of token share... as that's not possible
-            if(_token_share_percentage > 100) {
-                revert();
-            }
+        if(_token_share_percentage > 0) {
+            revert();
         }
 
         FundingStage storage prevRecord = Collection[FundingStageNum];
@@ -234,14 +189,6 @@ contract Funding is ApplicationAsset {
             // new stage does not start before the previous one ends
             if( _time_start <= prevRecord.time_end ) {
                 revert();
-            }
-
-            if(TokenManagerEntity.getTokenSCADARequiresHardCap() == false)
-            {
-                // make sure previous stage + new stage token percentage does not amount to over 90%
-                if( _token_share_percentage + prevRecord.token_share_percentage > 90 ) {
-                    revert();
-                }
             }
         }
 
@@ -272,22 +219,11 @@ contract Funding is ApplicationAsset {
 
     function adjustFundingSettingsBasedOnNewFundingStage() internal {
 
-        if(TokenManagerEntity.getTokenSCADARequiresHardCap() == false) {
-            uint8 local_TokenSellPercentage;
-            for(uint8 i = 1; i <= FundingStageNum; i++) {
-                FundingStage storage rec = Collection[i];
-                // cumulate sell percentages
-                local_TokenSellPercentage+= rec.token_share_percentage;
-            }
-            TokenSellPercentage = local_TokenSellPercentage;
-        }
-
         // set funding start
         Funding_Setting_funding_time_start = Collection[1].time_start;
         // set funding end
         Funding_Setting_funding_time_end = Collection[FundingStageNum].time_end;
 
-        // set cashback just in case
         // cashback starts 1 day after funding status is failed
         Funding_Setting_cashback_time_start = Funding_Setting_funding_time_end + Funding_Setting_cashback_before_start_wait_duration;
         Funding_Setting_cashback_time_end = Funding_Setting_cashback_time_start + Funding_Setting_cashback_duration;
@@ -703,7 +639,6 @@ contract Funding is ApplicationAsset {
                 */
             }
         }
-
 
         return (CurrentRecordState, RecordStateRequired, EntityStateRequired);
     }

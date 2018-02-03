@@ -1,5 +1,7 @@
 /*
 
+ * source       https://github.com/blockbitsio/
+
  * @name        General Funding Input Contract
  * @package     BlockBitsIO
  * @author      Micky Socaci <micky@nowlive.ro>
@@ -10,13 +12,21 @@ pragma solidity ^0.4.17;
 
 contract FundingInputGeneral {
 
+    bool public initialized = false;
     uint8 public typeId = 0;
     address public FundingAssetAddress;
+    address public deployer;
 
     event EventInputPaymentReceived(address sender, uint amount, uint8 _type);
 
     function FundingInputGeneral() public {
-        FundingAssetAddress = msg.sender;
+        deployer = msg.sender;
+    }
+
+    function setFundingAssetAddress(address _addr) public {
+        require(initialized == false && msg.sender == deployer);
+        FundingAssetAddress = _addr;
+        initialized = true;
     }
 
     function () public payable {

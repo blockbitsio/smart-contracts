@@ -6,58 +6,42 @@ module.exports = function(setup) {
     let token_settings = setup.settings.token;
 
     contract('TokenManager Asset', accounts => {
-        let assetContract, TokenManagerContract, FundingContract, tx, TestBuildHelper = {};
+        let assetContract, TokenManagerContract, FundingContract, tx, TestBuildHelper = {}, SCADAContract, TokenContract,
+            MarketingContract;
         let assetName = "TokenManager";
 
         beforeEach(async () => {
             TestBuildHelper = new helpers.TestBuildHelper(setup, assert, accounts, accounts[10]);
-            TokenManagerContract = await TestBuildHelper.deployAndInitializeAsset( assetName, ["FundingManager", "Funding"] );
+            await TestBuildHelper.deployAndInitializeApplication();
+            await TestBuildHelper.AddAllAssetSettingsAndLock();
+
+            TokenManagerContract = await TestBuildHelper.getDeployedByName("TokenManager");
             FundingContract = await TestBuildHelper.getDeployedByName("Funding");
+            SCADAContract = await TestBuildHelper.getDeployedByName("TokenSCADAVariable");
+            TokenContract = await TestBuildHelper.getDeployedByName("Token");
+            MarketingContract = await TestBuildHelper.getDeployedByName("ExtraFundingInputMarketing");
+
         });
 
-        context("addTokenSettingsAndInit()", async () => {
+        context("addSettings()", async () => {
 
             it('properly sets up the tokens if initialized', async () => {
 
-                tx = await TokenManagerContract.addTokenSettingsAndInit(
-                    token_settings.supply,
-                    token_settings.decimals,
-                    token_settings.name,
-                    token_settings.symbol,
-                    token_settings.version
-                );
-
-                let TokenEntityContractAddress = await TokenManagerContract.TokenEntity.call()
+                let TokenEntityContractAddress = await TokenManagerContract.TokenEntity.call();
+                let SCADAEntityContractAddress = await TokenManagerContract.TokenSCADAEntity.call();
+                let MarketingContractAddress = await TokenManagerContract.MarketingMethodAddress.call();
                 assert.isAddress(TokenEntityContractAddress, 'TokenEntity is not an address.');
+                assert.equal(TokenEntityContractAddress.toString(), TokenContract.address.toString(), 'Deployed Token contract address mismatch!')
+                assert.equal(SCADAEntityContractAddress.toString(), SCADAContract.address.toString(), 'Deployed SCADA contract address mismatch!')
+                assert.equal(MarketingContractAddress.toString(), MarketingContract.address.toString(), 'Deployed Marketing contract address mismatch!')
 
                 let TokenEntityContract = await helpers.getContract("TestToken").at(TokenEntityContractAddress);
                 assert.equal(await TokenEntityContract.name.call(), token_settings.name, 'Deployed Token contract name mismatch!')
             });
 
-            it('properly sets up the Token SCADA', async () => {
-                await TokenManagerContract.addTokenSettingsAndInit(
-                    token_settings.supply,
-                    token_settings.decimals,
-                    token_settings.name,
-                    token_settings.symbol,
-                    token_settings.version
-                );
-                let FundingAddress = await TokenManagerContract.getApplicationAssetAddressByName.call('Funding');
-                assert.equal(FundingAddress, FundingContract.address, 'FundingAddress does not match.');
-
-                let eventFilter = helpers.utils.hasEvent(
-                    await TokenManagerContract.applyAndLockSettings(),
-                    'EventRunBeforeApplyingSettings(bytes32)'
-                );
-                assert.equal(eventFilter.length, 1, 'EventRunBeforeApplyingSettings event not received.');
-            });
         });
 
         context("getTokenSCADARequiresHardCap()", async () => {
-
-            beforeEach(async () => {
-                await TestBuildHelper.AddAssetSettingsAndLock(assetName);
-            });
 
             it('returns boolean value stored in SCADA Contract', async () => {
 
